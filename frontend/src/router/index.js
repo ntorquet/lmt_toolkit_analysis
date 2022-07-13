@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import reliability from "@/views/Reliability";
+import Results from "@/views/Results";
 
 const routes = [
   {
@@ -8,7 +8,7 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
-      title: 'LMT toolkit - Reliability'
+      title: 'LMT toolkit - Analysis'
     }
   },
   {
@@ -19,15 +19,15 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
     meta: {
-      title: 'LMT toolkit - Reliability'
+      title: 'LMT toolkit - Analysis'
     }
   },
   {
-    path: '/reliability',
-    name: 'reliability',
-    component: reliability,
+    path: '/results',
+    name: 'results',
+    component: Results,
     meta: {
-      title: 'LMT toolkit - Reliability'
+      title: 'LMT toolkit - Analysis'
     }
   },
 

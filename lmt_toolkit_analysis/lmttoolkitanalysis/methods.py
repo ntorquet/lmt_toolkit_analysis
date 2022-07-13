@@ -1,13 +1,16 @@
 '''
 Created on 23 september 2020
 
-@author: Nicolas
+@author: Nicolas Torquet
 '''
 
 import sqlite3
 import datetime
 from math import *
 from sqlite3 import Error
+
+from .LMT.lmtanalysis.Animal import *
+from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 oneFrame = 1
@@ -613,3 +616,78 @@ def getReliability(file):
     reliabilityContext.update(sensors)
 
     return reliabilityContext
+
+
+################## Analysis ##################
+
+def getStartEndExperiment(connection):
+    c = connection.cursor()
+    query = "SELECT MIN(FRAMENUMBER), MAX(FRAMENUMBER) FROM FRAME"
+    c.execute(query)
+    StartEndFrames = c.fetchall()
+    for row in StartEndFrames:
+        # print(str(row))
+        startFrame = row[0]
+        endFrame = row[1]
+
+    return [startFrame, endFrame]
+
+
+
+
+def getDistanceAndTimeInContact(connection, minT, maxT, file):
+    # load animal pool
+    pool = AnimalPool()
+    pool.loadAnimals(connection)
+
+    dataDic = {}
+    for animal in pool.animalDictionnary.keys():
+        # store the info about the animal
+        print("computing individual animal: {}".format(animal))
+        animalObject = pool.animalDictionnary[animal]
+        rfid = animalObject.RFID
+        print("RFID: {}".format(rfid))
+        dataDic[rfid] = {}
+        dataDic[rfid]["animal"] = animalObject.name
+        dataDic[rfid]["file"] = file
+        dataDic[rfid]['genotype'] = animalObject.genotype
+        dataDic[rfid]['sex'] = animalObject.sex
+        dataDic[rfid]['strain'] = animalObject.strain
+        dataDic[rfid]['age'] = animalObject.age
+
+        # compute distance traveled during the experiment (in m)
+        animalObject.loadDetection(start=minT, end=maxT, lightLoad=True)
+        dataDic[rfid]["totalDistance"] = animalObject.getDistance(tmin=minT, tmax=maxT) / 100
+
+        # compute the time spent in contact during the experiment (in s)
+        behavEvent = 'Contact'
+        print("computing individual event: {}".format(behavEvent))
+
+        behavEventTimeLine = EventTimeLineCached(connection, file, behavEvent, animal, minFrame=minT, maxFrame=maxT)
+        # clean the behavioural event timeline from too close and too short events:
+        behavEventTimeLine.mergeCloseEvents(numberOfFrameBetweenEvent=1)
+        behavEventTimeLine.removeEventsBelowLength(maxLen=3)
+
+        # compute duration, number and mean duration of contact events
+        totalEventDuration = behavEventTimeLine.getTotalLength() / 30  # conversion in seconds
+        nbEvent = behavEventTimeLine.getNumberOfEvent(minFrame=minT, maxFrame=maxT)
+        print("total event duration: ", totalEventDuration)
+        dataDic[rfid][behavEvent + " TotalLen"] = totalEventDuration
+        dataDic[rfid][behavEvent + " Nb"] = nbEvent
+        if nbEvent == 0:
+            meanDur = 0
+        else:
+            meanDur = totalEventDuration / nbEvent
+        dataDic[rfid][behavEvent + " MeanDur"] = meanDur  # in seconds
+
+    # print to check the results
+    print('data extracted from file: ', file)
+    for rfid in dataDic.keys():
+        print(
+            '{} ({}) travelled {} m and spent {} s in contact with others ({} contact events of mean duration {} s)'.format(
+                rfid, dataDic[rfid]['genotype'], dataDic[rfid]['totalDistance'], dataDic[rfid]['Contact TotalLen'],
+                dataDic[rfid]['Contact Nb'], dataDic[rfid]['Contact MeanDur']))
+
+    print('Job done.')
+
+    return dataDic

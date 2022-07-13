@@ -11,6 +11,13 @@ A tool to check the reliability of Live Mouse Tracker (LMT) experiments and to a
 - django-celery-results==2.3.0
 - celery-progress==0.1.2
 - psycopg2-binary
+- affine==2.3.1
+- numpy==1.23.1
+- tabulate==0.8.10
+- pandas==1.4.3
+- matplotlib==3.5.2
+- lxml==4.9.1
+- psutil==5.9.1
 
 Install this list with the command:
 ```

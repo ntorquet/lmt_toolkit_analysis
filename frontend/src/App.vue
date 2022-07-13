@@ -1,11 +1,11 @@
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <div class="navbar-brand">
-        <router-link to="/" class="navbar-item"><strong>LMT-Toolkit reliability</strong></router-link>
+        <router-link to="/" class="navbar-item"><strong>LMT-Toolkit analysis</strong></router-link>
     </div>
     <div class="navbar-menu">
         <div class="navbar-end">
-          <a href="/reliability" class="navbar-item">Reliability</a>
+          <a href="/results" class="navbar-item">Analysis</a>
         </div>
     </div>
   </nav>

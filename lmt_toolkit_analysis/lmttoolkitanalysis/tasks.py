@@ -3,6 +3,8 @@ import os
 from lmt_toolkit_analysis.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
+
+from .LMT.scripts.Rebuild_All_Event import process
 from .methods import *
 from .models import File
 from datetime import date
@@ -11,6 +13,10 @@ import json
 from lmttoolkitanalysis.methods import *
 from lmt_toolkit_analysis.settings import MEDIA_ROOT
 
+# import to analyse LMT data
+import sqlite3
+from .LMT.lmtanalysis.Animal import *
+from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 
@@ -24,7 +30,7 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     :return: extracted data
     '''
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 9, f'Starting')
+    progress_recorder.set_progress(0, 12, f'Starting')
     # file = request.FILES.get('file').temporary_file_path()
     # filename = request.FILES['file'].name
 
@@ -41,39 +47,39 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     # from .methods import create_connection
     connection = create_connection(file)
     print('File: '+file)
-    progress_recorder.set_progress(1, 9, f'File loaded')
+    progress_recorder.set_progress(1, 12, f'File loaded')
     print(connection)
     print("gna2")
     # from .methods import findMiceInSQLiteFile
 
     mice = findMiceInSQLiteFile(connection)
     print("gna3")
-    progress_recorder.set_progress(2, 9, f'Mice identified')
+    progress_recorder.set_progress(2, 12, f'Mice identified')
     # from .methods import findStartandEndInSQLiteFile
     startAndEnd = findStartandEndInSQLiteFile(connection)
 
-    progress_recorder.set_progress(3, 9, f'Time information found')
+    progress_recorder.set_progress(3, 12, f'Time information found')
     # from .methods import getSensorInSQLiteFile
     sensors = getSensorInSQLiteFile(connection)
-    progress_recorder.set_progress(4, 9, f'Sensors information done')
+    progress_recorder.set_progress(4, 12, f'Sensors information done')
     # from .methods import checkOmittedFrames
     omissions = checkOmittedFrames(connection)
-    progress_recorder.set_progress(5, 9, f'Omissions calculated')
+    progress_recorder.set_progress(5, 12, f'Omissions calculated')
     # from .methods import getAnimalDetection
     list_detection_animals = getAnimalDetection(connection)
-    progress_recorder.set_progress(6, 9, f'Animal detection done')
+    progress_recorder.set_progress(6, 12, f'Animal detection done')
     # from .methods import checkAnimalDetectionOmissions
     percentageOfDetection = checkAnimalDetectionOmissions(omissions['theoricalNumberOfFrame'],
                                                           omissions['nbFramesRecorded'], list_detection_animals)
     # from .methods import getRFIDdetections
     rfid_detection_animals = getRFIDdetections(connection)
-    progress_recorder.set_progress(7, 9, f'RFID detection loaded')
+    progress_recorder.set_progress(7, 12, f'RFID detection loaded')
     # from .methods import getRFIDmatchDetections
     rfidmatch_detection_animals = getRFIDmatchDetections(connection)
-    progress_recorder.set_progress(8, 9, f'RFID match done')
+    progress_recorder.set_progress(8, 12, f'RFID match done')
     # from .methods import getRFIDmismatchDetections
     rfidmismatch_detection_animals = getRFIDmismatchDetections(connection)
-    progress_recorder.set_progress(9, 9, f'RFID mismatch done')
+    progress_recorder.set_progress(9, 12, f'RFID mismatch done')
 
     infoFromFile = {'mice': mice, 'startAndEnd': startAndEnd, 'sensors': sensors, 'omissions': omissions, 'list_detection_animals': list_detection_animals,
                 'rfid_detection_animals': rfid_detection_animals, 'rfidmatch_detection_animals': rfidmatch_detection_animals,
@@ -228,33 +234,6 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
 
     reliabilityContext.update(sensors)
 
-    # forms
-    # mice_form1 = forms.formset_factory(addSubject, extra=0)
-    # mice_form = mice_form1(initial=reliabilityContext['mouse'])
-    # numberOfMice = len(mice_form)
-    # # formice_form = zip(mice_form, reliabilityContext['mouse'])
-    # formice_form = {'mice_form': mice_form, 'mouse': reliabilityContext['mouse']}
-
-    # experiment_form = addExperiment()
-    # experiment_form.fields['name_experiment'].initial = filename
-    # experiment_form['xp_file_name'].initial = filename
-    # group_form = addGroup()
-    # protocol_form = addProtocol()
-    # project_form = addProject()
-
-    # all zip variables must be excluded from the data to be serialised and accessible for pdf creation
-    # aboutDetections = zip(list_detection_animals, percentageOfDetection)
-    # aboutDetections = {'list_detection_animals': list_detection_animals, 'percentageOfDetection': percentageOfDetection}
-    # print(list_detection_animals)
-
-    # about_rfid_detections = zip(list_rfid_detection_animals,
-    #                             list_rfidmatch_detection_animals,
-    #                             list_rfidmismatch_detection_animals)
-    # about_rfid_detections = {'list_rfid_detection_animals': list_rfid_detection_animals, 'list_rfidmatch_detection_animals': list_rfidmatch_detection_animals, 'list_rfidmismatch_detection_animals': list_rfidmismatch_detection_animals}
-
-    # rfid_detection_animals = infoFromFile['rfid_detection_animals']
-    # rfidmatch_detection_animals = infoFromFile['rfidmatch_detection_animals']
-    # rfidmismatch_detection_animals = infoFromFile['rfidmismatch_detection_animals']
 
     about_rfid_detections = {}
     for mouse in rfid_detection_animals.keys():
@@ -272,29 +251,58 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     else:
         rfidDetection = False
 
-    # match_mismatch_proportion = []
-    # for i, j in zip(list_rfidmatch_detection_animals,
-    #                 list_rfidmismatch_detection_animals):
-    #     currentAnimal = [
-    #         i['nbRFIDmatchdetection'] / (i['nbRFIDmatchdetection'] + j['nbRFIDmismatchdetection']) * 100,
-    #         j['nbRFIDmismatchdetection'] / (
-    #                 i['nbRFIDmatchdetection'] + j['nbRFIDmismatchdetection']) * 100]
-    #     match_mismatch_proportion.append(currentAnimal)
-
-    context = {#'group_form': group_form, 'project_form': project_form, 'protocol_form': protocol_form,
-               # 'formice_form': formice_form,
-               'numberOfMice': numberOfMice,# 'experiment_form': experiment_form,
+    context = {'numberOfMice': numberOfMice,
                'aboutDetections': aboutDetections,
                 'list_detection_animals': list_detection_animals, 'percentageOfDetection': percentageOfDetection,
                 'rfid_detection_animals': rfid_detection_animals,
                 'rfidmatch_detection_animals': rfidmatch_detection_animals,
                 'rfidmismatch_detection_animals': rfidmismatch_detection_animals,
                 'about_rfid_detections': about_rfid_detections, 'rfidDetection': rfidDetection
-               # 'match_mismatch_proportion': match_mismatch_proportion
             }
     reliabilityContext.update(context)
-    print("hips")
-    # Remove the file from the temp folder
+
+
+
+
+
+    print("************** Analysis **************")
+    # analyse all the experiment
+
+    StartEndFrames = getStartEndExperiment(connection)
+    minT = StartEndFrames[0]
+    maxT = StartEndFrames[1]
+
+    distanceAndTimeInContact = getDistanceAndTimeInContact(connection, minT, maxT, file)
+    reliabilityContext.update({'distanceAndTimeInContact': distanceAndTimeInContact})
+    print(distanceAndTimeInContact)
+
+    progress_recorder.set_progress(10, 12, f'first analysis done - start Rebuild_all_event')
+    process(file)
+
+    progress_recorder.set_progress(11, 12, f'Rebuild done - compute analysis')
+
+    # connection = sqlite3.connect(file)
+    # create an animalPool, which basically contains your animals
+    # print("Trajectory")
+    # animalPool = AnimalPool()
+    #
+    # # load infos about the animals
+    # animalPool.loadAnimals(connection)
+    # #
+    # # load all detection (positions) of all animals for the first hour
+    # animalPool.loadDetection(start = 0, end = 60*30 ,lightLoad = True)
+    # trajectories = {}
+    # # 10 first minutes: 10*60*30
+    # for mouse in animalPool.animalDictionnary.keys():
+    #     trajectories[animalPool.animalDictionnary[mouse].RFID] = animalPool.animalDictionnary[mouse].getTrajectoryData()
+    # # reliabilityContext.update({'trajectories': trajectories})
+    # print(trajectories)
+
+
+
+
+    progress_recorder.set_progress(12, 12, f'Analysis done')
+
 
     connection.close()
     print(file)
