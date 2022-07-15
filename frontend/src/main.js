@@ -10,12 +10,13 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import Popper from "vue3-popper"
 import Toaster from '@meforma/vue-toaster'
 import {nextTick} from 'vue';
+import JsonCSV from 'vue-json-csv'
 
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000'
 
-createApp(App).use(store).use(router, axios).use(BootstrapVue3, BootstrapIconsPlugin).use(Toaster).component("Popper", Popper).mount('#app')
+createApp(App).use(store).use(router, axios).use(BootstrapVue3, BootstrapIconsPlugin).use(Toaster).component("Popper", Popper).component('downloadCsv', JsonCSV).mount('#app')
 
 const DEFAULT_TITLE = "Default Title";
 router.afterEach((to) => {

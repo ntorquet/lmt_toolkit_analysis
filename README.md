@@ -18,6 +18,9 @@ A tool to check the reliability of Live Mouse Tracker (LMT) experiments and to a
 - matplotlib==3.5.2
 - lxml==4.9.1
 - psutil==5.9.1
+- scipy==1.8.1
+- seaborn==0.11.2
+- statsmodels==0.13.2
 
 Install this list with the command:
 ```

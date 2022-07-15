@@ -4,6 +4,8 @@ from lmt_toolkit_analysis.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 
+from .LMT.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
 from .LMT.scripts.Rebuild_All_Event import process
 from .methods import *
 from .models import File
@@ -298,8 +300,66 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     # # reliabilityContext.update({'trajectories': trajectories})
     # print(trajectories)
 
+    '''
+    Move isolated
+    Move in contact
+    WallJump
+    Stop isolated
+    Rear isolated
+    Rear in contact
+    Contact
+    Group2
+    Group3
+    Oral-oral Contact
+    Oral-genital Contact
+    Side by side Contact
+    Side by side Contact, opposite way
+    Train2
+    FollowZone Isolated
+    Social approach
+    Approach contact
+    Group 3 make
+    Group 4 make
+    Get away
+    Break contact
+    Group 3 break
+    Group 4 break
+    totalDistance
+    '''
+    # animalPool = AnimalPool()
+    # #
+    # # # load infos about the animals
+    # animalPool.loadAnimals(connection)
+    #
+    # head, tail = os.path.split(file)
+    # extension = head[-4:]
+    # print('extension: ', extension)
+    # profileData = {}
+    # profileData[file] = {}
+    #
+    # # text_file = getFileNameInput()
+    # # text_file_name = 'extra_'+file.split('\\')[2].split('.')[0]+".txt"
+    # # text_file = open ( text_file_name, "w")
+    # # # text_file = 'extra_'+file.split('\\')[2].split('.')[0]
+    # # print('text file extra: '+text_file_name)
+    # n = 0
+    # # Compute profile2 data and save them in a text file
+    # profileData[file][n] = computeProfileWithoutText_file(file=file, minT=minT, maxT=maxT, night=n, behaviouralEventList=behaviouralEventOneMouse)
+    # for mouse in profileData[file][n]:
+
+    profileData = getDataProfile(connection, minT, maxT, file)
 
 
+    # text_file.write("\n")
+    # # Create a json file to store the computation
+    # with open("profile_data_{}_{}.json".format('no_night', extension), 'w') as fp:
+    #     json.dump(profileData, fp, indent=4)
+    # print(extension)
+    # print("json file with profile measurements created.")
+    #
+    # text_file.write("\n")
+    # text_file.close()
+    reliabilityContext.update({'profileData': profileData})
 
     progress_recorder.set_progress(12, 12, f'Analysis done')
 

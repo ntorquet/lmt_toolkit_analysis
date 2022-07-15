@@ -16,16 +16,16 @@
                   <strong> Choose a SQLite file…</strong>
                 </span>
                 <span v-else>
-                  {{ file.name }}
+                  {{ file.name }}<br />
+                  <div class="block" v-if="file && !uploading && !checked">
+                    <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
+                  </div>
                 </span>
               </span>
             </label>
           </div>
         </div>
         <br />
-        <div class="block" v-if="file && !uploading && !checked">
-          <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
-        </div>
 
         <div class="block" v-if="uploading && !checked">
 <!--          <b-spinner label="Loading..."></b-spinner> {{ file.name }}: the file is being processed. Please wait.-->

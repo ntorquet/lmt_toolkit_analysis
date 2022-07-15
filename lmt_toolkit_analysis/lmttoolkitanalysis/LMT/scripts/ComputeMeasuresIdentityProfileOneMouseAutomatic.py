@@ -7,12 +7,12 @@ Created on 13 sept. 2017
 import sqlite3
 import os
 
-from lmtanalysis.FileUtil import getFigureBehaviouralEventsLabelsFrench, behaviouralEventOneMouse, behaviouralEventOneMouseDic, getFigureBehaviouralEventsLabels, categoryList
-from lmtanalysis.Animal import *
+# from ..lmtanalysis.FileUtil import getFigureBehaviouralEventsLabelsFrench, behaviouralEventOneMouse, behaviouralEventOneMouseDic, getFigureBehaviouralEventsLabels, categoryList
+from ..lmtanalysis.Animal import *
 import numpy as np
 import matplotlib.pyplot as plt
-from lmtanalysis.Event import *
-from lmtanalysis.Measure import *
+from ..lmtanalysis.Event import *
+from ..lmtanalysis.Measure import *
 import colorsys
 from collections import Counter
 import seaborn as sns
@@ -20,10 +20,10 @@ import matplotlib.patches as mpatches
 
 
 from tkinter.filedialog import askopenfilename
-from lmtanalysis.Util import getMinTMaxTAndFileNameInput
-from lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from lmtanalysis.FileUtil import *
-from lmtanalysis.Util import getFileNameInput, getStarsFromPvalues
+# from ..lmtanalysis.Util import getMinTMaxTAndFileNameInput
+from ..lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from ..lmtanalysis.FileUtil import *
+from ..lmtanalysis.Util import getFileNameInput, getStarsFromPvalues, getMinTMaxTAndFileNameInput
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import pandas
@@ -136,6 +136,83 @@ def computeProfile(file, minT, maxT, night, text_file, behaviouralEventList):
 
     connection.close()
         
+    return animalData
+
+
+def computeProfileWithoutText_file(file, minT, maxT, night, behaviouralEventList):
+    connection = sqlite3.connect(file)
+
+    pool = AnimalPool()
+    pool.loadAnimals(connection)
+
+    indList = []
+    for animal in pool.animalDictionnary.keys():
+        print("computing individual animal: {}".format(animal))
+        rfid = pool.animalDictionnary[animal].RFID
+        indList.append(rfid)
+
+    sortedIndList = sorted(indList)
+    print('sorted list: ', sortedIndList)
+    groupName = sortedIndList[0]
+    for ind in sortedIndList[1:]:
+        print('ind: ', ind)
+        groupName + ind
+
+    animalData = {}
+    for animal in pool.animalDictionnary.keys():
+
+        print("computing individual animal: {}".format(animal))
+        rfid = pool.animalDictionnary[animal].RFID
+        print("RFID: {}".format(rfid))
+        animalData[rfid] = {}
+        # store the animal
+        animalData[rfid]["animal"] = pool.animalDictionnary[animal].name
+        animalObject = pool.animalDictionnary[animal]
+        animalData[rfid]["file"] = file
+        animalData[rfid]['genotype'] = pool.animalDictionnary[animal].genotype
+        animalData[rfid]['sex'] = pool.animalDictionnary[animal].sex
+        animalData[rfid]['group'] = groupName
+        animalData[rfid]['strain'] = pool.animalDictionnary[animal].strain
+        animalData[rfid]['age'] = pool.animalDictionnary[animal].age
+
+        genoA = None
+        try:
+            genoA = pool.animalDictionnary[animal].genotype
+        except:
+            pass
+
+        for behavEvent in behaviouralEventList:
+
+            print("computing individual event: {}".format(behavEvent))
+
+            behavEventTimeLine = EventTimeLineCached(connection, file, behavEvent, animal, minFrame=minT, maxFrame=maxT)
+            # clean the behavioural event timeline:
+            behavEventTimeLine.mergeCloseEvents(numberOfFrameBetweenEvent=1)
+            behavEventTimeLine.removeEventsBelowLength(maxLen=3)
+
+            totalEventDuration = behavEventTimeLine.getTotalLength()
+            nbEvent = behavEventTimeLine.getNumberOfEvent(minFrame=minT, maxFrame=maxT)
+            print("total event duration: ", totalEventDuration)
+            animalData[rfid][behavEventTimeLine.eventName + " TotalLen"] = totalEventDuration
+            animalData[rfid][behavEventTimeLine.eventName + " Nb"] = nbEvent
+            if nbEvent == 0:
+                meanDur = 0
+            else:
+                meanDur = totalEventDuration / nbEvent
+            animalData[rfid][behavEventTimeLine.eventName + " MeanDur"] = meanDur
+
+            print(behavEventTimeLine.eventName, genoA, behavEventTimeLine.idA, totalEventDuration, nbEvent, meanDur)
+
+        # compute the total distance traveled (unit = m)
+        COMPUTE_TOTAL_DISTANCE = True
+        if (COMPUTE_TOTAL_DISTANCE == True):
+            animalObject.loadDetection(start=minT, end=maxT, lightLoad=True)
+            animalData[rfid]["totalDistance"] = animalObject.getDistance(tmin=minT, tmax=maxT) / 100
+        else:
+            animalData[rfid]["totalDistance"] = "totalDistance"
+
+    connection.close()
+
     return animalData
 
 

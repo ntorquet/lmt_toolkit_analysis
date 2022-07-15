@@ -11,7 +11,8 @@ from sqlite3 import Error
 
 from .LMT.lmtanalysis.Animal import *
 from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-
+from .LMT.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfileWithoutText_file
 
 oneFrame = 1
 oneSecond = 30
@@ -691,3 +692,31 @@ def getDistanceAndTimeInContact(connection, minT, maxT, file):
     print('Job done.')
 
     return dataDic
+
+def getDataProfile(connection, minT, maxT, file):
+    animalPool = AnimalPool()
+    #
+    # # load infos about the animals
+    animalPool.loadAnimals(connection)
+
+    # head, tail = os.path.split(file)
+    # extension = head[-4:]
+    # print('extension: ', extension)
+    profileData = {}
+    profileData[file] = {}
+
+    # text_file = getFileNameInput()
+    # text_file_name = 'extra_'+file.split('\\')[2].split('.')[0]+".txt"
+    # text_file = open ( text_file_name, "w")
+    # # text_file = 'extra_'+file.split('\\')[2].split('.')[0]
+    # print('text file extra: '+text_file_name)
+    n = 0   # n=0 take all the nights
+    # Compute profile2 data and save them in a text file
+    profileData = computeProfileWithoutText_file(file=file, minT=minT, maxT=maxT, night=n, behaviouralEventList=behaviouralEventOneMouse)
+    # Duration in frames: change to seconds
+    for mouse in profileData:
+        for key in profileData[mouse].keys():
+            if 'TotalLen' in key or 'MeanDur' in key:
+                profileData[mouse][key] = profileData[mouse][key]/30
+
+    return profileData
