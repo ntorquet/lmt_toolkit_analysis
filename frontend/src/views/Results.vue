@@ -57,7 +57,7 @@
     <b-container v-if="reliabilitySelected">
       <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
     </b-container>
-    <b-container v-if="analysisSelected">
+    <b-container v-if="analysisSelected" fluid>
       <show-analysis v-bind:data="data" v-bind:filename="file.name"></show-analysis>
     </b-container>
   </div>
@@ -198,5 +198,9 @@ export default {
 </script>
 
 <style scoped>
-
+#test {
+  border-color: #42b983;
+  border: 12px solid;
+  width: 100%;
+}
 </style>

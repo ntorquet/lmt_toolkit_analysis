@@ -1,6 +1,5 @@
 <template>
   <h3>Analysis</h3>
-  <p class="me-auto">Coucouc</p>
   <div class="position-relative">
     <h4>Activity</h4>
     <table class="table table-striped table-hover">
@@ -182,7 +181,7 @@
   </div>
 
   <div>
-    <h4>Approches</h4>
+    <h4>Approaches</h4>
     <table class="table table-striped table-hover">
       <thead>
       <tr>
@@ -282,6 +281,7 @@
 
 <script>
 import JsonCSV from 'vue-json-csv'
+
 export default {
   name: "ShowAnalysis",
   props: {
