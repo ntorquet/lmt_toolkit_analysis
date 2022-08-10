@@ -1,89 +1,76 @@
 <template>
-  <b-modal size="lg" :title="'Plot - '+selection" ok-only>
-    <canvas id="plot" style="width: 50%; height: 20vh"></canvas>
-  </b-modal>
+    <Line
+    :chart-options="chartOptions"
+    :chart-data="chartData"
+    :chart-id="chartId"
+    :dataset-id-key="datasetIdKey"
+    :plugins="plugins"
+    :css-classes="cssClasses"
+    :styles="styles"
+    :width="width"
+    :height="height"
+  />
 </template>
 
 <script>
-import {
-  Chart,
-  Scatter,
-  ArcElement,
-  PieController,
-  TimeScale,
-  TimeSeriesScale,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale, Decimation
-} from 'chart.js'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, Plugin} from 'chart.js'
 
-Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PieController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale,
-  TimeScale,
-  TimeSeriesScale,
-  Decimation,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-)
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
+
 export default {
   name: "ScatterPlot",
-  props: {
-    selection: String,
-    x_data: Array,
-    y_data: Array,
+  components: {
+    Line,
   },
+  props: {
+    data: Array,
+    labels: Array,
+    chartId: {
+      type: String,
+      default: 'line-chart'
+    },
+    datasetIdKey: {
+      type: String,
+      default: 'label'
+    },
+    width: {
+      type: Number,
+      default: 400
+    },
+    height: {
+      type: Number,
+      default: 400
+    },
+    cssClasses: {
+      default: '',
+      type: String
+    },
+    styles: {
+      type: Object,
+      default: () => {}
+    },
+    plugins: {
+      type: Array,
+      default: () => [],
+    },
+},
   data() {
     return {
-      datasets: Object,
-      myChart: Object,
+      chartData: {
+        labels: [],
+        datasets: []
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
     }
   },
   mounted() {
-    this.datasets['temperature'] =
-        [{
-          label: 'temperature in °C',
-          backgroundColor: ["rgba(246, 71, 71, 1)"],
-          borderColor: ["rgba(246, 71, 71, 1)"],
-          data: this.temperature,
-          fill: false,
-          tension: 0.1
-        }]
-    this.renderChart(this.selection)
-  },
+    this.chartData.datasets = this.data
+    this.chartData.labels = this.labels
+  }
 }
 </script>
 

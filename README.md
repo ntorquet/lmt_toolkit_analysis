@@ -43,6 +43,7 @@ django-admin startproject lmt_toolkit_analysis
 - bootstrap-icons-vue
 - vue3-popper
 - chart.js (for plots)
+- vue-chartjs (for plots)
 - vue-toaster (for toasts)
 - stylus-loader (for toasts)
 ```
@@ -70,7 +71,7 @@ npm install axios
 npm i bootstrap-vue-3
 npm i bootstrap-icons-vue
 npm i vue3-popper
-npm install chart.js
+npm install vue-chartjs chart.js
 npm install @meforma/vue-toaster
 npm install stylus-loader@3 stylus
 npm run serve
