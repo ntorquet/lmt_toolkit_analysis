@@ -257,28 +257,31 @@ export default {
     }
   },
   mounted () {
-    for (let i=1; i<=Object.keys(this.data.about_rfid_detections).length; i++) {
-      const ctx = document.getElementById('mismatchProportion_' + i).getContext("2d")
-      const myChart = new Chart(ctx, {
-        type: "pie",
-        data: {
-          labels: ['Match', 'Mismatch'],
-          datasets: [
-            {
-              backgroundColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
-              data: this.data.about_rfid_detections[i].match_mismatch_proportion
-            }
-          ]
-        },
-        options: {
-          maintainAspectRatio: false,
-          responsive: true,
-          legend: {
-            position: 'right'
+    if(this.data.rfidDetection) {
+      for (let i=1; i<=Object.keys(this.data.about_rfid_detections).length; i++) {
+        const ctx = document.getElementById('mismatchProportion_' + i).getContext("2d")
+        const myChart = new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: ['Match', 'Mismatch'],
+            datasets: [
+              {
+                backgroundColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+                data: this.data.about_rfid_detections[i].match_mismatch_proportion
+              }
+            ]
           },
-        }
-      })
+          options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+              position: 'right'
+            },
+          }
+        })
+      }
     }
+
 
     // temperature message
     if(this.data.highTemp == 'veriHigh' || this.data.highTemp == 'veryLow'){

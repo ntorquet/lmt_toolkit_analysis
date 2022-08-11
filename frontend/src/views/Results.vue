@@ -162,7 +162,7 @@ export default {
             console.log('ok!')
             console.log( this.task.result)
             this.data = this.task.result
-             this.processing = false
+            this.processing = false
             this.checked = true
             // this.data['name_experiment'] = this.filename.split('.sqlite')[0]
           }

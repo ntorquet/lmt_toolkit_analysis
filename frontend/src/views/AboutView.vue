@@ -7,6 +7,7 @@
             <h2 class="subtitle"><i class="long arrow alternate right icon"></i>LMT toolkit</h2>
             <p>
                 LMT toolkit is developed by <a href="mailto:nicolas.torquet@igbmc.fr">Nicolas Torquet</a> (<a href="http://www.ics-mci.fr" target="_blank">Mouse Clinical Institute</a>).<br />
+                <a href="https://github.com/ntorquet"><b-icon-github></b-icon-github> Github</a>
             </p>
             <br />
           <h2 class="subtitle"><i class="long arrow alternate right icon"></i>Live Mouse Tracker</h2>
@@ -27,6 +28,16 @@
       </div>
     </div>
 </template>
+
+<script>
+import {BIconGithub} from "bootstrap-icons-vue"
+export default {
+  name: "about",
+  components: {
+    'BIconGithub': BIconGithub,
+  },
+}
+</script>
 
 <style scoped>
 figure{

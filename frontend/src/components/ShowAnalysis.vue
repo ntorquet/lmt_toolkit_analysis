@@ -197,7 +197,6 @@
        </download-csv>
     </b-button>
   </div>
-  <img src="@/assets/img_sap.jpg" />
 </template>
 
 <script>

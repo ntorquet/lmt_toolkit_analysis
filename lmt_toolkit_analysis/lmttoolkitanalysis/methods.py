@@ -352,7 +352,10 @@ def getRFIDdetections(connection):
 
     for animal in list_animals:
         if not animal['animalId'] in rfid_detection_animals.keys():
-            rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
+            if not 'RFID' in animal['tag_subject']:
+                rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
+            else:
+                rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': nan}
 
     # return list_rfid_detection_animals
     return rfid_detection_animals
@@ -383,7 +386,11 @@ def getRFIDmatchDetections(connection):
 
     for animal in list_animals:
         if not animal['animalId'] in rfidmatch_detection_animals.keys():
-            rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
+            if not 'RFID' in animal['tag_subject']:
+                rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
+            else:
+                rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': nan}
+
 
     # return list_rfidmatch_detection_animals
     return rfidmatch_detection_animals
@@ -414,7 +421,10 @@ def getRFIDmismatchDetections(connection):
 
     for animal in list_animals:
         if not animal['animalId'] in rfidmismatch_detection_animals.keys():
-            rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
+            if not 'RFID' in animal['tag_subject']:
+                rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
+            else:
+                rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': nan}
 
     # return list_rfidmismatch_detection_animals
     return rfidmismatch_detection_animals
@@ -522,35 +532,6 @@ def getReliability(file):
                 }
 
 
-    # list_rfid_detection_animals = infoFromFile['list_rfid_detection_animals']
-    # list_rfidmatch_detection_animals = infoFromFile['list_rfidmatch_detection_animals']
-    # list_rfidmismatch_detection_animals = infoFromFile['list_rfidmismatch_detection_animals']
-
-    rfid_detection_animals = infoFromFile['rfid_detection_animals']
-    rfidmatch_detection_animals = infoFromFile['rfidmatch_detection_animals']
-    rfidmismatch_detection_animals = infoFromFile['rfidmismatch_detection_animals']
-    # print(rfid_detection_animals)
-    # print(rfidmatch_detection_animals)
-    # print(rfidmismatch_detection_animals)
-
-    about_rfid_detections = {}
-    for mouse in rfid_detection_animals.keys():
-        about_rfid_detections[mouse] = {
-            'animalId': mouse,
-            'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
-            'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
-            'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
-            'match_mismatch_proportion': [rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100,
-    rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100]
-        }
-
-    print(about_rfid_detections)
-
-    if len(rfid_detection_animals) > 0:
-        rfidDetection = True
-    else:
-        rfidDetection = False
-
     reliabilityContext = {'mouse': mice, 'xpDates': xpDates,
                    'startXp': startXp, 'endXp': endXp, 'realDurationInSeconds': realDurationInSeconds,
                    'realDurationInMinutes': realDurationInMinutes, 'realDurationInHours': realDurationInHours,
@@ -564,12 +545,51 @@ def getReliability(file):
                    'nbOmittedHours': nbOmittedHours, 'nbOmittedDays': nbOmittedDays,
                    'omissionColor': omissionColor, 'omissionIcon': omissionIcon,
                    'omissionInformation': omissionInformation, 'list_detection_animals': list_detection_animals,
-                   'percentageOfDetection': percentageOfDetection, 'rfidDetection': rfidDetection,
-                   # 'list_rfid_detection_animals': list_rfid_detection_animals,
-                   # 'list_rfidmatch_detection_animals': list_rfidmatch_detection_animals,
-                   # 'list_rfidmismatch_detection_animals': list_rfidmismatch_detection_animals,
-                   'aboutDetections': aboutDetections, 'about_rfid_detections': about_rfid_detections, 'about_rfid_detections': about_rfid_detections
+                   'percentageOfDetection': percentageOfDetection,
+                   'aboutDetections': aboutDetections
     }
+
+    # list_rfid_detection_animals = infoFromFile['list_rfid_detection_animals']
+    # list_rfidmatch_detection_animals = infoFromFile['list_rfidmatch_detection_animals']
+    # list_rfidmismatch_detection_animals = infoFromFile['list_rfidmismatch_detection_animals']
+
+    rfidDetection = False
+    about_rfid_detections = {}
+    for mouse in mice:
+        if not 'RFID' in mouse['tag_subject']:
+            rfidDetection = True
+
+    if rfidDetection:
+        rfid_detection_animals = infoFromFile['rfid_detection_animals']
+        rfidmatch_detection_animals = infoFromFile['rfidmatch_detection_animals']
+        rfidmismatch_detection_animals = infoFromFile['rfidmismatch_detection_animals']
+        # print(rfid_detection_animals)
+        # print(rfidmatch_detection_animals)
+        # print(rfidmismatch_detection_animals)
+
+        for mouse in rfid_detection_animals.keys():
+            about_rfid_detections[mouse] = {
+                'animalId': mouse,
+                'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
+                'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
+                'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
+                'match_mismatch_proportion': [rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100,
+        rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100]
+            }
+    else:
+        about_rfid_detections = 'no rfid'
+
+    print(about_rfid_detections)
+    reliabilityContext.update({'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections})
+
+
+    # if len(rfid_detection_animals) > 0:
+    #     rfidDetection = True
+    # else:
+    #     rfidDetection = False
+
+
+
     # sensors
     if infoFromFile['sensors'] != "no sensors":
         timeline = infoFromFile['sensors']['timeline']
