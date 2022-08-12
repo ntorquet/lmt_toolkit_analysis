@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <div class="navbar-brand">
-        <router-link to="/" class="navbar-item"><strong>LMT-Toolkit analysis</strong></router-link>
+        <router-link to="/" class="navbar-item"><strong>LMT-Toolkit</strong></router-link>
     </div>
     <div class="navbar-menu">
         <div class="navbar-end">
@@ -15,7 +15,7 @@
   </section>
 
   <footer class="bg-dark text-center text-white">
-      <p><router-link to="/about" class="text">About</router-link> - Copyright © ICS 2022</p>
+      <p><router-link to="/about" class="text">About</router-link> - Copyright © ICS 2022 - v0.1</p>
   </footer>
 </template>
 
