@@ -21,13 +21,14 @@ A tool to check the reliability of Live Mouse Tracker (LMT) experiments and to a
 - scipy==1.8.1
 - seaborn==0.11.2
 - statsmodels==0.13.2
+- networkx==2.8.5
 
 Install this list with the command:
 ```
 pip install -r requirements.txt
 ```
 
-## Django installations
+## Django installation
 Create the Django project
 ```
 django-admin startproject lmt_toolkit_analysis
@@ -46,6 +47,7 @@ django-admin startproject lmt_toolkit_analysis
 - vue-chartjs (for plots)
 - vue-toaster (for toasts)
 - stylus-loader (for toasts)
+- npm install vue-json-csv
 ```
 npm install -g @vue/cli
 vue create frontend
