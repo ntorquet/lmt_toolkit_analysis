@@ -19,6 +19,11 @@
               <a href="https://github.com/fdechaumont" target="_blank"><b-icon-github></b-icon-github> Fabrice on Github</a>
             </p>
             <br />
+          <h2>Features attributions:</h2>
+          <p>Some features were used by LMT toolkit. Here is a list of those features and their attribution</p>
+          <ul>
+            <li><a href="https://www.flaticon.com/free-icons/mice" title="mice icons">Mice icons created by Good Ware - Flaticon</a></li>
+          </ul>
             <br />
             <figure>
               <img src="@/assets/phenomin_ics.png" />
