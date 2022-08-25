@@ -18,7 +18,6 @@ from .methods import getReliability
 
 
 class ReadFileAPIView(APIView):
-    print("gna!")
     def post(self, request):
         file = request.FILES['file'].temporary_file_path()
         # file = request.FILES.get('file')
@@ -75,7 +74,6 @@ class ReadFileViewSet(viewsets.ModelViewSet):
             print(task_id)
             return JsonResponse({'filename': file_name, 'task_id': task_id, 'path_file': path_file})
         else:
-            print('GNA!')
             return JsonResponse({'error': 'There was a problem with the data'})
 
 

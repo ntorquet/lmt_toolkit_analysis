@@ -51,11 +51,9 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     print('File: '+file)
     progress_recorder.set_progress(1, 12, f'File loaded')
     print(connection)
-    print("gna2")
     # from .methods import findMiceInSQLiteFile
 
     mice = findMiceInSQLiteFile(connection)
-    print("gna3")
     progress_recorder.set_progress(2, 12, f'Mice identified')
     # from .methods import findStartandEndInSQLiteFile
     startAndEnd = findStartandEndInSQLiteFile(connection)
@@ -97,7 +95,6 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
     # 'rfidmismatch_detection_animals': rfidmismatch_detection_animals,
     # 'percentageOfDetection': percentageOfDetection
 
-    print('glou')
 
     # version of the reliability methods
     reliability_version = 'v0.0'
@@ -420,9 +417,7 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
 
     connection.close()
     print(file)
-    # default_storage.delete(file)
-
-    print("oupsi")
+    # default_storage.delete(file
 
     # deleteFile
     if deleteFile:
