@@ -22,7 +22,8 @@
           <h2>Features attributions:</h2>
           <p>Some features were used by LMT toolkit. Here is a list of those features and their attribution</p>
           <ul>
-            <li><a href="https://www.flaticon.com/free-icons/mice" title="mice icons">Mice icons created by Good Ware - Flaticon</a></li>
+            <li><a href="https://github.com/fdechaumont/lmt-analysis" target="_blank" title="code">Code for LMT analysis on Github</a></li>
+            <li><a href="https://www.flaticon.com/free-icons/mice" target="_blank" title="mice icons">Mice icons created by Good Ware - Flaticon</a></li>
           </ul>
             <br />
             <figure>
