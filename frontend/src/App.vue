@@ -6,6 +6,7 @@
     <div class="navbar-menu">
         <div class="navbar-end">
           <a href="/results" class="navbar-item">Analysis</a>
+          <a href="/versions" class="navbar-item">Version history</a>
         </div>
     </div>
   </nav>
@@ -15,7 +16,7 @@
   </section>
 
   <footer class="bg-dark text-center text-white">
-      <p><router-link to="/about" class="text">About</router-link> - Copyright © ICS 2022 - v0.1</p>
+    <p><router-link to="/about" class="text">About</router-link> - Copyright © ICS 2022 - <router-link to="/versions">v0.1</router-link></p>
   </footer>
 </template>
 

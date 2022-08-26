@@ -19,7 +19,7 @@
           available on Github (<a href="https://github.com/fdechaumont/lmt-analysis" target="_blank"><b-icon-github></b-icon-github> https://github.com/fdechaumont/lmt-analysis</a>).<br />
           LMT-toolkit extracts the total duration, the number of occurrences and the mean duration of each occurrence
           for the behaviors described <a href="https://livemousetracker.org/" target="_blank">here</a>.<br />
-
+          Please visit the <router-link to="/versions">version history page</router-link> for information about the code used.
         </b-card>
       </b-card-group>
       <h2><a href="/results">Try now !</a></h2>
