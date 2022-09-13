@@ -2,7 +2,8 @@
   <h1 class="title">Documentation</h1>
 
   <b-alert show class="info">
-    You can find these descriptions <a href="https://livemousetracker.org/" target="_blank">here</a> and in the <a href="https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D" target="_blank">LMT publication</a>.
+    You can find these descriptions <a href="https://livemousetracker.org/" target="_blank">here</a> and in the <a href="https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D" target="_blank">LMT publication</a>.<br />
+    LMT-toolkit uses the LMT-analysis code provided on GitHub <a href="https://github.com/fdechaumont/lmt-analysis" target="_blank">here</a>.
   </b-alert>
 
   <table class="table table-striped table-hover">
