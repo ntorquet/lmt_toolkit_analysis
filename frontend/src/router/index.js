@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Results from "@/views/Results";
 import VersionHistory from "@/views/VersionHistory";
+import Documentation from "@/views/Documentation";
 
 const routes = [
   {
@@ -35,6 +36,14 @@ const routes = [
     path: '/versions',
     name: 'versions',
     component: VersionHistory,
+    meta: {
+      title: 'LMT toolkit'
+    }
+  },
+  {
+    path: '/documentation',
+    name: 'documentation',
+    component: Documentation,
     meta: {
       title: 'LMT toolkit'
     }

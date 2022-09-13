@@ -6,6 +6,7 @@
     <div class="navbar-menu">
         <div class="navbar-end">
           <a href="/results" class="navbar-item">Analysis</a>
+          <a href="/documentation" target="_blank" class="navbar-item">Documentation</a>
           <a href="/versions" class="navbar-item">Version history</a>
         </div>
     </div>
