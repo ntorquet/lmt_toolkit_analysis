@@ -196,5 +196,9 @@ export default {
   width: 100em;
 }
 
+table {
+  margin: 2.5%;
+  width: 95%;
+}
 
 </style>
