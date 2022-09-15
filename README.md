@@ -261,4 +261,3 @@ If this works, the lines below should appear:
 ```
 
 Use one of these url in your internet browser to use LMT-toolkit.
-
