@@ -12,22 +12,28 @@
         <th style="width: 5%">Version</th>
         <th style="width: 10%">Date</th>
         <th>Changes / Notes</th>
+        <th>Release</th>
       </tr>
     </thead>
     <tr>
       <td>v0.1</td>
-      <td>2022 august</td>
+      <td>2022 september</td>
       <td>
-        <strong>Initial version</strong>:<br />
+        <strong>Pre release version</strong>:<br />
         Initial code for reliability. Analysis code is a fork of <a href="https://github.com/fdechaumont/lmt-analysis" target="_blank">lmt-analysis</a> on July 13, 2022.
       </td>
+      <td><a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1" target="_blank"><b-icon-github></b-icon-github> LMT-toolkit analysis v0.1</a></td>
     </tr>
   </table>
 </template>
 
 <script>
+import {BIconGithub} from "bootstrap-icons-vue"
 export default {
-  name: "VersionHistory"
+  name: "VersionHistory",
+  components: {
+    'BIconGithub': BIconGithub,
+  },
 }
 </script>
 
