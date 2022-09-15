@@ -266,4 +266,6 @@ Use one of these url in your internet browser to use LMT-toolkit.
 ## Features attributions:
 Code for LMT analysis on [Github](https://github.com/fdechaumont/lmt-analysis)
 
-Mice icons created by [Good Ware - Flaticon](https://www.flaticon.com/free-icons/mice)
+Mice in the different behavioural events drawn by P. Dugast (from the [Live Mouse Tracker publication](https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D), DOI: [10.1038/s41551-019-0396-1](https://doi.org/10.1038/s41551-019-0396-1))
+
+Mouse favicon created by [Good Ware - Flaticon](https://www.flaticon.com/free-icons/mice)

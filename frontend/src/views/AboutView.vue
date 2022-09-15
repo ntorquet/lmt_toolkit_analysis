@@ -23,6 +23,10 @@
           <p>Some features were used by LMT toolkit. Here is a list of those features and their attribution</p>
           <ul>
             <li><a href="https://github.com/fdechaumont/lmt-analysis" target="_blank" title="code">Code for LMT analysis on Github</a></li>
+            <li>
+              Mice in the different behavioural events drawn by P. Dugast
+              (from the <a href="https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D" target="_blank">Live Mouse Tracker publication</a>, DOI: <a href="https://doi.org/10.1038/s41551-019-0396-1" target="_blank">10.1038/s41551-019-0396-1</a>)
+            </li>
             <li><a href="https://www.flaticon.com/free-icons/mice" target="_blank" title="mice icons">Mice icons created by Good Ware - Flaticon</a></li>
           </ul>
             <br />
