@@ -1,3 +1,4 @@
+[![License: CeCILL v2.1](https://img.shields.io/badge/License-CeCILL%20v2.1-green.svg)](https://cecill.info/licences/Licence_CeCILL_V2.1-en.html)
 # lmt_toolkit_analysis
 LMT-toolkit analysis is an open source web application created to check the reliability of Live Mouse Tracker (LMT) experiments and to analyse LMT data.
 
@@ -264,7 +265,7 @@ Use one of these url in your internet browser to use LMT-toolkit.
 
 
 ## Features attributions:
-Code for LMT analysis on [Github](https://github.com/fdechaumont/lmt-analysis)
+Code for LMT analysis on [GitHub](https://github.com/fdechaumont/lmt-analysis)
 
 Mice in the different behavioural events drawn by P. Dugast (from the [Live Mouse Tracker publication](https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D), DOI: [10.1038/s41551-019-0396-1](https://doi.org/10.1038/s41551-019-0396-1))
 

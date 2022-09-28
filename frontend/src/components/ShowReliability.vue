@@ -284,7 +284,7 @@ export default {
 
 
     // temperature message
-    if(this.data.highTemp == 'veriHigh' || this.data.highTemp == 'veryLow'){
+    if(this.data.highTemp == 'veryHigh' || this.data.highTemp == 'veryLow'){
      this.tempColor = 'danger'
     }
     else if(this.data.highTemp == 'high' || this.data.highTemp == 'low'){
