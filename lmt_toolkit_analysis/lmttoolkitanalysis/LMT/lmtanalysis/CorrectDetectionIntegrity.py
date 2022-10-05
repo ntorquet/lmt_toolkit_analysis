@@ -105,7 +105,7 @@ def correct( connection, tmin=None, tmax=None ):
     
     
     # log process
-    from lmtanalysis.TaskLogger import TaskLogger
+    from .TaskLogger import TaskLogger
     t = TaskLogger( connection )
     t.addLog( "Correct detection integrity" , tmin=tmin, tmax=tmax )
 

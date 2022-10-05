@@ -1,7 +1,7 @@
 import numpy
 import pandas
 
-from lmtanalysis import Measure
+from . import Measure
 
 class DetectionFeatures():
     @staticmethod

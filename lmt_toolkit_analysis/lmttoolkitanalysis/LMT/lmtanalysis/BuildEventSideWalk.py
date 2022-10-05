@@ -5,13 +5,13 @@ Created on 6 sept. 2017
 '''
 import sqlite3
 from time import *
-from lmtanalysis.Chronometer import Chronometer
-from lmtanalysis.Animal import *
-from lmtanalysis.Detection import *
-from lmtanalysis.Measure import *
+from .Chronometer import Chronometer
+from .Animal import *
+from .Detection import *
+from .Measure import *
 import numpy as np
-from lmtanalysis.Event import *
-from lmtanalysis.Measure import *
+from .Event import *
+from .Measure import *
 #from affine import Affine
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
@@ -84,6 +84,9 @@ def reBuildEvent( connection ):
             if ( speedX == None or speedY == None ):
                 continue
             
+            if not pool.animalDictionnary[animal].getDetectionAt( t ).isHeadAndTailDetected():
+                continue
+                    
             angleA = pool.animalDictionnary[animal].getDirection(t)
             
             vectorSideX, vectorSideY = getVectorFromAngle( angleA + math.pi / 2 )

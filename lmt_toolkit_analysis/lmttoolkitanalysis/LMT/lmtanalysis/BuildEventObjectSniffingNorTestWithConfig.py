@@ -5,13 +5,13 @@ Created on 2. February 2021
 '''
 import sqlite3
 from time import *
-from lmtanalysis.Chronometer import Chronometer
-from lmtanalysis.Animal import *
-from lmtanalysis.Detection import *
-from lmtanalysis.Measure import *
+from .Chronometer import Chronometer
+from .Animal import *
+from .Detection import *
+from .Measure import *
 import numpy as np
-from lmtanalysis.Event import *
-from lmtanalysis.Measure import *
+from .Event import *
+from .Measure import *
 #from affine import Affine
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines

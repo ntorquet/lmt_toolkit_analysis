@@ -7,7 +7,6 @@ Created on 12 sept. 2017
 import math
 from .Measure import *
 
-
 class Detection():
 
     __slots__ = ('massX', 'massY','massZ','massPoint','frontX','frontY','frontZ','frontPoint','backX','backY','backZ','backPoint','rearing','lookUp','lookDown','mask','frame' )

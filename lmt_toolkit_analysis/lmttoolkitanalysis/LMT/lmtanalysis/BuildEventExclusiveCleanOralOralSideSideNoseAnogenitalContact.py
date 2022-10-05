@@ -5,16 +5,16 @@ Created on 15 Feb. 2022
 '''
 import sqlite3
 from time import *
-from lmtanalysis.Chronometer import Chronometer
-from lmtanalysis.Animal import *
-from lmtanalysis.Detection import *
-from lmtanalysis.Measure import *
+from .Chronometer import Chronometer
+from .Animal import *
+from .Detection import *
+from .Measure import *
 import matplotlib.pyplot as plt
 import numpy as np
-from lmtanalysis.Event import *
-from lmtanalysis.Measure import *
-from lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from lmtanalysis.BehaviouralSequencesUtil import exclusiveEventList, contactTypeList
+from .Event import *
+from .Measure import *
+from .EventTimeLineCache import EventTimeLineCached
+from .BehaviouralSequencesUtil import exclusiveEventList, contactTypeList
 
 def flush( connection ):
     ''' flush event in database '''

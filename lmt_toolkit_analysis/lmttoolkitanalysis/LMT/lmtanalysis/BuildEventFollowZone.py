@@ -83,7 +83,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None ):
     
     for idAnimalB in pool.animalDictionnary.keys():
         print(pool.animalDictionnary[idAnimalB])
-        meanSizeB = pool.animalDictionnary[idAnimalB].getMeanBodyLength( tmax = tmax )
+        #meanSizeB = pool.animalDictionnary[idAnimalB].getMeanBodyLength( tmax = tmax )
         
         for animal in pool.animalDictionnary.keys():
             if( idAnimalB == animal ):
@@ -93,6 +93,8 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None ):
             #contact[idAnimalB] = EventTimeLine( connection, "Contact", idAnimalB )
     
     for idAnimalB in pool.animalDictionnary.keys():
+        
+        meanSizeB = pool.animalDictionnary[idAnimalB].getMeanBodyLength( tmax = tmax )
         
         for animal in pool.animalDictionnary.keys():
             if( animal == idAnimalB ):
@@ -149,6 +151,8 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None ):
                     speedA = pool.animalDictionnary[animal].getSpeed(t)
                     speedB = pool.animalDictionnary[idAnimalB].getSpeed(t)
                     #angleB = pool.animalList[idAnimalB].getDirection(t)
+                    if not pool.animalDictionnary[animal].getDetectionAt( t ).isHeadAndTailDetected():
+                        continue
                     angleA = pool.animalDictionnary[animal].getDirection(t)
                     
                     if (speedA == None or speedB == None):
@@ -171,11 +175,12 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None ):
                         for time in range( t-15, t+1, 2):
                         #time = t
                             try:
-                                angleB = pool.animalDictionnary[idAnimalB].getDirection(time)
-                                if ( checkZone( dicA[t].massX, dicA[t].massY, angleA, meanSizeB, dicB[time].massX, dicB[time].massY, angleB ) == True):
-         
-                                    resultIso[t] = True
-                                    break
+                                if pool.animalDictionnary[idAnimalB].getDetectionAt( time ).isHeadAndTailDetected():
+                                    angleB = pool.animalDictionnary[idAnimalB].getDirection(time)
+                                    if ( checkZone( dicA[t].massX, dicA[t].massY, angleA, meanSizeB, dicB[time].massX, dicB[time].massY, angleB ) == True):
+             
+                                        resultIso[t] = True
+                                        break
                             except:
                                 pass                
                     

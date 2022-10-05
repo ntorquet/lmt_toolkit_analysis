@@ -85,7 +85,6 @@ eventClassList = [
 #eventClassList = [BuildEventApproachContact2]
 
 '''eventClassList = [
-
                 BuildEventDetection,
                 BuildEventMove,
                 BuildEventRear5,
@@ -271,5 +270,4 @@ if __name__ == '__main__':
     print("Code launched.")
     processAll()
     print('Job done.')
-
 
