@@ -6,7 +6,7 @@ Find more information about LMT on its [website](https://livemousetracker.org/) 
 
 
 ## Licence
-LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENCE](LICENCE.MD) file.
+LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
 
 
 ## Python Requirements (See [requirements.txt](requirements.txt))
