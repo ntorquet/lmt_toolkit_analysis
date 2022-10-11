@@ -1,4 +1,4 @@
-[![License: CeCILL v2.1](https://img.shields.io/badge/License-CeCILL%20v2.1-green.svg)](https://cecill.info/licences/Licence_CeCILL_V2.1-en.html)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # lmt_toolkit_analysis
 LMT-toolkit analysis is an open source web application created to check the reliability of Live Mouse Tracker (LMT) experiments and to analyse LMT data.
 
@@ -6,7 +6,7 @@ Find more information about LMT on its [website](https://livemousetracker.org/) 
 
 
 ## Licence
-LMT-toolkit analysis is released under the CeCILL v2.1 licence. See the [LICENCE](LICENCE.md) file.
+LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENCE](LICENCE) file.
 
 
 ## Python Requirements (See [requirements.txt](requirements.txt))
