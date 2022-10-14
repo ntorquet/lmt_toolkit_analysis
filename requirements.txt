@@ -4,7 +4,7 @@ djangorestframework==3.13.1
 django-filter==21.1
 djoser==2.1.0
 django-cors-headers==3.11.0
-django-celery==3.3.1
+django-celery
 django-celery-results==2.3.0
 celery-progress==0.1.2
 psycopg2-binary

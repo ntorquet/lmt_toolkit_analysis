@@ -48,7 +48,7 @@ django-admin startproject lmt_toolkit_analysis
 ## Javascript Requirements and installations
 - vue-cli
 - axios
-- bootstrap-vue-3@0.3.11
+- bootstrap-vue-3@0.3.12
 - bootstrap-icons-vue
 - vue3-popper
 - chart.js (for plots)
@@ -78,7 +78,7 @@ Save this as a preset for future projects? (y/N) -> N
 ```
 cd frontend
 npm install axios
-npm i bootstrap-vue-3
+npm i bootstrap-vue-3@0.3.12
 npm i bootstrap-icons-vue
 npm i vue3-popper
 npm install vue-chartjs chart.js

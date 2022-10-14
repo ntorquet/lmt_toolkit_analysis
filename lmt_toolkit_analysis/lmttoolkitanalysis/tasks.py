@@ -195,37 +195,38 @@ def getReliability(self, file, deleteFile = False, file_id = ""):
         rfid_detection_animals = infoFromFile['rfid_detection_animals']
         rfidmatch_detection_animals = infoFromFile['rfidmatch_detection_animals']
         rfidmismatch_detection_animals = infoFromFile['rfidmismatch_detection_animals']
-        # print(rfid_detection_animals)
-        # print(rfidmatch_detection_animals)
-        # print(rfidmismatch_detection_animals)
+        print(rfid_detection_animals)
+        print(rfidmatch_detection_animals)
+        print(rfidmismatch_detection_animals)
 
         for mouse in rfid_detection_animals.keys():
-            if (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] == 0):
-                about_rfid_detections[mouse] = {
-                    'animalId': mouse,
-                    'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
-                    'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
-                    'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
-                    'match_mismatch_proportion': [0, 0]
-                }
-                reliabilityContext.update(
-                    {'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections,
-                     'rfid_detection_animals': rfid_detection_animals,
-                     'rfidmatch_detection_animals': rfidmatch_detection_animals,
-                     'rfidmismatch_detection_animals': rfidmismatch_detection_animals})
-            else:
-                about_rfid_detections[mouse] = {
-                    'animalId': mouse,
-                    'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
-                    'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
-                    'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
-                    'match_mismatch_proportion': [rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100,
-            rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100]
-                }
-            reliabilityContext.update({'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections,
-                                       'rfid_detection_animals': rfid_detection_animals,
-                                       'rfidmatch_detection_animals': rfidmatch_detection_animals,
-                                       'rfidmismatch_detection_animals': rfidmismatch_detection_animals})
+            if mouse != None:
+                if (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] == 0):
+                    about_rfid_detections[mouse] = {
+                        'animalId': mouse,
+                        'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
+                        'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
+                        'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
+                        'match_mismatch_proportion': [0, 0]
+                    }
+                    reliabilityContext.update(
+                        {'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections,
+                         'rfid_detection_animals': rfid_detection_animals,
+                         'rfidmatch_detection_animals': rfidmatch_detection_animals,
+                         'rfidmismatch_detection_animals': rfidmismatch_detection_animals})
+                else:
+                    about_rfid_detections[mouse] = {
+                        'animalId': mouse,
+                        'nbRFIDdetection': rfid_detection_animals[mouse]['nbRFIDdetection'],
+                        'nbRFIDmatchdetection': rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'],
+                        'nbRFIDmismatchdetection': rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'],
+                        'match_mismatch_proportion': [rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100,
+                rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection'] / (rfidmatch_detection_animals[mouse]['nbRFIDmatchdetection'] + rfidmismatch_detection_animals[mouse]['nbRFIDmismatchdetection']) * 100]
+                    }
+                reliabilityContext.update({'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections,
+                                           'rfid_detection_animals': rfid_detection_animals,
+                                           'rfidmatch_detection_animals': rfidmatch_detection_animals,
+                                           'rfidmismatch_detection_animals': rfidmismatch_detection_animals})
     else:
         about_rfid_detections = 'no rfid'
         reliabilityContext.update({'rfidDetection': rfidDetection, 'about_rfid_detections': about_rfid_detections})
