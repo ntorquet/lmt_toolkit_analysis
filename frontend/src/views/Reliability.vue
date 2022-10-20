@@ -1,5 +1,5 @@
 <!--
-Created by Nicolas Torquet at 12/07/2022
+Created by Nicolas Torquet at 20/10/2022
 torquetn@igbmc.fr
 Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
 CNRS - Mouse Clinical Institute
@@ -10,9 +10,9 @@ Code under GPL v3.0 licence
   <b-container>
     <div class="columns is-multiline">
       <div class="column is-12">
-        <h1 class="title">Analyse an experiment and check its reliability</h1>
+        <h1 class="title">Check the reliability of an experiment</h1>
         <div v-if="!checked && !uploading && !processing">
-          <p>To analyse the experiment, you have to select a LMT SQLite file:</p>
+          <p>To check the experiment, you have to select a LMT SQLite file:</p>
           <div class="file">
             <label class="file-label">
               <input class="form-file" type="file" name="file" @change="onFilePicked($event)">
@@ -26,7 +26,7 @@ Code under GPL v3.0 licence
                 <span v-else>
                   {{ file.name }}<br />
                   <div class="block" v-if="file && !uploading && !checked">
-                    <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
+                    <b-button class="button is-success" @click="upload">Check the experiment</b-button>
                   </div>
                 </span>
               </span>
@@ -58,33 +58,23 @@ Code under GPL v3.0 licence
   </b-container>
 
   <div v-if="checked">
-    <b-nav tabs fill>
-      <b-nav-item :active="reliabilitySelected" @click="selectReliability">Reliability</b-nav-item>
-      <b-nav-item :active="analysisSelected" @click="selectAnalysis">Analysis</b-nav-item>
-    </b-nav>
-    <b-container v-if="reliabilitySelected">
-      <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
-    </b-container>
-    <b-container v-if="analysisSelected" fluid>
-      <show-analysis v-bind:data="data" v-bind:filename="file.name"></show-analysis>
-    </b-container>
+    <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
   </div>
 </template>
 
 <script>
-import axios from "axios"
-import ShowReliability from "@/components/ShowReliability"
-import ShowAnalysis from "@/components/ShowAnalysis"
-import { BIconFileEarmarkPlus } from 'bootstrap-icons-vue'
+import ShowReliability from "@/components/ShowReliability";
+import ShowAnalysis from "@/components/ShowAnalysis";
+import {BIconFileEarmarkPlus} from "bootstrap-icons-vue";
+import axios from "axios";
 
 export default {
-  name: "Results",
+  name: "Reliability",
   components: {
     ShowReliability,
-    ShowAnalysis,
     'BIconFileEarmarkPlus': BIconFileEarmarkPlus,
   },
-	data:function (){
+  data:function (){
 		return{
       file: '',
       uploading: false,
@@ -131,7 +121,7 @@ export default {
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
 
-      axios.post(`/api/v1/analyse/`, formData, {
+      axios.post(`/api/v1/reliability/`, formData, {
         onUploadProgress: function (progressEvent) {
           this.selectFile = false
           this.uploading = true
@@ -191,24 +181,10 @@ export default {
           console.log(JSON.stringify(error))
         })
     },
-    selectReliability() {
-      this.reliabilitySelected = true
-      this.analysisSelected = false
-    },
-    selectAnalysis() {
-      this.reliabilitySelected = false
-      this.analysisSelected = true
-    }
 	}
-
-
 }
 </script>
 
 <style scoped>
-#test {
-  border-color: #42b983;
-  border: 12px solid;
-  width: 100%;
-}
+
 </style>

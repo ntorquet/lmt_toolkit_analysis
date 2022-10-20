@@ -18,7 +18,8 @@ from . import views
 from .views import *
 
 router = DefaultRouter()
-router.register('analyse_reliability', ReadFileViewSet, basename="analyse_reliability")
+router.register('analyse', AnalyseLMTFile, basename="analyse")
+router.register('reliability', ReliabilityLMTFile, basename="reliability")
 
 urlpatterns = [
     path('', include(router.urls)),

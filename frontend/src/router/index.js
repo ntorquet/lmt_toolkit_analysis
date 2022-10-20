@@ -9,6 +9,7 @@ Code under GPL v3.0 licence
 
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import Reliability from "@/views/Reliability";
 import Results from "@/views/Results";
 import VersionHistory from "@/views/VersionHistory";
 import Documentation from "@/views/Documentation";
@@ -29,6 +30,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    meta: {
+      title: 'LMT toolkit'
+    }
+  },
+  {
+    path: '/reliability',
+    name: 'reliability',
+    component: Reliability,
     meta: {
       title: 'LMT toolkit'
     }

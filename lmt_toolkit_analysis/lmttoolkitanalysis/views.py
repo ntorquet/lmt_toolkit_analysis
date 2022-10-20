@@ -51,7 +51,43 @@ class ReadFileAPIView(APIView):
         return JsonResponse({'task_id': task_id, 'file_name': file_name})
 
 
-class ReadFileViewSet(viewsets.ModelViewSet):
+class AnalyseLMTFile(viewsets.ModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
+    serializer_class = FileSerializer
+
+    def create(self, request):
+        print('into the post')
+        print("before validation")
+        serializer = self.get_serializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            new_file = serializer.save()
+            print("it's valid")
+            print(serializer.data)
+            print(serializer.data.keys())
+            file = serializer.data['sqlite']
+            file_name = serializer.data['file_name']
+            file_id = new_file.id
+            print(file)
+            # path_to_file = os.path(serializer.data['sqlite'])
+            # print("*******" + file.path + "*******")
+            print(MEDIA_ROOT)
+            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("temp/")[1]
+            print(path_file)
+            analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=True, file_id=file_id)
+            #
+            task_id = analysisContext.task_id
+
+            serializer.data['filename']: file_name
+            serializer.data['task_id']: task_id
+            print(task_id)
+            return JsonResponse({'filename': file_name, 'task_id': task_id, 'path_file': path_file})
+        else:
+            return JsonResponse({'error': 'There was a problem with the data'})
+
+
+
+class ReliabilityLMTFile(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = FileSerializer
 
