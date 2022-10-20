@@ -1,3 +1,11 @@
+<!--
+Created by Nicolas Torquet at 12/07/2022
+torquetn@igbmc.fr
+Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
+CNRS - Mouse Clinical Institute
+PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
+Code under GPL v3.0 licence
+-->
 <template>
   <h3>Analysis</h3>
   <div class="position-relative">
@@ -206,7 +214,8 @@
   <div id="export">
     <b-button>
        <download-csv
-           :data = "dataToCSV">
+           :data = "dataToCSV"
+           :name = "name_csv+filename.split('.sqlite')[0]+'.csv'">
           Download Data as CSV file
        </download-csv>
     </b-button>
@@ -229,6 +238,7 @@ export default {
   data() {
     return {
       dataToCSV: [],
+      name_csv: 'LMT-toolkit_v0-1-2_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       activity_variable: ['Total distance (m)', 'Single move Nb', 'Single move TotalLen', 'Single move MeanDur', 'Move in contact Nb', 'Move in contact TotalLen',
       'Move in contact MeanDur', 'Wall jumps Nb', 'Wall jumps TotalLen', 'Wall jumps MeanDur', 'Stop isolated Nb', 'Stop isolated TotalLen', 'Stop isolated MeanDur'],

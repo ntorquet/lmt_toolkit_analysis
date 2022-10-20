@@ -1,3 +1,11 @@
+<!--
+Created by Nicolas Torquet at 12/07/2022
+torquetn@igbmc.fr
+Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
+CNRS - Mouse Clinical Institute
+PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
+Code under GPL v3.0 licence
+-->
 <template>
   <h1 class="title">Version history</h1>
   <b-card title="Why this page is important" class="card_info">

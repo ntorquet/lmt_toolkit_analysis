@@ -1,3 +1,11 @@
+<!--
+Created by Nicolas Torquet at 12/07/2022
+torquetn@igbmc.fr
+Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
+CNRS - Mouse Clinical Institute
+PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
+Code under GPL v3.0 licence
+-->
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <div class="navbar-brand">
@@ -17,7 +25,7 @@
   </section>
 
   <footer class="bg-dark text-center text-white">
-    <p><router-link to="/about" class="text">About</router-link> - Copyright © ICS 2022 - <router-link to="/versions">v0.1.2</router-link></p>
+    <p><router-link to="/about" class="text">About</router-link> - Copyright © CNRS INSERM UNISTRA ICS IGBMC 2022 - <router-link to="/versions">v0.1.2</router-link></p>
   </footer>
 </template>
 
