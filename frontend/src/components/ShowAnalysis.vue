@@ -706,6 +706,10 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  padding-top: 2em;
+}
+
 h4 {
   padding-top: 2em;
 }

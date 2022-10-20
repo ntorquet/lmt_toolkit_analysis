@@ -7,7 +7,7 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 <template>
-  <h4>Reliability information</h4>
+  <h3>Reliability information</h3>
   <div id="globale_information">
     <b-card title="Global information">
       <b-card-body>
@@ -390,6 +390,10 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  padding-top: 2em;
+}
+
 div{
   padding-left: 4em;
   padding-right: 4em;

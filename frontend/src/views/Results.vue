@@ -59,8 +59,8 @@ Code under GPL v3.0 licence
 
   <div v-if="checked">
     <b-nav tabs fill>
-      <b-nav-item :active="reliabilitySelected" @click="selectReliability">Reliability</b-nav-item>
-      <b-nav-item :active="analysisSelected" @click="selectAnalysis">Analysis</b-nav-item>
+      <b-nav-item class="tab_title" :active="reliabilitySelected" @click="selectReliability">Reliability</b-nav-item>
+      <b-nav-item class="tab_title" :active="analysisSelected" @click="selectAnalysis">Analysis</b-nav-item>
     </b-nav>
     <b-container v-if="reliabilitySelected">
       <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
@@ -210,5 +210,11 @@ export default {
   border-color: #42b983;
   border: 12px solid;
   width: 100%;
+}
+
+.tab_title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
 }
 </style>
