@@ -73,7 +73,7 @@ eventClassList = [
                 BuildEventStop,
                 BuildEventWaterPoint,
                 BuildEventApproachContact,
-                BuildEventWallJump,
+                # BuildEventWallJump,
                 BuildEventSAP,
                 BuildEventOralSideSequence,
                 BuildEventNest3,

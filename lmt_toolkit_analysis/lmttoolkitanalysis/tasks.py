@@ -364,7 +364,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = ""):
     '''
     Move isolated
     Move in contact
-    WallJump
+    # WallJump
     Stop isolated
     Rear isolated
     Rear in contact

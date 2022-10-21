@@ -33,9 +33,6 @@ Code under GPL v3.0 licence
         <td>{{ key['Move in contact Nb'] }}</td>
         <td>{{ key['Move in contact TotalLen'].toFixed(2) }}</td>
         <td>{{ key['Move in contact MeanDur'].toFixed(2) }}</td>
-        <td>{{ key['WallJump Nb'] }}</td>
-        <td>{{ key['WallJump TotalLen'].toFixed(2) }}</td>
-        <td>{{ key['WallJump MeanDur'].toFixed(2) }}</td>
         <td>{{ key['Stop isolated Nb'] }}</td>
         <td>{{ key['Stop isolated TotalLen'].toFixed(2) }}</td>
         <td>{{ key['Stop isolated MeanDur'].toFixed(2) }}</td>
@@ -241,11 +238,11 @@ export default {
       name_csv: 'LMT-toolkit_v0-1-2_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       activity_variable: ['Total distance (m)', 'Single move Nb', 'Single move TotalLen', 'Single move MeanDur', 'Move in contact Nb', 'Move in contact TotalLen',
-      'Move in contact MeanDur', 'Wall jumps Nb', 'Wall jumps TotalLen', 'Wall jumps MeanDur', 'Stop isolated Nb', 'Stop isolated TotalLen', 'Stop isolated MeanDur'],
+      'Move in contact MeanDur', 'Stop isolated Nb', 'Stop isolated TotalLen', 'Stop isolated MeanDur'],
       activity_variable_distance: ['Total distance (m)'],
-      activity_variable_nb: ['Single move Nb', 'Move in contact Nb', 'Wall jumps Nb', 'Stop isolated Nb'],
-      activity_variable_total_length: ['Single move TotalLen', 'Move in contact TotalLen', 'Wall jumps TotalLen', 'Stop isolated TotalLen'],
-       activity_variable_meandur: ['Single move MeanDur', 'Move in contact MeanDur', 'Wall jumps MeanDur', 'Stop isolated MeanDur'],
+      activity_variable_nb: ['Single move Nb', 'Move in contact Nb', 'Stop isolated Nb'],
+      activity_variable_total_length: ['Single move TotalLen', 'Move in contact TotalLen', 'Stop isolated TotalLen'],
+       activity_variable_meandur: ['Single move MeanDur', 'Move in contact MeanDur', 'Stop isolated MeanDur'],
       activity_data: [],
       activity_data_distance: [],
       activity_data_nb: [],
@@ -348,7 +345,6 @@ export default {
             data: [
                 dataToConvert[mouse].totalDistance, dataToConvert[mouse]['Move isolated Nb'], dataToConvert[mouse]['Move isolated TotalLen'], dataToConvert[mouse]['Move isolated MeanDur'],
                 dataToConvert[mouse]['Move in contact Nb'], dataToConvert[mouse]['Move in contact TotalLen'], dataToConvert[mouse]['Move in contact MeanDur'],
-                dataToConvert[mouse]['WallJump Nb'], dataToConvert[mouse]['WallJump TotalLen'], dataToConvert[mouse]['WallJump MeanDur'],
                 dataToConvert[mouse]['Stop isolated Nb'], dataToConvert[mouse]['Stop isolated TotalLen'], dataToConvert[mouse]['Stop isolated MeanDur']
             ],
             showLine: false
@@ -377,7 +373,6 @@ export default {
             data: [
                 dataToConvert[mouse]['Move isolated Nb'],
                 dataToConvert[mouse]['Move in contact Nb'],
-                dataToConvert[mouse]['WallJump Nb'],
                 dataToConvert[mouse]['Stop isolated Nb']
             ],
             showLine: false
@@ -393,7 +388,6 @@ export default {
             data: [
                 dataToConvert[mouse]['Move isolated TotalLen'],
                 dataToConvert[mouse]['Move in contact TotalLen'],
-                dataToConvert[mouse]['WallJump TotalLen'],
                 dataToConvert[mouse]['Stop isolated TotalLen']
             ],
             showLine: false
@@ -409,7 +403,6 @@ export default {
             data: [
                 dataToConvert[mouse]['Move isolated MeanDur'],
                 dataToConvert[mouse]['Move in contact MeanDur'],
-                dataToConvert[mouse]['WallJump MeanDur'],
                 dataToConvert[mouse]['Stop isolated MeanDur']
             ],
             showLine: false

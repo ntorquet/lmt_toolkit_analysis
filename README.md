@@ -8,6 +8,7 @@ Find more information about LMT on its [website](https://livemousetracker.org/) 
 ## Licence
 LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
 
+Copyright (C) 2022 CNRS - INSERM - UNISTRA - ICS - IGBMC
 
 ## Python Requirements (See [requirements.txt](requirements.txt))
 - Django==4.0.2
