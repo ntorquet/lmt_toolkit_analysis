@@ -67,6 +67,10 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             print(serializer.data.keys())
             file = serializer.data['sqlite']
             file_name = serializer.data['file_name']
+            tmin = request.data['tmin']
+            tmax = request.data['tmax']
+            unitMinT = request.data['unitMinT']
+            unitMaxT = request.data['unitMaxT']
             file_id = new_file.id
             print(file)
             # path_to_file = os.path(serializer.data['sqlite'])
@@ -74,7 +78,7 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             print(MEDIA_ROOT)
             path_file = MEDIA_ROOT+serializer.data['sqlite'].split("temp/")[1]
             print(path_file)
-            analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=True, file_id=file_id)
+            analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=True, file_id=file_id, tmin=tmin, tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
             #
             task_id = analysisContext.task_id
 

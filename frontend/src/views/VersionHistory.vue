@@ -28,6 +28,22 @@ Code under GPL v3.0 licence
       <b-tbody>
         <b-tr>
           <b-td valign="middle">
+            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.4" target="_blank">
+            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.4</b-badge></a>
+          </b-td>
+          <b-td valign="middle">2022 November</b-td>
+          <b-td>
+            Users can target their analysis to a given time period
+          </b-td>
+          <b-td>
+            No changes
+          </b-td>
+          <b-td valign="middle">
+            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
+          </b-td>
+        </b-tr>
+        <b-tr>
+          <b-td valign="middle">
             <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.3" target="_blank">
             <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.3</b-badge></a>
           </b-td>

@@ -31,11 +31,19 @@ from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 
+timeUnit = {
+    'frame(s)': 1,
+    'second(s)': 30,
+    'minute(s)': 30*60,
+    'hour(s)': 30*60*60,
+    'day(s)': 30*60*60*24,
+    'week(s)': 30*60*60*24*7,
+}
+
 
 
 @shared_task(bind=True)
-def getAnalysis(self, file, deleteFile = False, file_id = ""):
-
+def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -1, unitMinT = None, unitMaxT = None):
     '''
     :param file: the SQLite LMT file
     :return: extracted data
@@ -332,8 +340,16 @@ def getAnalysis(self, file, deleteFile = False, file_id = ""):
     # analyse all the experiment
 
     StartEndFrames = getStartEndExperiment(connection)
-    minT = StartEndFrames[0]
-    maxT = StartEndFrames[1]
+    if int(tmin) == 0 or unitMinT == None or unitMinT == "null":
+        minT = StartEndFrames[0]
+    else:
+        minT = int(tmin)*timeUnit[unitMinT]
+    if tmax == "-" or unitMaxT == None or unitMaxT == "null":
+        maxT = StartEndFrames[1]
+    else:
+        maxT = int(tmax)*timeUnit[unitMaxT]
+
+
 
     # distanceAndTimeInContact = getDistanceAndTimeInContact(connection, minT, maxT, file)
     # reliabilityContext.update({'distanceAndTimeInContact': distanceAndTimeInContact})
@@ -409,7 +425,12 @@ def getAnalysis(self, file, deleteFile = False, file_id = ""):
     # for mouse in profileData[file][n]:
 
     profileData = getDataProfile(connection, minT, maxT, file)
-
+    print("tmin: " + str(tmin))
+    print("unitMinT: "+str(unitMinT))
+    print("tmax: " + str(tmax))
+    print("unitMaxT: "+str(unitMaxT))
+    print("minT: "+str(minT))
+    print("maxT: "+str(maxT))
 
     # text_file.write("\n")
     # # Create a json file to store the computation

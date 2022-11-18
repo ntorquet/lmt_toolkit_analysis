@@ -12,6 +12,10 @@ from rest_framework.serializers import Serializer, FileField
 from .models import *
 
 class FileSerializer(serializers.ModelSerializer):
+    # tmin = TssUpdateExtraVarsSerializer(required=True)
+    # tmax = TssUpdateExtraVarsSerializer(required=True)
+    # unitMinT = TssUpdateExtraVarsSerializer(required=True)
+    # unitMaxT = TssUpdateExtraVarsSerializer(required=True)
     class Meta:
         model = File
         fields = '__all__'

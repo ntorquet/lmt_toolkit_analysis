@@ -14,23 +14,64 @@ Code under GPL v3.0 licence
         <div v-if="!checked && !uploading && !processing">
           <p>To analyse the experiment, you have to select a LMT SQLite file:</p>
           <div class="file">
-            <label class="file-label">
-              <input class="form-file" type="file" name="file" @change="onFilePicked($event)">
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
-                </span>
-                <span class="file-label" v-if="!file">
-                  <strong> Choose a SQLite file…</strong>
-                </span>
-                <span v-else>
-                  {{ file.name }}<br />
-                  <div class="block" v-if="file && !uploading && !checked">
-                    <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
-                  </div>
-                </span>
+            <input class="form-file" type="file" name="file" @change="onFilePicked($event)" />
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
               </span>
-            </label>
+              <span class="file-label" v-if="!file">
+                <strong> Choose a SQLite file…</strong>
+              </span>
+              <span v-else>
+                {{ file.name }}<br />
+                <div class="block" v-if="file && !uploading && !checked">
+                  <div class="form_analysis">
+                    <b-alert show class="info">
+                      By default, the analysis will be done on the total duration of the experiment.<br />
+                      You can limit the analysis by filling in the fields below.
+                    </b-alert>
+                    <b-form-group label="Start">
+                      <div class="row">
+                        <div class="col-lg-3">
+                          Start time (computed from the launching of the recording)
+                        </div>
+                        <div class="col-lg-1">
+                          <b-form-input type="number" v-model="minT"></b-form-input>
+                        </div>
+                        <div class="col-lg-2">
+                          <b-form-select  v-model="unitMinT" :options="unitStartEnd">
+                          </b-form-select>
+                        </div>
+                      </div>
+                    </b-form-group>
+                    <b-form-group label="End">
+                      <div class="row">
+                        <div class="col-lg-3">
+                          End time (computed from the launching of the recording)
+                        </div>
+                        <div class="col-lg-1">
+                          <b-form-input type="number" v-model="maxT"></b-form-input>
+                        </div>
+                        <div class="col-lg-2">
+                          <b-form-select  v-model="unitMaxT"  :options="unitStartEnd">
+                          </b-form-select>
+                        </div>
+                        <div class="col-lg-5">
+                          <strong>Duration selected</strong><br />
+                          {{ durationAnalysisStart }} {{ durationAnalysisEnd }}<br />
+                        </div>
+                      </div>
+                    </b-form-group>
+                  </div>
+                <div v-if="durationChecker==''">
+                  <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
+                </div>
+                <b-alert class="alert-danger" v-else show>
+                  {{ durationChecker }}
+                </b-alert>
+              </div>
+            </span>
+          </span>
           </div>
         </div>
         <br />
@@ -105,6 +146,29 @@ export default {
       tasksProgression: 0,
       reliabilitySelected: true,
       analysisSelected: false,
+      unitStartEnd: [
+        {value: null, text: 'By default ...'},
+        {value: 'frame(s)', text: 'frame(s)'},
+        {value: 'second(s)', text: 'second(s)'},
+        {value: 'minute(s)', text: 'minute(s)'},
+        {value: 'hour(s)', text: 'hour(s)'},
+        {value: 'day(s)', text: 'day(s)'},
+      ],
+      minT: 0,
+      unitMinT: null,
+      maxT: '-',
+      unitMaxT: null,
+      durationAnalysisStart: 'From the beginning',
+      durationAnalysisEnd: 'to the end of the experiment',
+      timeUnit: {
+        'frame(s)': 1,
+        'second(s)': 30,
+        'minute(s)': 30*60,
+        'hour(s)': 30*60*60,
+        'day(s)': 30*60*60*24,
+        'week(s)': 30*60*60*24*7,
+      },
+      durationChecker: ''
 		}
 	},
 	methods:{
@@ -130,6 +194,10 @@ export default {
       let formData = new FormData();
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
+      formData.append('tmin', this.minT)
+      formData.append('tmax', this.maxT)
+      formData.append('unitMinT', this.unitMinT)
+      formData.append('unitMaxT', this.unitMaxT)
 
       axios.post(`/api/v1/analyse/`, formData, {
         onUploadProgress: function (progressEvent) {
@@ -198,9 +266,51 @@ export default {
     selectAnalysis() {
       this.reliabilitySelected = false
       this.analysisSelected = true
+    },
+    setDurationAnalysis() {
+      console.log("changed")
+      if(this.minT > 0 && this.unitMinT != null){
+        this.durationAnalysisStart = "From "+this.minT+" "+this.unitMinT
+        this.sendMinT = this.minT+" "+this.unitMinT
+        this.checkDurationForAnalysis()
+      }
+      else {
+        this.durationAnalysisStart = "From the beginning"
+        this.durationChecker = ''
+      }
+      if((this.maxT != "-" || this.maxT > 0) && this.unitMaxT != null) {
+        this.durationAnalysisEnd = "to "+this.maxT+" "+this.unitMaxT
+        this.sendMaxT = this.maxT+" "+this.unitMaxT
+        this.checkDurationForAnalysis()
+      }
+      else {
+        this.durationAnalysisEnd = "to the end of the experiment"
+        this.durationChecker = ''
+      }
+    },
+    checkDurationForAnalysis() {
+      if(this.maxT*this.timeUnit[this.unitMaxT] - this.minT*this.timeUnit[this.unitMinT] < 0){
+        this.durationChecker = 'You select a start after the end! Please change your duration window'
+      }
+      else {
+        this.durationChecker = ''
+      }
     }
-	}
-
+	},
+  watch: {
+    minT() {
+      this.setDurationAnalysis()
+    },
+    maxT() {
+      this.setDurationAnalysis()
+    },
+    unitMinT() {
+      this.setDurationAnalysis()
+    },
+    unitMaxT() {
+      this.setDurationAnalysis()
+    },
+  }
 
 }
 </script>
@@ -217,4 +327,9 @@ export default {
   font-weight: bold;
   color: black;
 }
+
+.form_analysis{
+  margin: 2em;
+}
+
 </style>
