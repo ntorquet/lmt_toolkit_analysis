@@ -70,7 +70,7 @@ if __name__ == '__main__':
         question += "\n\t [2] plot figure with selected behaviours for both sexes (from json file)?"
         question += "\n\t [3] plot figure with selected behaviours for pairs of mice (from json file)?"
         question += "\n\t [4] plot figure with selected behaviours for pairs of mice (from json file) for master?"
-        question += "\n\t [5] plot figure for LMT presentation in grant application?"
+        question += "\n\t [5] plot figure for LMT_v1_0_3 presentation in grant application?"
         question += "\n"
         answer = input(question)
 

@@ -13,10 +13,10 @@ import datetime
 from math import *
 from sqlite3 import Error
 
-from .LMT.lmtanalysis.Animal import *
-from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfileWithoutText_file
+from .LMT_v1_0_3.lmtanalysis.Animal import *
+from .LMT_v1_0_3.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfileWithoutText_file
 
 oneFrame = 1
 oneSecond = 30
@@ -47,7 +47,7 @@ def create_connection(db_file):
 
 def findMiceInSQLiteFile(connection):
     '''
-    :param LMTFile: the SQLite LMT file
+    :param LMTFile: the SQLite LMT_v1_0_3 file
     :return: animals in a list of dico
     '''
     cursor = connection.cursor()
@@ -70,7 +70,7 @@ def findMiceInSQLiteFile(connection):
 
 def findStartandEndInSQLiteFile(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: the start and the end of the experiment
     '''
 
@@ -92,7 +92,7 @@ def findStartandEndInSQLiteFile(connection):
 
 def getSensorInSQLiteFile(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: the temperature recorded during the whole experiment, with timestamp
     '''
     cursor = connection.cursor()
@@ -171,7 +171,7 @@ def getSensorInSQLiteFile(connection):
 
 def checkOmittedFrames(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: Number of omitted frames
     '''
 
@@ -244,7 +244,7 @@ def checkOmittedFrames(connection):
 
 def getAnimalDetection(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: number of detection per animal during the whole experiment
     '''
     c = connection.cursor()
@@ -333,7 +333,7 @@ def checkAnimalDetectionOmissions(theoricalNumberOfFrame, nbFramesRecorded, list
 
 def getRFIDdetections(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: number of RFID detection for each animal
     '''
     list_animals = findMiceInSQLiteFile(connection)
@@ -368,7 +368,7 @@ def getRFIDdetections(connection):
 
 def getRFIDmatchDetections(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: number of RFID match detection for each animal
     '''
     list_animals = findMiceInSQLiteFile(connection)
@@ -404,7 +404,7 @@ def getRFIDmatchDetections(connection):
 
 def getRFIDmismatchDetections(connection):
     '''
-    :param connection: the SQLite LMT file
+    :param connection: the SQLite LMT_v1_0_3 file
     :return: number of RFID mismatch detection for each animal
     '''
     list_animals = findMiceInSQLiteFile(connection)
@@ -470,7 +470,7 @@ def getInformationsFromSQLite(LMTFile):
 
 def getReliability(file):
     '''
-    :param file: the SQLite LMT file
+    :param file: the SQLite LMT_v1_0_3 file
     :return: extracted data
     '''
     print("In getReliability")
@@ -745,5 +745,8 @@ def getDataProfile(connection, minT, maxT, file):
         for key in profileData[mouse].keys():
             if 'TotalLen' in key or 'MeanDur' in key:
                 profileData[mouse][key] = profileData[mouse][key]/30
+        profileData[mouse]['Start frame'] = minT
+        profileData[mouse]['End frame'] = maxT
+        profileData[mouse]['Period of analysis'] = 'From start frame to end frame'
 
     return profileData

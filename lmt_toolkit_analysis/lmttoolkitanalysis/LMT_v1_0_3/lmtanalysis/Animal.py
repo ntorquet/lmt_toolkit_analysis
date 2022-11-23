@@ -162,7 +162,7 @@ class Animal():
 
     def filterDetectionByInstantSpeed(self , minSpeed, maxSpeed ):
         """
-        speed function in LMT use t-1 and t+1 detection to provide a result.
+        speed function in LMT_v1_0_3 use t-1 and t+1 detection to provide a result.
         here we remove spurious tracking jump, so we check on t to t+1 frame.
         speed is in cm per second
         """

@@ -495,7 +495,7 @@ if __name__ == '__main__':
         if answer == '2':
             print('Check information entered into the databases')
             files = getFilesToProcess()
-            """text_file_name = '../../lmt-analysis/LMT/scripts/Novel_Object_Recognition_Test/file_info.text'"""
+            """text_file_name = '../../lmt-analysis/LMT_v1_0_3/scripts/Novel_Object_Recognition_Test/file_info.text'"""
             text_file_name = 'file_info.txt'
             text_file = open(text_file_name, "w")
 

@@ -13,9 +13,9 @@ from lmt_toolkit_analysis.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 
-from .LMT.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
-from .LMT.scripts.Rebuild_All_Event import process
+from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
+from .LMT_v1_0_3.scripts.Rebuild_All_Event import process
 from .methods import *
 from .models import File
 from datetime import date
@@ -24,10 +24,10 @@ import json
 from lmttoolkitanalysis.methods import *
 from lmt_toolkit_analysis.settings import MEDIA_ROOT
 
-# import to analyse LMT data
+# import to analyse LMT_v1_0_3 data
 import sqlite3
-from .LMT.lmtanalysis.Animal import *
-from .LMT.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_3.lmtanalysis.Animal import *
+from .LMT_v1_0_3.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 
@@ -45,7 +45,7 @@ timeUnit = {
 @shared_task(bind=True)
 def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -1, unitMinT = None, unitMaxT = None):
     '''
-    :param file: the SQLite LMT file
+    :param file: the SQLite LMT_v1_0_3 file
     :return: extracted data
     '''
     progress_recorder = ProgressRecorder(self)
@@ -467,7 +467,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
 @shared_task(bind=True)
 def getReliability(self, file, deleteFile = False, file_id = ""):
     '''
-    :param file: the SQLite LMT file
+    :param file: the SQLite LMT_v1_0_3 file
     :return: reliability
     '''
     progress_recorder = ProgressRecorder(self)

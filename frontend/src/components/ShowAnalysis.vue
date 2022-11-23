@@ -9,6 +9,10 @@ Code under GPL v3.0 licence
 <template>
   <h3>Analysis</h3>
   <div class="position-relative">
+    <b-alert show>
+      Analysis of the experiment from frame number {{ tmin }} to frame number {{ tmax }}.<br />
+      Period of analysis: {{ analysisPeriod }}
+    </b-alert>
     <h4>Activity</h4>
     <table class="table table-striped table-hover">
       <thead>
@@ -234,15 +238,20 @@ export default {
   },
   data() {
     return {
+      tmin: '',
+      tmax: '',
+      analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT-toolkit_v0-1-2_',
+      name_csv: 'LMT_v1_0_3-toolkit_v0-1-2_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
+      analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
+      analysis_parameters_data: [],
       activity_variable: ['Total distance (m)', 'Single move Nb', 'Single move TotalLen', 'Single move MeanDur', 'Move in contact Nb', 'Move in contact TotalLen',
       'Move in contact MeanDur', 'Stop isolated Nb', 'Stop isolated TotalLen', 'Stop isolated MeanDur'],
       activity_variable_distance: ['Total distance (m)'],
       activity_variable_nb: ['Single move Nb', 'Move in contact Nb', 'Stop isolated Nb'],
       activity_variable_total_length: ['Single move TotalLen', 'Move in contact TotalLen', 'Stop isolated TotalLen'],
-       activity_variable_meandur: ['Single move MeanDur', 'Move in contact MeanDur', 'Stop isolated MeanDur'],
+      activity_variable_meandur: ['Single move MeanDur', 'Move in contact MeanDur', 'Stop isolated MeanDur'],
       activity_data: [],
       activity_data_distance: [],
       activity_data_nb: [],
@@ -335,6 +344,20 @@ export default {
     let dataToConvert = this.data.profileData
     let index = 0
     for(let mouse in dataToConvert){
+      this.tmin = dataToConvert[mouse]['Start frame']
+      this.tmax = dataToConvert[mouse]['End frame']
+      this.analysisPeriod = dataToConvert[mouse]['Period of analysis']
+      // Analysis parameters
+      this.analysis_parameters_data.push(
+          {
+            label: mouse,
+            fill: false,
+            borderColor: this.colorList[index],
+            backgroundColor: this.colorList[index],
+            data: [dataToConvert[mouse]['Start frame'], dataToConvert[mouse]['End frame'], dataToConvert[mouse]['Period of analysis']],
+            showLine: false
+          }
+      )
       // Activity
       this.activity_data.push(
           {
