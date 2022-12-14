@@ -67,10 +67,14 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             print(serializer.data.keys())
             file = serializer.data['sqlite']
             file_name = serializer.data['file_name']
-            tmin = request.data['tmin']
-            tmax = request.data['tmax']
-            unitMinT = request.data['unitMinT']
-            unitMaxT = request.data['unitMaxT']
+            tmin = serializer.data['tmin']
+            tmax = serializer.data['tmax']
+            unitMinT = serializer.data['unitMinT']
+            unitMaxT = serializer.data['unitMaxT']
+            # tmin = request.data['tmin']
+            # tmax = request.data['tmax']
+            # unitMinT = request.data['unitMinT']
+            # unitMaxT = request.data['unitMaxT']
             file_id = new_file.id
             print(file)
             # path_to_file = os.path(serializer.data['sqlite'])

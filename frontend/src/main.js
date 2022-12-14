@@ -18,7 +18,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000'
 
 createApp(App).use(store).use(router, axios).use(BootstrapVue3, BootstrapIconsPlugin).use(Toaster).component("Popper", Popper).component('downloadCsv', JsonCSV).mount('#app')
 
-const DEFAULT_TITLE = "LMT_v1_0_3-Analysis";
+const DEFAULT_TITLE = "LMT_v1_0_4-Analysis";
 router.afterEach((to) => {
     nextTick(() => {
         document.title = to.meta.title || DEFAULT_TITLE;

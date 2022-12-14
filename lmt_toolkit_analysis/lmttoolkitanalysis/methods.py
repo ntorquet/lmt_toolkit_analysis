@@ -13,10 +13,10 @@ import datetime
 from math import *
 from sqlite3 import Error
 
-from .LMT_v1_0_3.lmtanalysis.Animal import *
-from .LMT_v1_0_3.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfileWithoutText_file
+from .LMT_v1_0_4.lmtanalysis.Animal import *
+from .LMT_v1_0_4.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_4.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT_v1_0_4.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
 
 oneFrame = 1
 oneSecond = 30
@@ -739,7 +739,7 @@ def getDataProfile(connection, minT, maxT, file):
     # print('text file extra: '+text_file_name)
     n = 0   # n=0 take all the nights
     # Compute profile2 data and save them in a text file
-    profileData = computeProfileWithoutText_file(file=file, minT=minT, maxT=maxT, night=n, behaviouralEventList=behaviouralEventOneMouse)
+    profileData = computeProfile(file=file, minT=minT, maxT=maxT,  behaviouralEventList=behaviouralEventOneMouse)
     # Duration in frames: change to seconds
     for mouse in profileData:
         for key in profileData[mouse].keys():

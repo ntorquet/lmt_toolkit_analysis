@@ -1,3 +1,12 @@
+'''
+Created by Nicolas Torquet at 23/11/2022
+torquetn@igbmc.fr
+Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
+CNRS - Mouse Clinical Institute
+PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
+Code under GPL v3.0 licence
+'''
+
 """lmt_toolkit URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:

@@ -31,15 +31,29 @@ Code under GPL v3.0 licence
             <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.4" target="_blank">
             <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.4</b-badge></a>
           </b-td>
-          <b-td valign="middle">2022 November</b-td>
+          <b-td valign="middle">2022 December</b-td>
           <b-td>
-            Users can target their analysis to a given time period
+            Users can target their analysis to a given time period.
           </b-td>
           <b-td>
-            No changes
+            LMT-analysis upgraded (v1.0.3 to v1.0.5):
+            <b-list-group>
+              <b-list-group-item class="d-flex justify-content-between align-items-center">
+                MouseAutomaticProfile don't create text file anymore.
+                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.4" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.4</b-badge></a>
+              </b-list-group-item>
+              <b-list-group-item class="d-flex justify-content-between align-items-center">
+                RFID added and group name modified.
+                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.4" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.4</b-badge></a>
+              </b-list-group-item>
+              <b-list-group-item class="d-flex justify-content-between align-items-center">
+                fix: "Rebuild all events" was changed in v1.0.4, (leading to an import error + only the followZone event was computed).
+                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a>
+              </b-list-group-item>
+            </b-list-group>
           </b-td>
           <b-td valign="middle">
-            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
+            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a>
           </b-td>
         </b-tr>
         <b-tr>

@@ -13,9 +13,9 @@ from lmt_toolkit_analysis.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 
-from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
-from .LMT_v1_0_3.scripts.Rebuild_All_Event import process
+# from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
+# from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
+from .LMT_v1_0_5.scripts.Rebuild_All_Event import process
 from .methods import *
 from .models import File
 from datetime import date
@@ -377,32 +377,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     # # reliabilityContext.update({'trajectories': trajectories})
     # print(trajectories)
 
-    '''
-    Move isolated
-    Move in contact
-    # WallJump
-    Stop isolated
-    Rear isolated
-    Rear in contact
-    Contact
-    Group2
-    Group3
-    Oral-oral Contact
-    Oral-genital Contact
-    Side by side Contact
-    Side by side Contact, opposite way
-    Train2
-    FollowZone Isolated
-    Social approach
-    Approach contact
-    Group 3 make
-    Group 4 make
-    Get away
-    Break contact
-    Group 3 break
-    Group 4 break
-    totalDistance
-    '''
+
     # animalPool = AnimalPool()
     # #
     # # # load infos about the animals

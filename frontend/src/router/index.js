@@ -31,7 +31,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
     meta: {
-      title: 'LMT_v1_0_3 toolkit'
+      title: 'LMT_v0_1_4 toolkit'
     }
   },
   {
@@ -39,7 +39,7 @@ const routes = [
     name: 'reliability',
     component: Reliability,
     meta: {
-      title: 'LMT_v1_0_3 toolkit'
+      title: 'LMT_v0_1_4 toolkit'
     }
   },
   {
@@ -47,7 +47,7 @@ const routes = [
     name: 'results',
     component: Results,
     meta: {
-      title: 'LMT_v1_0_3 toolkit'
+      title: 'LMT_v0_1_4 toolkit'
     }
   },
   {
@@ -55,7 +55,7 @@ const routes = [
     name: 'versions',
     component: VersionHistory,
     meta: {
-      title: 'LMT_v1_0_3 toolkit'
+      title: 'LMT_v0_1_4 toolkit'
     }
   },
   {
@@ -63,7 +63,7 @@ const routes = [
     name: 'documentation',
     component: Documentation,
     meta: {
-      title: 'LMT_v1_0_3 toolkit'
+      title: 'LMT_v0_1_4 toolkit'
     }
   },
 

@@ -4,11 +4,15 @@ LMT-toolkit analysis is an open source web application created to check the reli
 
 Find more information about LMT on its [website](https://livemousetracker.org/) and [publication](https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D).
 
+LMT-toolkit uses analysis scripts that are constantly updated and improved.
+We do our best to verify the accuracy of the results. It is your responsibility to check data accuracy.
 
 ## Licence
 LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
 
 Copyright (C) 2022 CNRS - INSERM - UNISTRA - ICS - IGBMC
+
+LMT-toolkit uses the LMT-analysis code provided on [GitHub](https://github.com/fdechaumont/lmt-analysis). This code is also under the GPL v3.0 licence.
 
 ## Python Requirements (See [requirements.txt](requirements.txt))
 - Django==4.0.2

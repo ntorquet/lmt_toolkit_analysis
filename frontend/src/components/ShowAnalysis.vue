@@ -9,6 +9,10 @@ Code under GPL v3.0 licence
 <template>
   <h3>Analysis</h3>
   <div class="position-relative">
+    <b-alert variant="warning" show>
+      Keep in mind that LMT-toolkit uses analysis scripts that are constantly updated and improved.<br />
+      We do our best to verify the accuracy of the results. It is your responsibility to check data accuracy.<br />
+    </b-alert>
     <b-alert show>
       Analysis of the experiment from frame number {{ tmin }} to frame number {{ tmax }}.<br />
       Period of analysis: {{ analysisPeriod }}
@@ -143,9 +147,9 @@ Code under GPL v3.0 licence
         <td>{{ key['Train2 Nb'] }}</td>
         <td>{{ key['Train2 TotalLen'].toFixed(2) }}</td>
         <td>{{ key['Train2 MeanDur'].toFixed(2) }}</td>
-        <td>{{ key['FollowZone Isolated Nb'] }}</td>
-        <td>{{ key['FollowZone Isolated TotalLen'].toFixed(2) }}</td>
-        <td>{{ key['FollowZone Isolated MeanDur'].toFixed(2) }}</td>
+        <td>{{ key['FollowZone Nb'] }}</td>
+        <td>{{ key['FollowZone TotalLen'].toFixed(2) }}</td>
+        <td>{{ key['FollowZone MeanDur'].toFixed(2) }}</td>
       </tr>
       </tbody>
     </table>
@@ -242,7 +246,7 @@ export default {
       tmax: '',
       analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT_v1_0_3-toolkit_v0-1-2_',
+      name_csv: 'LMT_v1_0_5-toolkit_v0-1-4_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
       analysis_parameters_data: [],
@@ -560,7 +564,7 @@ export default {
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [dataToConvert[mouse]['Train2 Nb'], dataToConvert[mouse]['Train2 TotalLen'], dataToConvert[mouse]['Train2 MeanDur'],
-              dataToConvert[mouse]['FollowZone Isolated Nb'], dataToConvert[mouse]['FollowZone Isolated TotalLen'], dataToConvert[mouse]['FollowZone Isolated MeanDur']
+              dataToConvert[mouse]['FollowZone Nb'], dataToConvert[mouse]['FollowZone TotalLen'], dataToConvert[mouse]['FollowZone MeanDur']
             ],
             showLine: false
           }
@@ -573,7 +577,7 @@ export default {
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [dataToConvert[mouse]['Train2 Nb'],
-              dataToConvert[mouse]['FollowZone Isolated Nb']
+              dataToConvert[mouse]['FollowZone Nb']
             ],
             showLine: false
           }
@@ -586,7 +590,7 @@ export default {
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [dataToConvert[mouse]['Train2 TotalLen'],
-              dataToConvert[mouse]['FollowZone Isolated TotalLen']
+              dataToConvert[mouse]['FollowZone TotalLen']
             ],
             showLine: false
           }
@@ -599,7 +603,7 @@ export default {
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [dataToConvert[mouse]['Train2 MeanDur'],
-              dataToConvert[mouse]['FollowZone Isolated MeanDur']
+              dataToConvert[mouse]['FollowZone MeanDur']
             ],
             showLine: false
           }

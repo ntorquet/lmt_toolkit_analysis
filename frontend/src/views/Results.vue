@@ -156,7 +156,7 @@ export default {
       ],
       minT: 0,
       unitMinT: null,
-      maxT: '-',
+      maxT: -1,
       unitMaxT: null,
       durationAnalysisStart: 'From the beginning',
       durationAnalysisEnd: 'to the end of the experiment',
@@ -194,8 +194,8 @@ export default {
       let formData = new FormData();
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
-      formData.append('tmin', this.minT)
-      formData.append('tmax', this.maxT)
+      formData.append('tmin', parseInt(this.minT))
+      formData.append('tmax', parseInt(this.maxT))
       formData.append('unitMinT', this.unitMinT)
       formData.append('unitMaxT', this.unitMaxT)
 
