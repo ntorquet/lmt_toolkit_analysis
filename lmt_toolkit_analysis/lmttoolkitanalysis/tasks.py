@@ -15,7 +15,7 @@ from celery_progress.backend import ProgressRecorder
 
 # from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
 # from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
-from .LMT_v1_0_5.scripts.Rebuild_All_Event import process
+from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
 from .methods import *
 from .models import File
 from datetime import date
@@ -26,8 +26,8 @@ from lmt_toolkit_analysis.settings import MEDIA_ROOT
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
-from .LMT_v1_0_3.lmtanalysis.Animal import *
-from .LMT_v1_0_3.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_5.lmtanalysis.Animal import *
+from .LMT_v1_0_5.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 

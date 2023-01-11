@@ -13,10 +13,10 @@ import datetime
 from math import *
 from sqlite3 import Error
 
-from .LMT_v1_0_4.lmtanalysis.Animal import *
-from .LMT_v1_0_4.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT_v1_0_4.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT_v1_0_4.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
+from .LMT_v1_0_5b.lmtanalysis.Animal import *
+from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_5b.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT_v1_0_5b.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
 
 oneFrame = 1
 oneSecond = 30
