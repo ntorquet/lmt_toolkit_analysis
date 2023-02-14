@@ -62,12 +62,38 @@ Code under GPL v3.0 licence
                         </div>
                       </div>
                     </b-form-group>
+
+                    <b-alert class="alert-danger" v-if="durationChecker!=''" show>
+                      {{ durationChecker }}
+                    </b-alert>
                   </div>
-                <div v-if="durationChecker==''">
+                  <div class="row">
+                    <div class="col-lg-3">
+<!--                      <b-form-checkbox v-model="deleteFile"> Do you want to delete the sqlite file that will be processed by LMT-toolkit?</b-form-checkbox>-->
+                      <b-form-group>
+                        <b-form-radio v-model="deleteFile" name="deleteSqlite" v-bind:value="false">Save the sqlite rebuilded</b-form-radio>
+                        <b-form-radio v-model="deleteFile" name="deleteSqlite" v-bind:value="true">Don't save the sqlite rebuilded</b-form-radio>
+                      </b-form-group>
+                    </div>
+                    <div class="col-lg-9" v-if="deleteFile!='unselected'">
+                      <b-alert v-if="deleteFile" class="alert-warning" show>
+                        <strong>The file will be deleted</strong><br />
+                        The sqlite file which will uploaded by LMT-toolkit will be deleted at the end of the process.<br />
+                        This will free up space but you will not be able to save rebuilded data like behavioral events.
+                      </b-alert>
+                      <b-alert v-else class="alert-warning" show>
+                        <strong>The file will be kept</strong><br />
+                        The sqlite file which will uploaded by LMT-toolkit will not be deleted at the end of the process.<br />
+                        You will be able to save this file later with rebuilded data like behavioral events, but this will take a significant storage place.
+                      </b-alert>
+                    </div>
+                  </div>
+                <div v-if="durationChecker=='' & deleteFile != 'unselected'">
                   <b-button class="button is-success" @click="upload">Analyse the experiment</b-button>
                 </div>
                 <b-alert class="alert-danger" v-else show>
-                  {{ durationChecker }}
+<!--                  {{ // durationChecker }}-->
+                  You have to complete the form before analysing the experiment.
                 </b-alert>
               </div>
             </span>
@@ -168,7 +194,8 @@ export default {
         'day(s)': 30*60*60*24,
         'week(s)': 30*60*60*24*7,
       },
-      durationChecker: ''
+      durationChecker: '',
+      deleteFile: 'unselected'
 		}
 	},
 	methods:{
@@ -198,6 +225,7 @@ export default {
       formData.append('tmax', parseInt(this.maxT))
       formData.append('unitMinT', this.unitMinT)
       formData.append('unitMaxT', this.unitMaxT)
+      formData.append('deleteFile', this.deleteFile)
 
       axios.post(`/api/v1/analyse/`, formData, {
         onUploadProgress: function (progressEvent) {

@@ -17,6 +17,7 @@ class File(models.Model):
     tmax = models.IntegerField(null=True, blank=True)
     unitMinT = models.CharField(max_length=255, null=True, blank=True)
     unitMaxT = models.CharField(max_length=255, null=True, blank=True)
+    deleteFile = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

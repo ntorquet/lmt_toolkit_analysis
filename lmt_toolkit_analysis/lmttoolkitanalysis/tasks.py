@@ -440,7 +440,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
 
 
 @shared_task(bind=True)
-def getReliability(self, file, deleteFile = False, file_id = ""):
+def getReliability(self, file, deleteFile = True, file_id = ""):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :return: reliability
