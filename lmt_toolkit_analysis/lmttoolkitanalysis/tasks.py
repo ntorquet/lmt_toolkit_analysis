@@ -26,8 +26,8 @@ from lmt_toolkit_analysis.settings import MEDIA_ROOT
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
-from .LMT_v1_0_5.lmtanalysis.Animal import *
-from .LMT_v1_0_5.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_5b.lmtanalysis.Animal import *
+from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 
 
 
