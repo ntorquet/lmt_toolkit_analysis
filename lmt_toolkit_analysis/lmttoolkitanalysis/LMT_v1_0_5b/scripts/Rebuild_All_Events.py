@@ -143,7 +143,7 @@ def processTimeWindow( connection, file, currentMinT , currentMaxT ):
 
 
 
-def process( file ):
+def process(file, minT, maxT):
 
     print(file)
 
@@ -264,7 +264,7 @@ def processAll():
         for file in files:
             try:
                 print ( "Processing file" , file )
-                process( file )
+                process( file , minT, maxT)
             except FileProcessException:
                 print ( "STOP PROCESSING FILE " + file , file=sys.stderr  )
 

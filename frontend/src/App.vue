@@ -15,6 +15,7 @@ Code under GPL v3.0 licence
         <div class="navbar-end">
           <a href="/reliability" class="navbar-item">Reliability</a>
           <a href="/results" class="navbar-item">Analysis</a>
+          <a href="/files" class="navbar-item">File list</a>
           <a href="/documentation" target="_blank" class="navbar-item">Documentation</a>
           <a href="/versions" class="navbar-item">Version history</a>
         </div>
@@ -26,7 +27,7 @@ Code under GPL v3.0 licence
   </section>
 
   <footer class="bg-dark text-center text-white">
-    <p><router-link to="/about" class="text">About</router-link> - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - <router-link to="/versions">v0.1.4</router-link></p>
+    <p><router-link to="/about" class="text">About</router-link> - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - <router-link to="/versions">v0.2</router-link></p>
   </footer>
 </template>
 

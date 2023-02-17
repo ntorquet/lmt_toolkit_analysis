@@ -51,6 +51,8 @@ class ReadFileAPIView(APIView):
         return JsonResponse({'task_id': task_id, 'file_name': file_name})
 
 
+
+
 class AnalyseLMTFile(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = FileSerializer
@@ -81,7 +83,7 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             # path_to_file = os.path(serializer.data['sqlite'])
             # print("*******" + file.path + "*******")
             print(MEDIA_ROOT)
-            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("temp/")[1]
+            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("uploaded/")[1]
             print(path_file)
             analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=deleteFile, file_id=file_id, tmin=tmin, tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
             #
@@ -94,6 +96,11 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
         else:
             return JsonResponse({'error': 'There was a problem with the data'})
 
+
+
+class FileViewSet(viewsets.ModelViewSet):
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
 
 
 class ReliabilityLMTFile(viewsets.ModelViewSet):
@@ -117,7 +124,7 @@ class ReliabilityLMTFile(viewsets.ModelViewSet):
             # path_to_file = os.path(serializer.data['sqlite'])
             # print("*******" + file.path + "*******")
             print(MEDIA_ROOT)
-            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("temp/")[1]
+            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("uploaded/")[1]
             print(path_file)
             reliabilityContext = tasks.getReliability.delay(path_file, deleteFile=True, file_id=file_id)
             #
@@ -132,7 +139,3 @@ class ReliabilityLMTFile(viewsets.ModelViewSet):
 
 
 
-# class DeleteTempFileAPIView(APIView):
-#     print("Delete!")
-#     def post(self, request):
-#         file = request.data()

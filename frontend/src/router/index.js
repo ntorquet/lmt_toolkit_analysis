@@ -13,6 +13,7 @@ import Reliability from "@/views/Reliability";
 import Results from "@/views/Results";
 import VersionHistory from "@/views/VersionHistory";
 import Documentation from "@/views/Documentation";
+import Files from "@/views/Files.vue";
 
 const routes = [
   {
@@ -20,7 +21,7 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
-      title: 'LMT_v1_0_3 toolkit - Analysis'
+      title: 'LMT-toolkit'
     }
   },
   {
@@ -31,7 +32,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
     meta: {
-      title: 'LMT_v0_1_4 toolkit'
+      title: 'LMT-toolkit'
     }
   },
   {
@@ -39,7 +40,7 @@ const routes = [
     name: 'reliability',
     component: Reliability,
     meta: {
-      title: 'LMT_v0_1_4 toolkit'
+      title: 'LMT-toolkit'
     }
   },
   {
@@ -47,7 +48,7 @@ const routes = [
     name: 'results',
     component: Results,
     meta: {
-      title: 'LMT_v0_1_4 toolkit'
+      title: 'LMT-toolkit'
     }
   },
   {
@@ -55,7 +56,7 @@ const routes = [
     name: 'versions',
     component: VersionHistory,
     meta: {
-      title: 'LMT_v0_1_4 toolkit'
+      title: 'LMT-toolkit'
     }
   },
   {
@@ -63,7 +64,15 @@ const routes = [
     name: 'documentation',
     component: Documentation,
     meta: {
-      title: 'LMT_v0_1_4 toolkit'
+      title: 'LMT-toolkit'
+    }
+  },
+  {
+    path: '/files',
+    name: 'files',
+    component: Files,
+    meta: {
+      title: 'LMT-toolkit'
     }
   },
 

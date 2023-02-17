@@ -28,6 +28,21 @@ Code under GPL v3.0 licence
       <b-tbody>
         <b-tr>
           <b-td valign="middle">
+            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.2" target="_blank">
+            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.2</b-badge></a>
+          </b-td>
+          <b-td valign="middle">2023 Febuary</b-td>
+          <b-td>
+            SQLite files can be downloaded after the rebuild process.<br />
+            The list of saved SQLite files can be found on the File List page. Each saved SQLite file can be deleted from this page.
+          </b-td>
+          <b-td>
+            v1.0.5 problem fixed with animalType: solved in Rebuild_All_Events.py
+          </b-td>
+          <b-td valign="middle"><a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a></b-td>
+        </b-tr>
+        <b-tr>
+          <b-td valign="middle">
             <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.4" target="_blank">
             <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.4</b-badge></a>
           </b-td>
@@ -135,7 +150,7 @@ Code under GPL v3.0 licence
             <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1" target="_blank">
             <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1</b-badge></a>
           </b-td>
-          <b-td valign="middle">2022 september</b-td>
+          <b-td valign="middle">2022 September</b-td>
           <b-td>
             <strong>Pre release version</strong><br />
           </b-td>
