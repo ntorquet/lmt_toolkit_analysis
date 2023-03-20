@@ -35,3 +35,23 @@ class File(models.Model):
     class Meta:
         verbose_name = 'File'
         verbose_name_plural = 'Files'
+
+
+class Version(models.Model):
+    lmt_toolkit_version = models.CharField(max_length=255)
+    lmt_toolkit_version_link = models.CharField(max_length=255, null=True, blank=True)
+    lmt_toolkit_version_date = models.DateField()
+    lmt_toolkit_version_changes = models.TextField(null=True, blank=True)
+    lmt_analysis_version = models.CharField(max_length=255, null=True, blank=True)
+    lmt_analysis_version_link = models.CharField(max_length=255, null=True, blank=True)
+    lmt_analysis_version_changes = models.TextField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.lmt_toolkit_version
+
+    class Meta:
+        verbose_name = 'Version'
+        verbose_name_plural = 'Versions'

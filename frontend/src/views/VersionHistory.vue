@@ -26,151 +26,56 @@ Code under GPL v3.0 licence
         </b-tr>
       </b-thead>
       <b-tbody>
-        <b-tr>
+        <b-tr v-for="version in versions.reverse()">
           <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.2" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.2</b-badge></a>
+            <a href="version.lmt_toolkit_version_link" target="_blank">
+            <b-badge variant="dark" pill><b-icon-github></b-icon-github> {{ version.lmt_toolkit_version }}</b-badge></a>
           </b-td>
-          <b-td valign="middle">2023 Febuary</b-td>
+          <b-td valign="middle">{{ version.lmt_toolkit_version_date }}</b-td>
           <b-td>
-            SQLite files can be downloaded after the rebuild process.<br />
-            The list of saved SQLite files can be found on the File List page. Each saved SQLite file can be deleted from this page.
-          </b-td>
-          <b-td>
-            v1.0.5 problem fixed with animalType: solved in Rebuild_All_Events.py
-          </b-td>
-          <b-td valign="middle"><a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a></b-td>
-        </b-tr>
-        <b-tr>
-          <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.4" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.4</b-badge></a>
-          </b-td>
-          <b-td valign="middle">2022 December</b-td>
-          <b-td>
-            Users can target their analysis to a given time period.
+            {{ version.lmt_toolkit_version_changes }}
           </b-td>
           <b-td>
-            LMT-analysis upgraded (v1.0.3 to v1.0.5):
-            <b-list-group>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                MouseAutomaticProfile don't create text file anymore.
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.4" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.4</b-badge></a>
-              </b-list-group-item>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                RFID added and group name modified.
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.4" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.4</b-badge></a>
-              </b-list-group-item>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                fix: "Rebuild all events" was changed in v1.0.4, (leading to an import error + only the followZone event was computed).
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a>
-              </b-list-group-item>
-            </b-list-group>
+            {{ version.lmt_analysis_version_changes }}
           </b-td>
-          <b-td valign="middle">
-            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.5</b-badge></a>
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.3" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.3</b-badge></a>
-          </b-td>
-          <b-td valign="middle">2022 October</b-td>
-          <b-td>
-            <b-list-group>
-              <b-list-group-item>Reliability section added</b-list-group-item>
-              <b-list-group-item>Selection of events changed</b-list-group-item>
-              <b-list-group-item>Documentation updated</b-list-group-item>
-              <b-list-group-item>CSV results file with version name of LMT-toolkit and the name of the experiment</b-list-group-item>
-              <b-list-group-item>Bugs corrections</b-list-group-item>
-            </b-list-group>
-          </b-td>
-          <b-td>
-            No changes
-          </b-td>
-          <b-td valign="middle">
-            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.2" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.2</b-badge></a>
-          </b-td>
-          <b-td valign="middle">2022 October</b-td>
-          <b-td>
-            Version updates
-          </b-td>
-          <b-td>
-            No changes
-          </b-td>
-          <b-td valign="middle">
-            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.1" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1.1</b-badge></a>
-          </b-td>
-          <b-td valign="middle">2022 october</b-td>
-          <b-td>
-            <strong>Pre release version</strong>:<br />
-            Wrong message color if temperature higher than 26°C corrected<br />
-            BootstrapVue3 updated to v0.3.11
-          </b-td>
-          <b-td>
-            LMT-analysis upgraded (v1.0.0 to v1.0.3):
-            <b-list-group>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                Event "approach contact" corrected
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.1" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.1</b-badge></a>
-              </b-list-group-item>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                Events "follow zone" and "side walk" updated: they no longer compute on a detection where the head and tail are not detected
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.1" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.1</b-badge></a>
-              </b-list-group-item>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                Fix a problem with the Nest3_ event. The stop condition necessary is now considered correctly
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.2" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.2</b-badge></a>
-              </b-list-group-item>
-              <b-list-group-item class="d-flex justify-content-between align-items-center">
-                Fix an head/tail problem condition in the followzone event
-                <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
-              </b-list-group-item>
-            </b-list-group>
-          </b-td>
-          <b-td valign="middle">
-            <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.3</b-badge></a>
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-td valign="middle">
-            <a href="https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1" target="_blank">
-            <b-badge variant="dark" pill><b-icon-github></b-icon-github> v0.1</b-badge></a>
-          </b-td>
-          <b-td valign="middle">2022 September</b-td>
-          <b-td>
-            <strong>Pre release version</strong><br />
-          </b-td>
-          <b-td>
-            Initial code for reliability. Analysis code is a fork of <a href="https://github.com/fdechaumont/lmt-analysis" target="_blank">lmt-analysis</a> on July 13, 2022.
-          </b-td>
-          <b-td valign="middle">Pre release corresponding to <a href="https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.0" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> v1.0.0</b-badge></a></b-td>
+          <b-td valign="middle"><a :href="version.lmt_analysis_version_link" target="_blank"><b-badge variant="secondary" pill><b-icon-github></b-icon-github> {{ version.lmt_analysis_version }}</b-badge></a></b-td>
         </b-tr>
       </b-tbody>
     </b-table-simple>
+
   </b-container>
 </template>
 
 <script>
 import {BIconGithub} from "bootstrap-icons-vue"
+import axios from "axios";
 export default {
   name: "VersionHistory",
   components: {
     'BIconGithub': BIconGithub,
   },
+  data:function (){
+		return{
+      versions: [],
+    }
+  },
+  methods: {
+    getVersions() {
+      this.files = []
+      this.filesItems = []
+      axios.get(`api/v1/versions`)
+          .then(response => {
+            this.versions = response.data
+            this.organizeFiles()
+          })
+          .catch(error => {
+            console.log(JSON.stringify(error))
+          })
+    },
+  },
+  mounted() {
+    this.getVersions()
+  }
 }
 </script>
 
