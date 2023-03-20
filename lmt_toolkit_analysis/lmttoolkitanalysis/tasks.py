@@ -22,7 +22,8 @@ from datetime import date
 import requests
 import json
 from lmttoolkitanalysis.methods import *
-from lmt_toolkit_analysis.settings import MEDIA_ROOT
+from lmt_toolkit_analysis.settings import MEDIA_ROOT, MEDIA_URL
+import requests
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
@@ -356,7 +357,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     # print(distanceAndTimeInContact)
 
     progress_recorder.set_progress(10, 12, f'first analysis done - start Rebuild_all_event')
-    process(file)
+    process(file, minT, maxT)
 
     progress_recorder.set_progress(11, 12, f'Rebuild done - compute analysis')
 
@@ -426,13 +427,24 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     # default_storage.delete(file
 
     # deleteFile
+    instance = File.objects.get(id=file_id)
+    file_id = {'file_id': file_id}
     if deleteFile:
         print("Delete SQLite file")
-        print('file id: '+str(file_id))
-        instance = File.objects.get(id=file_id)
-        if instance.sqlite:
-            os.remove(os.path.join(MEDIA_ROOT, str(instance.sqlite)))
-        # instance.delete()
+        print('file id: ' + str(file_id))
+        url_deleteFile = 'http://127.0.0.1:8000/api/v1/files/' + str(file_id['file_id'])
+        print(url_deleteFile)
+        response = requests.delete(url_deleteFile)
+        file_url = {'file_url': ''}
+
+    else:
+        file_url = {'file_url': MEDIA_URL+str(instance.sqlite)}
+        print(MEDIA_URL)
+        print('file_url: '+file_url['file_url'])
+
+
+    reliabilityContext.update(file_id)
+    reliabilityContext.update(file_url)
 
     return reliabilityContext
 
@@ -682,14 +694,25 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     print(file)
     # default_storage.delete(file
 
-    # deleteFile
+
+    instance = File.objects.get(id=file_id)
+    file_id = {'file_id': file_id}
     if deleteFile:
         print("Delete SQLite file")
-        print('file id: '+str(file_id))
-        instance = File.objects.get(id=file_id)
-        if instance.sqlite:
-            os.remove(os.path.join(MEDIA_ROOT, str(instance.sqlite)))
-        # instance.delete()
+        print('file id: ' + str(file_id))
+        url_deleteFile = 'http://127.0.0.1:8000/api/v1/files/' + str(file_id['file_id'])
+        print(url_deleteFile)
+        response = requests.delete(url_deleteFile)
+        file_url = {'file_url': ''}
+
+    else:
+        file_url = {'file_url': MEDIA_URL+str(instance.sqlite)}
+        print(MEDIA_URL)
+        print('file_url: '+file_url['file_url'])
+
+
+    reliabilityContext.update(file_id)
+    reliabilityContext.update(file_url)
 
     return reliabilityContext
 

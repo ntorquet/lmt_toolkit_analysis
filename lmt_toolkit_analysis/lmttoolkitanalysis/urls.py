@@ -8,8 +8,9 @@ Code under GPL v3.0 licence
 '''
 
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.contrib.auth.models import User
+from django.views.static import serve
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 
@@ -20,6 +21,8 @@ from .views import *
 router = DefaultRouter()
 router.register('analyse', AnalyseLMTFile, basename="analyse")
 router.register('reliability', ReliabilityLMTFile, basename="reliability")
+router.register('files', FileViewSet, basename='files')
+router.register('versions', VersionViewSet, basename='versions')
 
 urlpatterns = [
     path('', include(router.urls)),

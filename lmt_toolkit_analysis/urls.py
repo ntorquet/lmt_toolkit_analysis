@@ -6,6 +6,14 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 '''
+from django.template.defaulttags import url
+from django.views.static import serve
+from django.contrib import admin
+from django.urls import path, include, re_path
+from django.conf.urls.static import static
+from rest_framework.authtoken import views as auth_views
+
+from lmt_toolkit_analysis.lmt_toolkit_analysis import settings
 
 """lmt_toolkit URL Configuration
 
@@ -22,12 +30,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include, re_path
-from django.conf.urls.static import static
-from rest_framework.authtoken import views as auth_views
 
-from lmt_toolkit_analysis.lmt_toolkit_analysis import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +38,6 @@ urlpatterns = [
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
     path('api/v1/', include('lmt_toolkit_analysis.urls')),
+    url(r'^media/temp/uploaded/(?*.sqlite)$', serve, {'document root': settings.MEDIA_ROOT})
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

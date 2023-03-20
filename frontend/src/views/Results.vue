@@ -79,12 +79,12 @@ Code under GPL v3.0 licence
                       <b-alert v-if="deleteFile" class="alert-warning" show>
                         <strong>The file will be deleted</strong><br />
                         The sqlite file which will uploaded by LMT-toolkit will be deleted at the end of the process.<br />
-                        This will free up space but you will not be able to save rebuilded data like behavioral events.
+                        This will free up space but you will not be able to save rebuilt data like behavioral events.
                       </b-alert>
                       <b-alert v-else class="alert-warning" show>
                         <strong>The file will be kept</strong><br />
                         The sqlite file which will uploaded by LMT-toolkit will not be deleted at the end of the process.<br />
-                        You will be able to save this file later with rebuilded data like behavioral events, but this will take a significant storage place.
+                        You will be able to save this file later with rebuilt data like behavioral events, but this will take a significant storage place.
                       </b-alert>
                     </div>
                   </div>
@@ -135,6 +135,9 @@ Code under GPL v3.0 licence
     <b-container v-if="analysisSelected" fluid>
       <show-analysis v-bind:data="data" v-bind:filename="file.name"></show-analysis>
     </b-container>
+    <div v-if="data.file_url!=''">
+      <b-button :href="fileURL">Download the rebuilt sqlite database</b-button>
+    </div>
   </div>
 </template>
 
@@ -195,7 +198,9 @@ export default {
         'week(s)': 30*60*60*24*7,
       },
       durationChecker: '',
-      deleteFile: 'unselected'
+      deleteFile: 'unselected',
+      fileURL: '',
+      djangoRestURL: axios.defaults.baseURL,
 		}
 	},
 	methods:{
@@ -268,7 +273,9 @@ export default {
             this.data = this.task.result
             this.processing = false
             this.checked = true
+            this.fileURL = this.djangoRestURL.concat(this.data.file_url)
             // this.data['name_experiment'] = this.filename.split('.sqlite')[0]
+            // this.downloadFile(this.data.file_id)
           }
           else {
             this.tasksProgression = this.task.progress.percent
@@ -323,6 +330,25 @@ export default {
       else {
         this.durationChecker = ''
       }
+    },
+    downloadFile(fileId) {
+      axios.get(`api/v1/files/${fileId}/`)
+      .then(response => {
+        // this.fileURL = window.URL.createObjectURL(new Blob([response.data]))
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement('a');
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', `${response.data.file_name}`);
+
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      })
+      .catch(error => {
+          console.log(JSON.stringify(error))
+        })
+
     }
 	},
   watch: {

@@ -15,6 +15,7 @@
     "bootstrap-vue-3": "^0.3.11",
     "chart.js": "^3.8.0",
     "core-js": "^3.8.3",
+    "nuxt": "^3.2.0",
     "stylus": "^0.58.1",
     "stylus-loader": "^3.0.2",
     "vue": "^3.2.13",
