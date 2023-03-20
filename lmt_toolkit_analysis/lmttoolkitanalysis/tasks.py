@@ -351,55 +351,14 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
         maxT = int(tmax)*timeUnit[unitMaxT]
 
 
-
-    # distanceAndTimeInContact = getDistanceAndTimeInContact(connection, minT, maxT, file)
-    # reliabilityContext.update({'distanceAndTimeInContact': distanceAndTimeInContact})
-    # print(distanceAndTimeInContact)
-
+    # Rebuild_all_event from minT to maxT
     progress_recorder.set_progress(10, 12, f'first analysis done - start Rebuild_all_event')
     process(file, minT, maxT)
 
     progress_recorder.set_progress(11, 12, f'Rebuild done - compute analysis')
 
-    # connection = sqlite3.connect(file)
-    # create an animalPool, which basically contains your animals
-    # print("Trajectory")
-    # animalPool = AnimalPool()
-    #
-    # # load infos about the animals
-    # animalPool.loadAnimals(connection)
-    # #
-    # # load all detection (positions) of all animals for the first hour
-    # animalPool.loadDetection(start = 0, end = 60*30 ,lightLoad = True)
-    # trajectories = {}
-    # # 10 first minutes: 10*60*30
-    # for mouse in animalPool.animalDictionnary.keys():
-    #     trajectories[animalPool.animalDictionnary[mouse].RFID] = animalPool.animalDictionnary[mouse].getTrajectoryData()
-    # # reliabilityContext.update({'trajectories': trajectories})
-    # print(trajectories)
 
-
-    # animalPool = AnimalPool()
-    # #
-    # # # load infos about the animals
-    # animalPool.loadAnimals(connection)
-    #
-    # head, tail = os.path.split(file)
-    # extension = head[-4:]
-    # print('extension: ', extension)
-    # profileData = {}
-    # profileData[file] = {}
-    #
-    # # text_file = getFileNameInput()
-    # # text_file_name = 'extra_'+file.split('\\')[2].split('.')[0]+".txt"
-    # # text_file = open ( text_file_name, "w")
-    # # # text_file = 'extra_'+file.split('\\')[2].split('.')[0]
-    # # print('text file extra: '+text_file_name)
-    # n = 0
-    # # Compute profile2 data and save them in a text file
-    # profileData[file][n] = computeProfileWithoutText_file(file=file, minT=minT, maxT=maxT, night=n, behaviouralEventList=behaviouralEventOneMouse)
-    # for mouse in profileData[file][n]:
-
+    # Analysis from minT to maxT
     profileData = getDataProfile(connection, minT, maxT, file)
     print("tmin: " + str(tmin))
     print("unitMinT: "+str(unitMinT))
@@ -408,23 +367,11 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     print("minT: "+str(minT))
     print("maxT: "+str(maxT))
 
-    # text_file.write("\n")
-    # # Create a json file to store the computation
-    # with open("profile_data_{}_{}.json".format('no_night', extension), 'w') as fp:
-    #     json.dump(profileData, fp, indent=4)
-    # print(extension)
-    # print("json file with profile measurements created.")
-    #
-    # text_file.write("\n")
-    # text_file.close()
     reliabilityContext.update({'profileData': profileData})
 
     progress_recorder.set_progress(12, 12, f'Analysis done')
 
-
     connection.close()
-    print(file)
-    # default_storage.delete(file
 
     # deleteFile
     instance = File.objects.get(id=file_id)
