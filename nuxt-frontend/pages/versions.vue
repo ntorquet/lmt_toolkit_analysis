@@ -32,7 +32,7 @@ Code under GPL v3.0 licence
           <tr v-for="version in versions.reverse()">
             <td>
               <a :href="version.lmt_toolkit_version_link" target="_blank">
-              <v-chip color="black"><v-icon icon="mdi-github"></v-icon> {{ version.lmt_toolkit_version }}</v-chip></a>
+                <v-chip color="black"><v-icon icon="mdi-github" class="mr-1"></v-icon> <strong>{{ version.lmt_toolkit_version }}</strong></v-chip></a>
             </td>
             <td>{{ version.lmt_toolkit_version_date }}</td>
             <td>
@@ -41,7 +41,7 @@ Code under GPL v3.0 licence
             <td>
               {{ version.lmt_analysis_version_changes }}
             </td>
-            <td><a :href="version.lmt_analysis_version_link" target="_blank"><v-chip color="primary"><v-icon icon="mdi-github"></v-icon> {{ version.lmt_analysis_version }}</v-chip></a></td>
+            <td><a :href="version.lmt_analysis_version_link" target="_blank"><v-chip color="primary"><v-icon icon="mdi-github" class="mr-1"></v-icon> <strong>{{ version.lmt_analysis_version }}</strong></v-chip></a></td>
           </tr>
         </tbody>
       </v-table>
