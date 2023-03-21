@@ -8,14 +8,15 @@ Code under GPL v3.0 licence
 -->
 <template>
   <v-app-bar color="black">
-    <v-app-bar-title>LMT-toolkit</v-app-bar-title>
+    <v-app-bar-title><strong>LMT-toolkit</strong></v-app-bar-title>
     <v-row>
-      <v-col><nuxt-link to="/reliability">Reliability</nuxt-link></v-col>
+      <v-col><nuxt-link to="/reliability" class="nuxt-link">Reliability</nuxt-link></v-col>
       <v-col>Analysis</v-col>
-      <v-col><nuxt-link to="/files">Files list</nuxt-link></v-col>
-      <v-col>Documentation</v-col>
-      <v-col>Versions</v-col>
+      <v-col><nuxt-link to="/files" class="nuxt-link">Files list</nuxt-link></v-col>
+      <v-col><nuxt-link to="/documentation" class="nuxt-link">Documentation</nuxt-link></v-col>
+      <v-col><nuxt-link to="/versions" class="nuxt-link">Versions</nuxt-link></v-col>
     </v-row>
+
   </v-app-bar>
 </template>
 
@@ -26,5 +27,13 @@ export default {
 </script>
 
 <style scoped>
+.nuxt-link{
+  color: white;
+  text-decoration: None;
+}
+
+.nuxt-link:hover{
+  text-decoration: underline;
+}
 
 </style>

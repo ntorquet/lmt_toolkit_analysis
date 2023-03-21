@@ -8,55 +8,57 @@ Code under GPL v3.0 licence
 -->
 <template>
   <v-main>
-    <h1 class="title">Saved SQLite databases</h1>
-        <div v-if="files.length>0">
-          <v-table fixed-header width="800px">
-            <thead>
-              <tr>
-                <th v-for="field in fields">
-                  {{ field }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="file, index in files">
-                <td>{{ file.file_name }}</td>
-                <td>{{ file.tmin }}</td>
-                <td>{{ file.tmax }}</td>
-                <td>{{ file.created_at }}</td>
-                <td>
-                  <v-btn size="sm" :href="filesItems[index]['Link']">
-                    <v-icon icon="mdi-download"></v-icon>
-                     Download
-                  </v-btn>
-                </td>
-                <td>
-                  <v-btn size="sm" @click="deleteFile(files[index]['id'])">
-                    <v-icon icon="mdi-delete"></v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+    <v-container>
+      <h1 class="title">Saved SQLite databases</h1>
+      <div v-if="files.length>0">
+        <v-table fixed-header width="800px">
+          <thead>
+            <tr>
+              <th v-for="field in fields">
+                {{ field }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="file, index in files">
+              <td>{{ file.file_name }}</td>
+              <td>{{ file.tmin }}</td>
+              <td>{{ file.tmax }}</td>
+              <td>{{ file.created_at }}</td>
+              <td>
+                <v-btn size="sm" :href="filesItems[index]['Link']">
+                  <v-icon icon="mdi-download"></v-icon>
+                   Download
+                </v-btn>
+              </td>
+              <td>
+                <v-btn size="sm" @click="deleteFile(files[index]['id'])">
+                  <v-icon icon="mdi-delete"></v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
 
 
-          <v-table ref="fileTable" striped hover :items="filesItems" :fields="fields">
-            <template #cell(Download)="row">
-              <v-btn size="sm" :href="filesItems[row.index]['Link']">
-                <v-icon icon="mdi-download"></v-icon>
-                 Download
-              </v-btn>
-            </template>
-            <template #cell(Delete)="row">
-              <v-btn size="sm" @click="deleteFile(files[row.index]['id'])">
-                <v-icon icon="mdi-trash"></v-icon>
-              </v-btn>
-            </template>
-          </v-table>
-        </div>
-        <div v-else>
-          <p>There is no SQLite database in LMT-toolkit</p>
-        </div>
+        <v-table ref="fileTable" striped hover :items="filesItems" :fields="fields">
+          <template #cell(Download)="row">
+            <v-chip size="sm" :href="filesItems[row.index]['Link']">
+              <v-icon icon="mdi-download"></v-icon>
+               Download
+            </v-chip>
+          </template>
+          <template #cell(Delete)="row">
+            <v-chip size="sm" @click="deleteFile(files[row.index]['id'])">
+              <v-icon icon="mdi-trash"></v-icon>
+            </v-chip>
+          </template>
+        </v-table>
+      </div>
+      <div v-else>
+        <p>There is no SQLite database in LMT-toolkit</p>
+      </div>
+    </v-container>
   </v-main>
 </template>
 

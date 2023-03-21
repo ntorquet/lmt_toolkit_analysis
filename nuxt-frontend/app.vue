@@ -15,3 +15,7 @@ Code under GPL v3.0 licence
     </NuxtLayout>
   </v-app>
 </template>
+<style scoped>
+
+
+</style>

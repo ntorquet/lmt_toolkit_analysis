@@ -8,11 +8,9 @@ Code under GPL v3.0 licence
 -->
 <template>
   <v-footer color="black" height="100em">
-    <v-row align="center">
-      <v-col lass="text-center mt-4" cols="12">
-        About - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - v0.1.4
-      </v-col>
-    </v-row>
+    <div class="px-4 py-2 bg-black text-center w-100">
+       About - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - v0.1.4
+    </div>
   </v-footer>
 </template>
 

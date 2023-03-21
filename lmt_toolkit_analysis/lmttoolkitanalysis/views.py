@@ -144,3 +144,7 @@ class VersionViewSet(viewsets.ModelViewSet):
     serializer_class = VersionSerializer
 
 
+class EventDocumentationViewSet(viewsets.ModelViewSet):
+    queryset = EventDocumentation.objects.all()
+    serializer_class = EventDocumentationSerializer
+
