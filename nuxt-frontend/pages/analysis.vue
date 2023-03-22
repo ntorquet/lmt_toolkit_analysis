@@ -10,6 +10,21 @@ Code under GPL v3.0 licence
   <v-main>
     <v-container>
       <h1>Analysis</h1>
+       <v-alert
+          color="#2A3B4D"
+          theme="dark"
+          icon="mdi-alert-box"
+          prominent
+          class="mt-10"
+      >
+        LMT-toolkit processes LMT experiments automatically, using the Python code
+        available on Github (<nuxt-link to="https://github.com/fdechaumont/lmt-analysis" target="_blank"><v-icon icon="mdi-github"></v-icon> https://github.com/fdechaumont/lmt-analysis</nuxt-link>).<br />
+        LMT-toolkit extracts the total duration, the number of occurrences and the mean duration of each occurrence
+        for the behaviors described <nuxt-link to="https://livemousetracker.org/" target="_blank">here</nuxt-link>.<br />
+         Please visit the <nuxt-link to="/versions" target="_blank">version history page</nuxt-link> for information about the code used.
+       </v-alert>
+
+
       <v-timeline direction="horizontal"  class="mt-10 mb-10">
         <v-timeline-item
           dot-color="pink"
