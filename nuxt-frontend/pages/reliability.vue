@@ -11,98 +11,67 @@ Code under GPL v3.0 licence
     <v-container>
       <h1>Check the reliability of an experiment</h1>
 
-    <v-window v-model="step">
-      <v-window-item :value="1">
-        <v-card-text>
-          To check the experiment, you have to select a LMT SQLite file:
-          <v-file-input
-              accept="sqlite"
-              label="Select a file"
-              @change="onFilePicked($event)"
-          ></v-file-input>
-          <v-btn v-if="file && !uploading && !checked" @click="upload">Check the experiment</v-btn>
-        </v-card-text>
-      </v-window-item>
+      <v-alert
+        v-model="error"
+        density="compact"
+        color="warning"
+      >
+        {{ errorMessage }}
+      </v-alert>
 
-      <v-window-item :value="2">
-        <v-card-text>
-          <v-text-field
-            label="Password"
-            type="password"
-          ></v-text-field>
-          <v-text-field
-            label="Confirm Password"
-            type="password"
-          ></v-text-field>
-          <span class="text-caption text-grey-darken-1">
-            Please enter a password for your account
-          </span>
-        </v-card-text>
-      </v-window-item>
-
-      <v-window-item :value="3">
-        <div class="pa-4 text-center">
-          <v-img
-            class="mb-4"
-            contain
-            height="128"
-            src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-          ></v-img>
-          <h3 class="text-h6 font-weight-light mb-2">
-            Welcome to Vuetify
-          </h3>
-          <span class="text-caption text-grey">Thanks for signing up!</span>
-        </div>
-      </v-window-item>
-    </v-window>
-
-      <v-row class="mt-10" v-if="!checked && !uploading && !processing">
-        <v-col>
-          To check the experiment, you have to select a LMT SQLite file:
-        </v-col>
-        <v-col>
-          <v-file-input
-              accept="sqlite"
-              label="Select a file"
-              @change="onFilePicked($event)"
-          ></v-file-input>
-        </v-col>
-        <v-col v-if="!file">
-          <strong> Choose a SQLite file…</strong>
-        </v-col>
-        <v-col v-else>
-            {{ file.name }}<br />
+      <v-window v-model="step">
+        <v-window-item :value="1">
+          <v-card-text>
+            To check the experiment, you have to select a LMT SQLite file:
+            <v-file-input
+                accept="sqlite"
+                label="Select a file"
+                @change="onFilePicked($event)"
+            ></v-file-input>
             <v-btn v-if="file && !uploading && !checked" @click="upload">Check the experiment</v-btn>
-        </v-col>
-      </v-row>
+          </v-card-text>
+        </v-window-item>
 
-      <div v-if="!checked && !uploading && !processing">
-        <p>To check the experiment, you have to select a LMT SQLite file:</p>
-        <div class="file">
-          <label class="file-label">
-            <input class="form-file" type="file" name="file" @change="onFilePicked($event)">
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
-              </span>
-              <span class="file-label" v-if="!file">
-                <strong> Choose a SQLite file…</strong>
-              </span>
-              <span v-else>
-                {{ file.name }}<br />
-                <div class="block" v-if="file && !uploading && !checked">
-                  <b-button class="button is-success" @click="upload">Check the experiment</b-button>
-                </div>
-              </span>
-            </span>
-          </label>
-        </div>
-      </div>
+        <v-window-item :value="2">
+          <v-card-title><v-icon icon="mdi-download"></v-icon> LMT-toolkit is uploading your SQLite file</v-card-title>
+          <v-card-text>
+            <v-progress-linear
+                v-model="uploadPercentage"
+                color="blue-grey"
+                height="25"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
+          </v-card-text>
+        </v-window-item>
+
+        <v-window-item :value="3">
+          <div class="pa-4 text-center">
+            <v-img
+              class="mb-4"
+              contain
+              height="128"
+              src="https://cdn.vuetifyjs.com/images/logos/v.svg"
+            ></v-img>
+            <h3 class="text-h6 font-weight-light mb-2">
+              Welcome to Vuetify
+            </h3>
+            <span class="text-caption text-grey">Thanks for signing up!</span>
+          </div>
+        </v-window-item>
+      </v-window>
+
+
+
+
     </v-container>
   </v-main>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "reliability",
   data:function (){
@@ -138,15 +107,19 @@ export default {
       {
         this.file = files[0]
         this.filename = files[0].name
+        this.error = false
+        this.errorMessage = ''
       }
       else
       {
         this.file = ''
         this.filename = ''
-        this.$toast.error('Wrong file: we must select a SQLite file')
+        this.error = true
+        this.errorMessage = 'Wrong file: we must select a SQLite file'
       }
     },
     async upload() {
+      this.step = 2
       this.uploading = true
       console.log(this.file)
       let formData = new FormData();
@@ -178,7 +151,7 @@ export default {
       })
     },
     getProgression() {
-       axios.get(`celery-progress/${this.task_id}/`)
+       axios.get(`http://127.0.0.1:8000/celery-progress/${this.task_id}/`)
         .then(response => {
           this.task = response.data
           if(this.task.state == "FAILURE")
@@ -191,6 +164,7 @@ export default {
           else if(this.task.state == 'SUCCESS') {
             console.log('ok!')
             console.log( this.task.result)
+            this.step = 3
             this.data = this.task.result
             this.processing = false
             this.checked = true
