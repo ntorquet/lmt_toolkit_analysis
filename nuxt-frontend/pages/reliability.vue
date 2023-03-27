@@ -49,16 +49,7 @@ Code under GPL v3.0 licence
 
         <v-window-item :value="3">
           <div class="pa-4 text-center">
-            <v-img
-              class="mb-4"
-              contain
-              height="128"
-              src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-            ></v-img>
-            <h3 class="text-h6 font-weight-light mb-2">
-              Welcome to Vuetify
-            </h3>
-            <span class="text-caption text-grey">Thanks for signing up!</span>
+            <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
           </div>
         </v-window-item>
       </v-window>

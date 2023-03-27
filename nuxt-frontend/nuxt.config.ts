@@ -13,6 +13,6 @@ export default defineNuxtConfig({
     //     baseURL: 'http://localhost:8000'
     // },
     build: {
-        transpile: ['vuetify']
+        transpile: ['vuetify', 'chart.js']
     }
 })
