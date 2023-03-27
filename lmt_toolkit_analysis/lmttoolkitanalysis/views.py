@@ -103,6 +103,17 @@ class FileViewSet(viewsets.ModelViewSet):
     serializer_class = FileSerializer
 
 
+class CheckReliabilityAPIView(APIView):
+    def get(self, request):
+        sqliteFile = File.objects.filter(id=request)
+        reliabilityContext = tasks.getReliability.delay(sqliteFile['sqlite'], deleteFile=True, file_id=sqliteFile.id)
+        #
+        task_id = reliabilityContext.task_id
+        print(task_id)
+        return JsonResponse({'filename': sqliteFile['file_name'], 'task_id': task_id, 'path_file': sqliteFile['sqlite']})
+
+
+
 class ReliabilityLMTFile(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = FileSerializer

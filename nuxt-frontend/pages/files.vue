@@ -35,6 +35,9 @@ Code under GPL v3.0 licence
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">
                   <v-icon icon="mdi-delete"></v-icon>
                 </v-btn>
+                <v-btn @click="checkReliability(files[index]['id'])">
+                  reliability
+                </v-btn>
               </td>
             </tr>
           </tbody>
@@ -43,15 +46,15 @@ Code under GPL v3.0 licence
 
         <v-table ref="fileTable" striped hover :items="filesItems" :fields="fields">
           <template #cell(Download)="row">
-            <v-chip size="sm" :href="filesItems[row.index]['Link']">
+            <v-btn size="sm" :href="filesItems[row.index]['Link']">
               <v-icon icon="mdi-download"></v-icon>
                Download
-            </v-chip>
+            </v-btn>
           </template>
           <template #cell(Delete)="row">
-            <v-chip size="sm" @click="deleteFile(files[row.index]['id'])">
+            <v-btn size="sm" @click="deleteFile(files[row.index]['id'])">
               <v-icon icon="mdi-trash"></v-icon>
-            </v-chip>
+            </v-btn>
           </template>
         </v-table>
       </div>
@@ -108,6 +111,15 @@ export default {
       .catch(error => {
           console.log(JSON.stringify(error))
         })
+    },
+    checkReliability(fileId){
+      axios.get(`http://127.0.0.1:8000/checkReliability/${fileId}/`)
+      .then(response => {
+        this.taskId = response.data.taskId
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error))
+      })
     }
   },
   mounted() {

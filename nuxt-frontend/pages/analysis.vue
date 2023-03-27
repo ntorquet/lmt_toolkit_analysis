@@ -24,50 +24,18 @@ Code under GPL v3.0 licence
          Please visit the <nuxt-link to="/versions" target="_blank">version history page</nuxt-link> for information about the code used.
        </v-alert>
 
-      <v-timeline direction="horizontal"  class="mt-10 mb-10">
-        <v-timeline-item
-          dot-color="pink"
-          icon="mdi-download"
-        >
-          File selection
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="green"
-          icon="mdi-database-check"
-        >
-          Reliability
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="purple"
-          icon="mdi-database-edit"
-        >
-          Animal info
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="red-lighten-1"
-          icon="mdi-database-cog"
-        >
-          Rebuild
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="amber-lighten-1"
-          icon="mdi-cogs"
-        >
-          Analysis config
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="cyan-lighten-1"
-          icon="mdi-chart-line"
-        >
-          Analysis
-        </v-timeline-item>
-        <v-timeline-item
-          dot-color="indigo-lighten-2"
-          icon="mdi-content-save"
-        >
-          Save
-        </v-timeline-item>
-      </v-timeline>
+      <v-row>
+        <v-col>
+          <v-timeline direction="horizontal"  class="mt-10 mb-10">
+            <v-timeline-item v-for="(item, key) in timelineItems"
+              :dot-color="item.color"
+              :icon="item.icon"
+            >
+              {{ item.title }}
+            </v-timeline-item>
+          </v-timeline>
+        </v-col>
+      </v-row>
 
       <v-alert
         v-model="error"
@@ -138,6 +106,50 @@ export default {
   name: "analysis",
   data:function (){
 		return{
+       timelineItems: {
+        selectSqlite: {
+          title: 'Select a SQLite file',
+          icon: 'mdi-download',
+          color: 'pink',
+          text: 'This file will be downloaded into the server to be process.'
+        },
+        reliability: {
+          title: 'Check the reliability',
+          icon: 'mdi-database-check',
+          color: 'grey',
+          text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
+        },
+        animalInfo: {
+          title: 'Add animal information',
+          icon: 'mdi-database-edit',
+          color: 'grey',
+          text: 'Add sex, treatment columns. Modify the name of each animal.'
+        },
+        rebuild: {
+          title: 'Rebuild the database',
+          icon: 'mdi-database-cog',
+          color: 'grey',
+          text: 'This will create behavioral events into the event table of the SQLite file.'
+        },
+        configAnalysis: {
+          title: 'Configure the analysis',
+          icon: 'mdi-cogs',
+          color: 'grey',
+          text: 'Delimit a period to analyse, and more.'
+        },
+        analysis: {
+          title: 'Analyse your data',
+          icon: 'mdi-chart-line',
+          color: 'grey',
+          text: 'LMT-toolkit processes LMT experiments automatically for you!'
+        },
+        save: {
+          title: 'Save your results',
+          icon: 'mdi-content-save',
+          color: 'grey',
+          text: 'Download your result into a CSV file.'
+        }
+      },
       step: 1,
       file: '',
       uploading: false,

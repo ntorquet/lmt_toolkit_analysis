@@ -30,4 +30,5 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # path('analyse_reliability/', views.analyse_reliability.as_view(), name="analyse_reliability"),
     path(r'read_file/', views.ReadFileAPIView.as_view(), name="read_file"),
+    path(r'checkReliability/', views.CheckReliabilityAPIView.as_view(), name="checkReliability"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
