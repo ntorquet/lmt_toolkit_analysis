@@ -77,9 +77,6 @@ export default {
       filename: '',
       error: false,
       uploadPercentage: 0,
-      // rfidDetection: Object,
-      // about_rfid_detections: Object,
-      // match_mismatch_proportion: Object,
       convertChunks: Object,
       convertedArr: Object,
       errorMessage: '',
@@ -179,15 +176,7 @@ export default {
         })
     },
 	},
-  computed: {
-      currentTitle () {
-        switch (this.step) {
-          case 1: return 'Sign-up'
-          case 2: return 'Create a password'
-          default: return 'Account created'
-        }
-      },
-    },
+
 }
 </script>
 

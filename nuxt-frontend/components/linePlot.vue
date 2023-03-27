@@ -7,12 +7,12 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 <template>
-  <div>
-    <v-dialog>
-  <!--    <h1>Sensors information - {{ selection }}</h1>-->
+  <v-card color="white">
+    <v-card-title>Sensors information - {{ selection }}</v-card-title>
+    <v-card-text>
       <canvas id="plot" style="width: 50%; height: 20vh"></canvas>
-    </v-dialog>
-  </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -79,16 +79,19 @@ export default {
     sound: Array,
     lightvisible: Array,
     lightvisibleandir: Array,
+    modalOpen: Boolean
+
   },
   data() {
     return {
       datasets: Object,
       myChart: Object,
+      show: false
     }
   },
   methods: {
     renderChart(select) {
-      let elem = document.getElementById('plot')
+      const elem = document.getElementById('plot')
       if(typeof elem != 'undefined' && elem != null){
         const ctx = elem.getContext("2d")
         window.myChart = new Chart(ctx, {
@@ -106,7 +109,9 @@ export default {
             }
         })
       }
-
+      else{
+        console.log("plot not define")
+      }
     }
   },
   mounted() {

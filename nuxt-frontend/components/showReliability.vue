@@ -9,7 +9,7 @@ Code under GPL v3.0 licence
 <template>
   <h2>Reliability information</h2>
   <v-card class="mt-8">
-    <v-card-title>Global information</v-card-title>
+    <v-card-title><v-icon icon="mdi-information"></v-icon> Global information</v-card-title>
     <v-card-text>
       <v-list>
         <v-list-item><strong>File name:</strong> {{ filename }}</v-list-item>
@@ -20,7 +20,7 @@ Code under GPL v3.0 licence
   </v-card>
 
   <v-card class="mt-8">
-    <v-card-title>Animals</v-card-title>
+    <v-card-title><v-icon icon="mdi-rodent"></v-icon> Animals</v-card-title>
     <v-card-text>
       <v-table>
         <thead>
@@ -176,8 +176,13 @@ Code under GPL v3.0 licence
     </v-card-text>
   </v-card>
 
-  <linePlot v-model="modalOpen" :selection="selection" :timeline="data.timeline" :temperature="data.temperature"
+
+  <v-dialog v-model="modalOpen" width="800">
+    <linePlot :selection="selection" :timeline="data.timeline" :temperature="data.temperature"
       :humidity="data.humidity" :sound="data.sound" :lightvisible="data.lightvisible" :lightvisibleandir="data.lightvisibleandir"></linePlot>
+  </v-dialog>
+
+
 </template>
 
 <script>
