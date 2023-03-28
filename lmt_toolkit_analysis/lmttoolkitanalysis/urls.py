@@ -24,6 +24,7 @@ router.register('reliability', ReliabilityLMTFile, basename="reliability")
 router.register('files', FileViewSet, basename='files')
 router.register('versions', VersionViewSet, basename='versions')
 router.register('eventDocumentation', EventDocumentationViewSet, basename='eventDocumentation')
+# router.register('checkReliability', CheckReliabilityAPIView, basename='CheckReliability')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -102,16 +102,31 @@ class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
 
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            new_file = serializer.save()
+            file_id = new_file.id
+            file_name = new_file.file_name
+            return JsonResponse({'filename': file_name, 'file_id': file_id})
+        else:
+            return JsonResponse({'error': 'There was a problem with the data'})
+
 
 class CheckReliabilityAPIView(APIView):
-    def get(self, request):
-        sqliteFile = File.objects.filter(id=request)
-        reliabilityContext = tasks.getReliability.delay(sqliteFile['sqlite'], deleteFile=True, file_id=sqliteFile.id)
-        #
-        task_id = reliabilityContext.task_id
-        print(task_id)
-        return JsonResponse({'filename': sqliteFile['file_name'], 'task_id': task_id, 'path_file': sqliteFile['sqlite']})
-
+    def post(self, request):
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+        print(path_file)
+        try:
+            reliabilityContext = tasks.getReliability.delay(path_file, deleteFile=False, file_id=file_id)
+            # #
+            task_id = reliabilityContext.task_id
+            print(task_id)
+            return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the reliability check'})
 
 
 class ReliabilityLMTFile(viewsets.ModelViewSet):

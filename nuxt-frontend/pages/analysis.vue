@@ -195,6 +195,7 @@ export default {
       durationChecker: '',
       deleteFile: 'unselected',
       fileURL: '',
+      task_id: ''
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -243,10 +244,15 @@ export default {
         console.log('success!!')
         this.uploading = false
 
+
+        // get the new id from http://127.0.0.1:8000/api/v1/files/
+        this.file_id = response.data.file_id
+        this.checkReliability(this.file_id)
         this.step = 3
         // this.filename = response.data.filename
         this.processing = true
         // this.data = response.data.reliabilityContext
+        console.log(response.data)
         this.task_id = response.data.task_id
         this.getProgression()
         // console.log('success!!')
@@ -350,7 +356,18 @@ export default {
       .catch(error => {
           console.log(JSON.stringify(error))
         })
-
+    },
+    checkReliability(fileId){
+      let formData = new FormData();
+      formData.append('file_id', fileId)
+      axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
+      .then(response => {
+        this.task_id = response.data.task_id
+        this.getProgression()
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error))
+      })
     }
 	},
   watch: {

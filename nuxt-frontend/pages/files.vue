@@ -113,7 +113,9 @@ export default {
         })
     },
     checkReliability(fileId){
-      axios.get(`http://127.0.0.1:8000/checkReliability/${fileId}/`)
+      let formData = new FormData();
+      formData.append('file_id', fileId)
+      axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
       .then(response => {
         this.taskId = response.data.taskId
       })
