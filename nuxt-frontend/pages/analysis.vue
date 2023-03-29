@@ -90,7 +90,10 @@ Code under GPL v3.0 licence
 
         <v-window-item :value="4">
           <div class="pa-4 text-center">
-            <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
+            <v-btn @click="functionToShowReliability">See reliability</v-btn>
+            <v-dialog v-model="reliabilityModalOpen" scrollable width="800">
+              <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
+            </v-dialog>
           </div>
         </v-window-item>
 
@@ -195,7 +198,8 @@ export default {
       durationChecker: '',
       deleteFile: 'unselected',
       fileURL: '',
-      task_id: ''
+      task_id: '',
+      reliabilityModalOpen: false
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -278,6 +282,7 @@ export default {
             console.log('ok!')
             console.log( this.task.result)
             this.step = 4
+            this.stepToTimeLine()
             this.data = this.task.result
             this.processing = false
             this.checked = true
@@ -357,7 +362,7 @@ export default {
           console.log(JSON.stringify(error))
         })
     },
-    checkReliability(fileId){
+    checkReliability(fileId) {
       let formData = new FormData();
       formData.append('file_id', fileId)
       axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
@@ -368,8 +373,17 @@ export default {
       .catch(error => {
         console.log(JSON.stringify(error))
       })
+    },
+    stepToTimeLine() {
+      switch (this.step){
+        case 4:
+          this.timelineItems["reliability"]["color"] = "green"
+      }
+    },
+    functionToShowReliability() {
+      this.reliabilityModalOpen = !this.reliabilityModalOpen
     }
-	},
+  },
   watch: {
     minT() {
       this.setDurationAnalysis()
