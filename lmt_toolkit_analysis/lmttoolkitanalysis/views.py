@@ -129,6 +129,21 @@ class CheckReliabilityAPIView(APIView):
             return JsonResponse({'Error': 'An error occurs during the reliability check'})
 
 
+class RebuildSqliteAPIView(APIView):
+    def post(self, request):
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+        try:
+            reliabilityContext = tasks.rebuildSQLite.delay(path_file)
+            # #
+            task_id = reliabilityContext.task_id
+            print(task_id)
+            return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the rebuild'})
+
+
 class ReliabilityLMTFile(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = FileSerializer

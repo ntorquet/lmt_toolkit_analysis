@@ -91,10 +91,47 @@ Code under GPL v3.0 licence
         <v-window-item :value="4">
           <div class="pa-4 text-center">
             <v-btn @click="functionToShowReliability">See reliability</v-btn>
+            <v-btn @click="stepUp">Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="800">
               <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
             </v-dialog>
           </div>
+        </v-window-item>
+
+        <v-window-item :value="5">
+          <v-card>
+            <v-card-title>Modify animal information</v-card-title>
+            <v-card-text>
+              <v-table>
+                <thead>
+                  <tr>
+                    <th>Animal ID</th>
+                    <th>Name</th>
+                    <th>Tag</th>
+                    <th>Genotype</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Strain</th>
+                    <th>Setup</th>
+                    <th>Treatment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="mouse in miceInfo">
+                    <td>{{ mouse.animalId }}</td>
+                    <td>{{ mouse.name_subject }}</td>
+                    <td>{{ mouse.tag_subject }}</td>
+                    <td>{{ mouse.genotype }}</td>
+                    <td>{{ mouse.age }}</td>
+                    <td>{{ mouse.sex }}</td>
+                    <td>{{ mouse.strain }}</td>
+                    <td>{{ mouse.setup }}</td>
+                    <td>{{ mouse.treatment }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
       </v-window>
@@ -199,7 +236,8 @@ export default {
       deleteFile: 'unselected',
       fileURL: '',
       task_id: '',
-      reliabilityModalOpen: false
+      reliabilityModalOpen: false,
+      miceInfo: {},
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -284,6 +322,27 @@ export default {
             this.step = 4
             this.stepToTimeLine()
             this.data = this.task.result
+
+            this.miceInfo = this.data.mouse
+            for(let mouse in this.miceInfo) {
+              console.log(Object.keys(this.miceInfo[mouse]))
+              if(!"age" in Object.keys(this.miceInfo[mouse])){
+                this.miceInfo[mouse]['age'] = ""
+              }
+              if(!"sex" in Object.keys(this.miceInfo[mouse])){
+                this.miceInfo[mouse]['sex'] = ""
+              }
+              if(!"strain" in Object.keys(this.miceInfo[mouse])){
+                this.miceInfo[mouse]['strain'] = ""
+              }
+              if(!"setup" in Object.keys(this.miceInfo[mouse])){
+                this.miceInfo[mouse]['setup'] = ""
+              }
+              if(!"treatment" in Object.keys(this.miceInfo[mouse])){
+                this.miceInfo[mouse]['treatment'] = ""
+              }
+            }
+
             this.processing = false
             this.checked = true
             this.fileURL = "http://127.0.0.1:8000/api/v1/files/".concat(this.data.file_url)
@@ -378,10 +437,22 @@ export default {
       switch (this.step){
         case 4:
           this.timelineItems["reliability"]["color"] = "green"
+          break
+        case 5:
+          this.timelineItems["animalInfo"]["color"] = "purple"
+          break
       }
     },
     functionToShowReliability() {
       this.reliabilityModalOpen = !this.reliabilityModalOpen
+    },
+    stepUp() {
+      this.step++
+      this.stepToTimeLine()
+    },
+    stepDown() {
+      this.step--
+      this.stepToTimeLine()
     }
   },
   watch: {

@@ -396,6 +396,32 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     return reliabilityContext
 
 
+@shared_task(bind=True)
+def rebuildSQLite(self, file):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file
+    :return: job done
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 4, f'Starting')
+
+    connection = create_connection(file)
+    print('File: '+file)
+    progress_recorder.set_progress(1, 4, f'File loaded')
+    print(connection)
+
+    StartEndFrames = getStartEndExperiment(connection)
+    minT = StartEndFrames[0]
+    maxT = StartEndFrames[1]
+
+    # Rebuild_all_event from minT to maxT
+    progress_recorder.set_progress(3, 4, f'first analysis done - start Rebuild_all_event')
+    process(file, minT, maxT)
+
+    progress_recorder.set_progress(4, 4, f'Rebuild done - compute analysis')
+
+    return {"message": "Rebuild done"}
+
 
 
 @shared_task(bind=True)

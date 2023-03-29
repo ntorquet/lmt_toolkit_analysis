@@ -13,7 +13,7 @@ Code under GPL v3.0 licence
       <v-col><a href="/reliability" class="nuxt-link">Reliability</a></v-col>
       <v-col><a href="/analysis" class="nuxt-link">Analysis</a></v-col>
       <v-col><nuxt-link to="/files" class="nuxt-link">Files list</nuxt-link></v-col>
-      <v-col><nuxt-link to="/documentation" class="nuxt-link">Documentation</nuxt-link></v-col>
+      <v-col><nuxt-link to="/documentation" target="_blank" class="nuxt-link">Documentation</nuxt-link></v-col>
       <v-col><nuxt-link to="/versions" class="nuxt-link">Versions</nuxt-link></v-col>
     </v-row>
 
