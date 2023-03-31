@@ -135,13 +135,26 @@ class RebuildSqliteAPIView(APIView):
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            reliabilityContext = tasks.rebuildSQLite.delay(path_file)
+            rebuildContext = tasks.rebuildSQLite.delay(path_file)
             # #
-            task_id = reliabilityContext.task_id
+            task_id = rebuildContext.task_id
             print(task_id)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the rebuild'})
+
+
+class SaveAnimalInfoView(APIView):
+    def post(self, request):
+        data = request.data
+        try:
+            animalInfoContext = tasks.saveAnimalInfo.delay(data)
+            # #
+            task_id = animalInfoContext.task_id
+            print(task_id)
+            return JsonResponse({'task_id': task_id})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the saving process'})
 
 
 class ReliabilityLMTFile(viewsets.ModelViewSet):

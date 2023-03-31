@@ -117,19 +117,69 @@ Code under GPL v3.0 licence
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="mouse in miceInfo">
-                    <td>{{ mouse.animalId }}</td>
-                    <td>{{ mouse.name_subject }}</td>
-                    <td>{{ mouse.tag_subject }}</td>
-                    <td>{{ mouse.genotype }}</td>
-                    <td>{{ mouse.age }}</td>
-                    <td>{{ mouse.sex }}</td>
-                    <td>{{ mouse.strain }}</td>
-                    <td>{{ mouse.setup }}</td>
-                    <td>{{ mouse.treatment }}</td>
+                  <tr v-for="animal in animalsInfo">
+                    <td>{{ animal.animalId }}</td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.name_subject"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>{{ animal.tag_subject }}</td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.genotype"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.age"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.sex"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.strain"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.setup"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="animal.treatment"
+                        hide-details
+                        SingleLine
+                        variant="plain"
+                      ></v-text-field>
+                    </td>
                   </tr>
                 </tbody>
               </v-table>
+              <v-btn @click="saveAnimalInfo">Save animals information</v-btn>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -236,8 +286,9 @@ export default {
       deleteFile: 'unselected',
       fileURL: '',
       task_id: '',
+      file_id: '',
       reliabilityModalOpen: false,
-      miceInfo: {},
+      animalsInfo: {},
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -323,23 +374,23 @@ export default {
             this.stepToTimeLine()
             this.data = this.task.result
 
-            this.miceInfo = this.data.mouse
-            for(let mouse in this.miceInfo) {
-              console.log(Object.keys(this.miceInfo[mouse]))
-              if(!"age" in Object.keys(this.miceInfo[mouse])){
-                this.miceInfo[mouse]['age'] = ""
+            this.animalsInfo = this.data.mouse
+            for(let animal in this.animalsInfo) {
+              console.log(Object.keys(this.animalsInfo[animal]))
+              if(!"age" in Object.keys(this.animalsInfo[animal])){
+                this.animalsInfo[animal]['age'] = ""
               }
-              if(!"sex" in Object.keys(this.miceInfo[mouse])){
-                this.miceInfo[mouse]['sex'] = ""
+              if(!"sex" in Object.keys(this.animalsInfo[animal])){
+                this.animalsInfo[animal]['sex'] = ""
               }
-              if(!"strain" in Object.keys(this.miceInfo[mouse])){
-                this.miceInfo[mouse]['strain'] = ""
+              if(!"strain" in Object.keys(this.animalsInfo[animal])){
+                this.animalsInfo[animal]['strain'] = ""
               }
-              if(!"setup" in Object.keys(this.miceInfo[mouse])){
-                this.miceInfo[mouse]['setup'] = ""
+              if(!"setup" in Object.keys(this.animalsInfo[animal])){
+                this.animalsInfo[animal]['setup'] = ""
               }
-              if(!"treatment" in Object.keys(this.miceInfo[mouse])){
-                this.miceInfo[mouse]['treatment'] = ""
+              if(!"treatment" in Object.keys(this.animalsInfo[animal])){
+                this.animalsInfo[animal]['treatment'] = ""
               }
             }
 
@@ -421,9 +472,9 @@ export default {
           console.log(JSON.stringify(error))
         })
     },
-    checkReliability(fileId) {
+    checkReliability() {
       let formData = new FormData();
-      formData.append('file_id', fileId)
+      formData.append('file_id', this.file_id)
       axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
@@ -453,6 +504,19 @@ export default {
     stepDown() {
       this.step--
       this.stepToTimeLine()
+    },
+    saveAnimalInfo() {
+      let formData = new FormData();
+      formData.append('file_id', this.file_id)
+      formData.append('animalsInfo', this.animalsInfo)
+      axios.post(`http://127.0.0.1:8000/api/v1/saveAnimalInfo/`, formData)
+      .then(response => {
+        this.task_id = response.data.task_id
+        this.getProgression()
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error))
+      })
     }
   },
   watch: {

@@ -414,6 +414,8 @@ def rebuildSQLite(self, file):
     minT = StartEndFrames[0]
     maxT = StartEndFrames[1]
 
+    connection.close()
+
     # Rebuild_all_event from minT to maxT
     progress_recorder.set_progress(3, 4, f'first analysis done - start Rebuild_all_event')
     process(file, minT, maxT)
@@ -422,6 +424,30 @@ def rebuildSQLite(self, file):
 
     return {"message": "Rebuild done"}
 
+
+@shared_task(bind=True)
+def saveAnimalInfo(self, data):
+    '''
+    :param data: contains the SQLite LMT_v1_0_3 file and the info to save
+    :return: job done
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 4, f'Starting')
+    file = data['file']
+    dataJson = data ['animalsInfo']
+
+
+    print('File: '+file)
+    progress_recorder.set_progress(1, 4, f'File loaded')
+    saveAnimalInfo(file, dataJson)
+
+    progress_recorder.set_progress(3, 4, f'writing into the database')
+
+
+
+    progress_recorder.set_progress(4, 4, f'Saving done')
+
+    return {"message": "Saving done"}
 
 
 @shared_task(bind=True)

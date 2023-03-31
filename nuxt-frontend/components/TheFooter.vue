@@ -14,7 +14,7 @@ Code under GPL v3.0 licence
       </v-row>
       <v-row>
         <v-col>
-          <nuxt-link to="https://github.com/ntorquet/lmt_toolkit_analysis" class="nuxt-link"><v-icon icon="mdi-github"></v-icon> GitHub</nuxt-link>
+          <nuxt-link to="https://github.com/ntorquet/lmt_toolkit_analysis" target="_blank" class="nuxt-link"><v-icon icon="mdi-github"></v-icon> GitHub</nuxt-link>
         </v-col>
       </v-row>
     </div>
