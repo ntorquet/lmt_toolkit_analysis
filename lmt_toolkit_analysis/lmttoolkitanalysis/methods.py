@@ -17,7 +17,7 @@ from .LMT_v1_0_5b.lmtanalysis.Animal import *
 from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_5b.lmtanalysis.FileUtil import behaviouralEventOneMouse
 from .LMT_v1_0_5b.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
-from .LMT_v1_0_5b.scripts.Rebuild_info_animals import addColumns, updateField
+from .LMT_v1_0_5b.scripts.Rebuild_info_animals import addColumns, updateFieldFromDico
 
 oneFrame = 1
 oneSecond = 30
@@ -60,8 +60,10 @@ def findMiceInSQLiteFile(connection):
     list_animals = []
     rows = cursor.fetchall()
     for row in rows:
+        dicoTemp = {}
         for i in range(0, len(row)):
-            list_animals.append({columnNames[i]: row[i]})
+            dicoTemp[columnNames[i]] = row[i]
+        list_animals.append(dicoTemp)
         # animalId = row[0]
         # rfid = row[1]
         # genotype = row[2]
@@ -360,9 +362,9 @@ def getRFIDdetections(connection):
     c.close()
 
     for animal in list_animals:
-        print('animalID: '+str(animal['ID']))
+        print('animalID: '+str(animal.keys()))
         if not animal['ID'] in rfid_detection_animals.keys():
-            rfid_detection_animals[animal['ID']] = {'nbRFIDdetection': 0}
+            rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
             # else:
@@ -396,7 +398,7 @@ def getRFIDmatchDetections(connection):
     c.close()
 
     for animal in list_animals:
-        if not animal['animalId'] in rfidmatch_detection_animals.keys():
+        if not animal['ID'] in rfidmatch_detection_animals.keys():
             rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
@@ -432,7 +434,7 @@ def getRFIDmismatchDetections(connection):
     c.close()
 
     for animal in list_animals:
-        if not animal['animalId'] in rfidmismatch_detection_animals.keys():
+        if not animal['ID'] in rfidmismatch_detection_animals.keys():
             rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
@@ -758,12 +760,18 @@ def getDataProfile(connection, minT, maxT, file):
     return profileData
 
 
-def saveAnimalInfo(file, dataJson):
+def saveAnimalInfo(file, animalsInfo, version):
+    print("in SaveAnimalInfo method")
     addColumns(file)
     formatedJson = {}
-    for line in dataJson:
-        formatedJson[line['tag_subject']] = {}
+    print(str(animalsInfo))
+    for line in animalsInfo:
+        print(line)
+        formatedJson[line['RFID']] = {}
         for key, value in line.items():
-            formatedJson[line['tag_subject']][key] = value
+            if (key != 'RFID' and key != 'ID'):
+                formatedJson[line['RFID']][key] = value
 
-    updateField(file, formatedJson)
+    print(str(formatedJson))
+    updateFieldFromDico(file, formatedJson, version)
+    return "Done"

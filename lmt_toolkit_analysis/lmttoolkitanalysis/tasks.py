@@ -16,6 +16,7 @@ from celery_progress.backend import ProgressRecorder
 # from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
 # from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
 from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
+from .LMT_v1_0_5b.lmtanalysis.TaskLogger import TaskLogger
 from .methods import *
 from .models import File
 from datetime import date
@@ -397,7 +398,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
 
 
 @shared_task(bind=True)
-def rebuildSQLite(self, file):
+def rebuildSQLite(self, file, version):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :return: job done
@@ -407,6 +408,7 @@ def rebuildSQLite(self, file):
 
     connection = create_connection(file)
     print('File: '+file)
+
     progress_recorder.set_progress(1, 4, f'File loaded')
     print(connection)
 
@@ -420,26 +422,35 @@ def rebuildSQLite(self, file):
     progress_recorder.set_progress(3, 4, f'first analysis done - start Rebuild_all_event')
     process(file, minT, maxT)
 
+    connection = create_connection(file)
+    t = TaskLogger(connection)
+    t.addLog("Rebuild all events", version=version)
+    connection.close()
+
     progress_recorder.set_progress(4, 4, f'Rebuild done - compute analysis')
 
     return {"message": "Rebuild done"}
 
 
 @shared_task(bind=True)
-def saveAnimalInfo(self, data):
+def saveAnimalInfoTask(self, data):
     '''
     :param data: contains the SQLite LMT_v1_0_3 file and the info to save
     :return: job done
     '''
+    print("in saveAnimalInfoTask")
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(0, 4, f'Starting')
     file = data['file']
-    dataJson = data ['animalsInfo']
+    animalsInfo = data ['animalsInfo']
+    version = data['version']
+    print(version)
 
 
     print('File: '+file)
     progress_recorder.set_progress(1, 4, f'File loaded')
-    saveAnimalInfo(file, dataJson)
+
+    saveAnimalInfo(file, animalsInfo, version)
 
     progress_recorder.set_progress(3, 4, f'writing into the database')
 
@@ -588,7 +599,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     rfidDetection = False
     about_rfid_detections = {}
     for mouse in mice:
-        if not 'RFID' in mouse['tag_subject']:
+        if not 'RFID' in mouse['RFID']:
             rfidDetection = True
     print(str(rfidDetection))
 

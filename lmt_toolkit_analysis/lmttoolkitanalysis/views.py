@@ -131,11 +131,12 @@ class CheckReliabilityAPIView(APIView):
 
 class RebuildSqliteAPIView(APIView):
     def post(self, request):
+        version = Version.objects.latest('id')
         file_id = int(request.data['file_id'])
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            rebuildContext = tasks.rebuildSQLite.delay(path_file)
+            rebuildContext = tasks.rebuildSQLite.delay(path_file, version= "LMT-toolkit "+version.lmt_toolkit_version)
             # #
             task_id = rebuildContext.task_id
             print(task_id)
@@ -146,9 +147,21 @@ class RebuildSqliteAPIView(APIView):
 
 class SaveAnimalInfoView(APIView):
     def post(self, request):
-        data = request.data
+        print("into save animal info view")
+
+        version = Version.objects.latest('id')
+        print(str(version.lmt_toolkit_version))
+        # data = json.loads(request.body)
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+
+        print(str(request.data['animalsInfo']))
+        print(type(json.loads(request.data['animalsInfo'])))
+        # data = {'file': path_file,  'animalsInfo': json.load(request.data['animalsInfo'].body.decode('utf-8'))}
+        animalDict =  {'file': path_file,  'animalsInfo': json.loads(request.data['animalsInfo']), 'version': "LMT-toolkit "+version.lmt_toolkit_version}
         try:
-            animalInfoContext = tasks.saveAnimalInfo.delay(data)
+            animalInfoContext = tasks.saveAnimalInfoTask.delay(animalDict)
             # #
             task_id = animalInfoContext.task_id
             print(task_id)

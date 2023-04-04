@@ -105,72 +105,17 @@ Code under GPL v3.0 licence
               <v-table>
                 <thead>
                   <tr>
-                    <th>Animal ID</th>
-                    <th>Name</th>
-                    <th>Tag</th>
-                    <th>Genotype</th>
-                    <th>Age</th>
-                    <th>Sex</th>
-                    <th>Strain</th>
-                    <th>Setup</th>
-                    <th>Treatment</th>
+                    <th v-for="(value, name) in data.mouse[0]" or>{{ name }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="animal in animalsInfo">
-                    <td>{{ animal.animalId }}</td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.name_subject"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>{{ animal.tag_subject }}</td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.genotype"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.age"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.sex"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.strain"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.setup"
-                        hide-details
-                        SingleLine
-                        variant="plain"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        v-model="animal.treatment"
+                    <td v-for="(info, key) in animal">
+                        <span v-if="key=='ID' || key=='RFID'">
+                          {{ info }}
+                        </span>
+                        <v-text-field v-else
+                        v-model="animal[key]"
                         hide-details
                         SingleLine
                         variant="plain"
@@ -184,6 +129,28 @@ Code under GPL v3.0 licence
           </v-card>
         </v-window-item>
 
+        <v-window-item :value="6">
+          <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
+          <v-card-text>
+            <v-progress-linear
+                v-model="tasksProgression"
+                color="blue-grey"
+                height="25"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
+          </v-card-text>
+        </v-window-item>
+
+        <v-window-item :value="7">
+          <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
+          <v-card-text>
+
+          </v-card-text>
+        </v-window-item>
+
       </v-window>
 
     </v-container>
@@ -192,6 +159,7 @@ Code under GPL v3.0 licence
 
 <script>
 import axios from "axios";
+import {th} from "vuetify/locale";
 export default {
   name: "analysis",
   data:function (){
@@ -244,7 +212,7 @@ export default {
       file: '',
       uploading: false,
       checked: false,
-      processing: false,
+      // processing: false,
       showReliability: false,
       data: {},
       task: {},
@@ -254,12 +222,12 @@ export default {
       // rfidDetection: Object,
       // about_rfid_detections: Object,
       // match_mismatch_proportion: Object,
-      convertChunks: Object,
-      convertedArr: Object,
+      // convertChunks: Object,
+      // convertedArr: Object,
       errorMessage: '',
       tasksProgression: 0,
-      reliabilitySelected: true,
-      analysisSelected: false,
+      // reliabilitySelected: true,
+      // analysisSelected: false,
       unitStartEnd: [
         {value: null, text: 'By default ...'},
         {value: 'frame(s)', text: 'frame(s)'},
@@ -289,6 +257,7 @@ export default {
       file_id: '',
       reliabilityModalOpen: false,
       animalsInfo: {},
+      messageStep6: '',
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -343,7 +312,7 @@ export default {
         this.checkReliability(this.file_id)
         this.step = 3
         // this.filename = response.data.filename
-        this.processing = true
+        // this.processing = true
         // this.data = response.data.reliabilityContext
         console.log(response.data)
         this.task_id = response.data.task_id
@@ -362,7 +331,7 @@ export default {
           this.task = response.data
           if(this.task.state == "FAILURE")
           {
-            this.processing = false
+            // this.processing = false
             this.error = true
             this.errorMessage = this.task.result
             console.log(this.errorMessage)
@@ -370,33 +339,54 @@ export default {
           else if(this.task.state == 'SUCCESS') {
             console.log('ok!')
             console.log( this.task.result)
-            this.step = 4
-            this.stepToTimeLine()
-            this.data = this.task.result
+            // this.stepUp()
+            // this.step = 4
+            // this.stepToTimeLine()
 
-            this.animalsInfo = this.data.mouse
-            for(let animal in this.animalsInfo) {
-              console.log(Object.keys(this.animalsInfo[animal]))
-              if(!"age" in Object.keys(this.animalsInfo[animal])){
-                this.animalsInfo[animal]['age'] = ""
-              }
-              if(!"sex" in Object.keys(this.animalsInfo[animal])){
-                this.animalsInfo[animal]['sex'] = ""
-              }
-              if(!"strain" in Object.keys(this.animalsInfo[animal])){
-                this.animalsInfo[animal]['strain'] = ""
-              }
-              if(!"setup" in Object.keys(this.animalsInfo[animal])){
-                this.animalsInfo[animal]['setup'] = ""
-              }
-              if(!"treatment" in Object.keys(this.animalsInfo[animal])){
-                this.animalsInfo[animal]['treatment'] = ""
-              }
+            switch (this.step){
+              case 3:
+                this.stepUp()
+                break
+              case 4:
+                this.data = this.task.result
+                console.log("step 4")
+                this.animalsInfo = this.data.mouse
+                for(let animal in this.animalsInfo) {
+                  console.log(Object.keys(this.animalsInfo[animal]))
+                  if(!"age" in Object.keys(this.animalsInfo[animal])){
+                    this.animalsInfo[animal]['age'] = ""
+                  }
+                  if(!"sex" in Object.keys(this.animalsInfo[animal])){
+                    this.animalsInfo[animal]['sex'] = ""
+                  }
+                  if(!"strain" in Object.keys(this.animalsInfo[animal])){
+                    this.animalsInfo[animal]['strain'] = ""
+                  }
+                  if(!"setup" in Object.keys(this.animalsInfo[animal])){
+                    this.animalsInfo[animal]['setup'] = ""
+                  }
+                  if(!"treatment" in Object.keys(this.animalsInfo[animal])){
+                    this.animalsInfo[animal]['treatment'] = ""
+                  }
+                }
+                this.fileURL = "http://127.0.0.1:8000/api/v1/files/".concat(this.data.file_url)
+                break
+              case 5:
+                this.stepUp()
+                this.tasksProgression = 0
+                this.rebuildSQLiteFile()
+                break
+              case 6:
+                console.log("step 6")
+                this.messageStep6 = this.task.result
+                this.stepUp()
+                break
+
+            // this.processing = false
+            this.checked = true
+
             }
 
-            this.processing = false
-            this.checked = true
-            this.fileURL = "http://127.0.0.1:8000/api/v1/files/".concat(this.data.file_url)
             // this.data['name_experiment'] = this.filename.split('.sqlite')[0]
             // this.downloadFile(this.data.file_id)
           }
@@ -404,7 +394,7 @@ export default {
             this.tasksProgression = this.task.progress.percent
             if((this.task.complete == true) && (this.task.success == false)) {
               console.log('error')
-              this.processing = false
+              // this.processing = false
               this.error = true
               this.errorMessage = this.task.result
             }
@@ -417,14 +407,14 @@ export default {
           console.log(JSON.stringify(error))
         })
     },
-    selectReliability() {
-      this.reliabilitySelected = true
-      this.analysisSelected = false
-    },
-    selectAnalysis() {
-      this.reliabilitySelected = false
-      this.analysisSelected = true
-    },
+    // selectReliability() {
+    //   this.reliabilitySelected = true
+    //   this.analysisSelected = false
+    // },
+    // selectAnalysis() {
+    //   this.reliabilitySelected = false
+    //   this.analysisSelected = true
+    // },
     setDurationAnalysis() {
       console.log("changed")
       if(this.minT > 0 && this.unitMinT != null){
@@ -492,6 +482,12 @@ export default {
         case 5:
           this.timelineItems["animalInfo"]["color"] = "purple"
           break
+        case 6:
+          this.timelineItems["rebuild"]["color"] = "red-lighten-1"
+          break
+        case 7:
+          this.timelineItems["configAnalysis"]["color"] = "amber-lighten-1"
+          break
       }
     },
     functionToShowReliability() {
@@ -506,10 +502,27 @@ export default {
       this.stepToTimeLine()
     },
     saveAnimalInfo() {
+      let formatedAnimalsInfo = {}
+      for(let line in this.animalsInfo) {
+          console.log(line)
+          formatedAnimalsInfo[this.animalsInfo[line]["RFID"]] = this.animalsInfo[line]
+      }
       let formData = new FormData();
       formData.append('file_id', this.file_id)
-      formData.append('animalsInfo', this.animalsInfo)
+      formData.append('animalsInfo', JSON.stringify( this.animalsInfo))
       axios.post(`http://127.0.0.1:8000/api/v1/saveAnimalInfo/`, formData)
+      .then(response => {
+        this.task_id = response.data.task_id
+        this.getProgression()
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error))
+      })
+    },
+    rebuildSQLiteFile() {
+      let formData = new FormData();
+      formData.append('file_id', this.file_id)
+      axios.post(`http://127.0.0.1:8000/api/v1/rebuild/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
         this.getProgression()

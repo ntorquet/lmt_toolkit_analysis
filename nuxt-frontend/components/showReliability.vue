@@ -26,18 +26,12 @@ Code under GPL v3.0 licence
         <v-table>
           <thead>
             <tr>
-              <th>Animal ID</th>
-              <th>Name</th>
-              <th>Tag</th>
-              <th>Genotype</th>
+              <th v-for="(value, name) in data.mouse[0]" or>{{ name }}</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="mice in data.mouse">
-              <td>{{ mice.animalId }}</td>
-              <td>{{ mice.name_subject }}</td>
-              <td>{{ mice.tag_subject }}</td>
-              <td>{{ mice.genotype }}</td>
+              <td v-for="animalInfo in mice">{{ animalInfo }}</td>
             </tr>
           </tbody>
         </v-table>

@@ -13,6 +13,8 @@ from ..lmtanalysis.Event import *
 from ..lmtanalysis.FileUtil import getFilesToProcess, getJsonFileToProcess
 
 from ..lmtanalysis.Chronometer import Chronometer
+from ..lmtanalysis.TaskLogger import TaskLogger
+
 
 
 def addColumns(file):
@@ -96,6 +98,55 @@ def updateField(file, jsonFile):
     c.close()
     connection.close()
 
+
+def updateFieldFromDico(file, dico, version: str):
+    '''
+    Take a dictionary: First key: animal (rfid number), then keys are the columns, values are data to store for that field
+    ex of the fieldsToUpadte dict:
+    {
+        "001039552597":
+            {
+                "genotype": "wt",
+                "sex": "female",
+                "strain": "C57BL6J",
+                "treatment": "saline"
+            },
+        "001039552595":
+            {
+                "genotype": "ko",
+                "age": "6mo",
+                "sex": "female",
+                "strain": "C57BL6J",
+                "treatment": "saline"
+            }
+    }
+    '''
+    print(file)
+
+    connection = sqlite3.connect(file)
+    c = connection.cursor()
+    for animal in dico.keys():
+        query = "UPDATE ANIMAL SET "
+        for field in dico[animal].keys():
+            if (field != 'file') and (field != 'group'): # these two variables are not in sqlite databases
+                if field == 'animal':
+                    query += f"NAME = '{dico[animal][field]}', "
+                else:
+                    query += f"{field} = '{dico[animal][field]}', "
+        query = query [0:-2]    # to remove the last comma
+        query += f" WHERE ANIMAL.RFID = '{animal}'"
+        print(query)
+        try:
+            c.execute(query)
+        except:
+            print("There was a problem when trying to modify database fields")
+    connection.commit()
+
+    t = TaskLogger(connection)
+    t.addLog("Save animal information", version=f"{version}")
+
+    c.close()
+    connection.close()
 
 
 def processAddColumns():
