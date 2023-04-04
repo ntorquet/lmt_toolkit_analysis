@@ -113,6 +113,21 @@ class FileViewSet(viewsets.ModelViewSet):
             return JsonResponse({'error': 'There was a problem with the data'})
 
 
+class FileUpdateRebuild(generics.UpdateAPIView):
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+
+    def update(self, request):
+        instance = self.get_object()
+        instance.rebuild = request.data.get("rebuild")
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return JsonResponse({"Rebuild message": "done"})
+
 class CheckReliabilityAPIView(APIView):
     def post(self, request):
         file_id = int(request.data['file_id'])

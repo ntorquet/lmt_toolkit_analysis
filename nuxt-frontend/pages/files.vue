@@ -22,8 +22,7 @@ Code under GPL v3.0 licence
           <tbody>
             <tr v-for="file, index in files">
               <td>{{ file.file_name }}</td>
-              <td>{{ file.tmin }}</td>
-              <td>{{ file.tmax }}</td>
+              <td>{{ file.rebuild }}</td>
               <td>{{ file.created_at }}</td>
               <td>
                 <v-btn size="sm" :href="filesItems[index]['Link']">
@@ -72,7 +71,7 @@ export default {
   data:function (){
 		return{
       files: [],
-      fields: ['File name', 'Start time rebuild', 'End time rebuild', 'Upload date', 'Download', 'Delete'],
+      fields: ['File name', 'Rebuild', 'Upload date', 'Download', 'Delete'],
       filesItems: [],
       downloadableLinks: [],
     }
@@ -94,8 +93,7 @@ export default {
       for(let i=0; i<this.files.length;i++){
         this.filesItems.push({
           'File name': this.files[i]['file_name'],
-          'Start time rebuild': this.files[i]['tmin'],
-          'End time rebuild': this.files[i]['tmax'],
+          'Rebuild': this.files[i]['rebuild'],
           'Upload date': this.files[i]['created_at'],
           'Link': "http://127.0.0.1:8000/media"+this.files[i]['sqlite'].split('/media')[1],
         })
