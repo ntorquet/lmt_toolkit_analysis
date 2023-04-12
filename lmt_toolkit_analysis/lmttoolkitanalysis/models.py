@@ -14,7 +14,7 @@ import os
 class File(models.Model):
     file_name = models.CharField(max_length=255)
     sqlite = models.FileField(upload_to='.', max_length=255)
-    rebuild = models.IntegerField(null=True, blank=True)
+    rebuild = models.CharField(max_length=255, null=True, blank=True)
     tmin = models.IntegerField(null=True, blank=True)
     tmax = models.IntegerField(null=True, blank=True)
     unitMinT = models.CharField(max_length=255, null=True, blank=True)

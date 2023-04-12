@@ -24,7 +24,6 @@ import requests
 import json
 from lmttoolkitanalysis.methods import *
 from lmt_toolkit_analysis.settings import MEDIA_ROOT, MEDIA_URL
-import requests
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
@@ -398,7 +397,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
 
 
 @shared_task(bind=True)
-def rebuildSQLite(self, file, version):
+def rebuildSQLite(self, file, file_id, version):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :return: job done
@@ -427,6 +426,12 @@ def rebuildSQLite(self, file, version):
     t.addLog("Rebuild all events", version=version)
     connection.close()
 
+    # update file in database: rebuild field with version number
+    api_url = f"http://127.0.0.1:8000/api/v1/files/{file_id}/"
+    todo = {"rebuild": version}
+    response = requests.patch(api_url, json=todo)
+    # print(response.json())
+    print(response.status_code)
     progress_recorder.set_progress(4, 4, f'Rebuild done - compute analysis')
 
     return {"message": "Rebuild done"}
@@ -459,6 +464,45 @@ def saveAnimalInfoTask(self, data):
     progress_recorder.set_progress(4, 4, f'Saving done')
 
     return {"message": "Saving done"}
+
+
+@shared_task(bind=True)
+def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitMinT = None, unitMaxT = None):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file, tmin and tmax and their units (unitMinT and unitMaxT) as start and end for the analysis
+    :return: profile (results of behaviors) for each animal
+    '''
+
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 2, f'Starting')
+
+    connection = create_connection(file)
+
+    StartEndFrames = getStartEndExperiment(connection)
+    if int(tmin) == 0 or unitMinT == None or unitMinT == "null" or unitMinT == "":
+        minT = StartEndFrames[0]
+    else:
+        minT = int(tmin)*int(timeUnit[unitMinT])
+    if tmax == "-" or unitMaxT == None or unitMaxT == "null" or unitMaxT == "":
+        maxT = StartEndFrames[1]
+    else:
+        maxT = int(tmax)*int(timeUnit[unitMaxT])
+
+    progress_recorder.set_progress(1, 2, f'Start and end frames found')
+
+    profileData = getDataProfile(connection, minT, maxT, file)
+    print("tmin: " + str(tmin))
+    print("unitMinT: "+str(unitMinT))
+    print("tmax: " + str(tmax))
+    print("unitMaxT: "+str(unitMaxT))
+    print("minT: "+str(minT))
+    print("maxT: "+str(maxT))
+
+    progress_recorder.set_progress(2, 2, f'Analysis done')
+
+    connection.close()
+
+    return profileData
 
 
 @shared_task(bind=True)

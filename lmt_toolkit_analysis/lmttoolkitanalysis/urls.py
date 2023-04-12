@@ -34,4 +34,5 @@ urlpatterns = [
     path(r'checkReliability/', views.CheckReliabilityAPIView.as_view(), name="checkReliability"),
     path(r'rebuild/', views.RebuildSqliteAPIView.as_view(), name="rebuild"),
     path(r'saveAnimalInfo/', views.SaveAnimalInfoView.as_view(), name="saveAnimalInfo"),
+    path(r'extractAnalysis/', views.ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

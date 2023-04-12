@@ -145,9 +145,64 @@ Code under GPL v3.0 licence
         </v-window-item>
 
         <v-window-item :value="7">
+            <v-card>
           <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
           <v-card-text>
+            <v-card>
+                <v-card-title> Simple preset</v-card-title>
+                <v-card-text>
+                  <v-alert class="mb-2">
+                      By default, the analysis will be done on the total duration of the experiment.<br />
+                      You can limit the analysis by filling in the fields below.
+                    </v-alert>
+                    <v-text-field label="Start time (computed from the launching of the recording)" v-model="minT"></v-text-field>
+                    <v-select
+                            label="Unit"
+                            v-model="unitMinT"
+                            :items="unitStartEnd"
+                            item-title="text"
+                            item-value="value"
+                    ></v-select>
+                    <v-text-field label="End time (computed from the launching of the recording)" v-model="maxT"></v-text-field>
+                    <v-select
+                            label="Unit"
+                            v-model="unitMaxT"
+                            :items="unitStartEnd"
+                            item-title="text"
+                            item-value="value"
+                    ></v-select>
 
+                    <v-alert type="warning" v-if="durationChecker!=''" >
+                      {{ durationChecker }}
+                    </v-alert>
+                    <v-btn v-else @click="doAnalysis('simplePreset')">
+                        Analyse
+                    </v-btn>
+                </v-card-text>
+            </v-card>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <v-window-item :value="8">
+          <v-card-title><v-icon icon="mdi-chart-line"></v-icon> Results extraction</v-card-title>
+          <v-card-text>
+            <v-progress-linear
+                v-model="tasksProgression"
+                color="blue-grey"
+                height="25"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
+          </v-card-text>
+        </v-window-item>
+
+        <v-window-item :value="9">
+          <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
+          <v-card-text>
+            <show-analysis :data="results" :filename="filename"></show-analysis>
           </v-card-text>
         </v-window-item>
 
@@ -229,7 +284,7 @@ export default {
       // reliabilitySelected: true,
       // analysisSelected: false,
       unitStartEnd: [
-        {value: null, text: 'By default ...'},
+        {value: '', text: 'By default ...'},
         {value: 'frame(s)', text: 'frame(s)'},
         {value: 'second(s)', text: 'second(s)'},
         {value: 'minute(s)', text: 'minute(s)'},
@@ -237,9 +292,9 @@ export default {
         {value: 'day(s)', text: 'day(s)'},
       ],
       minT: 0,
-      unitMinT: null,
+      unitMinT: '',
       maxT: -1,
-      unitMaxT: null,
+      unitMaxT: '',
       durationAnalysisStart: 'From the beginning',
       durationAnalysisEnd: 'to the end of the experiment',
       timeUnit: {
@@ -258,6 +313,7 @@ export default {
       reliabilityModalOpen: false,
       animalsInfo: {},
       messageStep6: '',
+      results: {},
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -381,6 +437,11 @@ export default {
                 this.messageStep6 = this.task.result
                 this.stepUp()
                 break
+              case 8:
+                console.log("step 8")
+                this.results = this.task.result
+                this.stepUp()
+                break
 
             // this.processing = false
             this.checked = true
@@ -417,7 +478,7 @@ export default {
     // },
     setDurationAnalysis() {
       console.log("changed")
-      if(this.minT > 0 && this.unitMinT != null){
+      if(this.minT > 0 && this.unitMinT != ''){
         this.durationAnalysisStart = "From "+this.minT+" "+this.unitMinT
         this.sendMinT = this.minT+" "+this.unitMinT
         this.checkDurationForAnalysis()
@@ -426,7 +487,7 @@ export default {
         this.durationAnalysisStart = "From the beginning"
         this.durationChecker = ''
       }
-      if((this.maxT != "-" || this.maxT > 0) && this.unitMaxT != null) {
+      if((this.maxT != "-" || this.maxT > 0) && this.unitMaxT != '') {
         this.durationAnalysisEnd = "to "+this.maxT+" "+this.unitMaxT
         this.sendMaxT = this.maxT+" "+this.unitMaxT
         this.checkDurationForAnalysis()
@@ -488,6 +549,12 @@ export default {
         case 7:
           this.timelineItems["configAnalysis"]["color"] = "amber-lighten-1"
           break
+        case 8:
+          this.timelineItems["analysis"]["color"] = "cyan-lighten-1"
+          break
+        case 9:
+          this.timelineItems["save"]["color"] = "indigo-lighten-2"
+          break
       }
     },
     functionToShowReliability() {
@@ -530,6 +597,32 @@ export default {
       .catch(error => {
         console.log(JSON.stringify(error))
       })
+    },
+    doAnalysis(preset){
+      switch (preset){
+        case 'simplePreset':
+          let formData = new FormData();
+          formData.append('file_id', this.file_id)
+          formData.append('tmin', parseInt(this.minT))
+          formData.append('tmax', parseInt(this.maxT))
+          formData.append('unitMinT', this.unitMinT)
+          formData.append('unitMaxT', this.unitMaxT)
+          axios.post(`http://127.0.0.1:8000/api/v1/extractAnalysis/`, formData)
+          .then(response => {
+            console.log('Do analysis')
+            // this.data = response.data.reliabilityContext
+            this.task_id = response.data.task_id
+            this.stepUp()
+            this.getProgression()
+            // console.log('success!!')
+
+          }).catch(error => {
+            console.log('FAILURE!!')
+            console.log(JSON.stringify(error))
+            this.error = true
+          })
+          break
+      }
     }
   },
   watch: {
