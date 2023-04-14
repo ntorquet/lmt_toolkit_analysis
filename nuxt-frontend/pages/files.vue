@@ -34,9 +34,6 @@ Code under GPL v3.0 licence
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">
                   <v-icon icon="mdi-delete"></v-icon>
                 </v-btn>
-                <v-btn @click="checkReliability(files[index]['id'])">
-                  reliability
-                </v-btn>
               </td>
             </tr>
           </tbody>

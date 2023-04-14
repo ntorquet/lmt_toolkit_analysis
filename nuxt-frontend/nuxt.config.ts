@@ -14,5 +14,6 @@ export default defineNuxtConfig({
     // },
     build: {
         transpile: ['vuetify', 'chart.js']
-    }
+    },
+    modules: ['@pinia/nuxt']
 })
