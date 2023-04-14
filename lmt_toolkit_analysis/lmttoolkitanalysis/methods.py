@@ -364,7 +364,7 @@ def getRFIDdetections(connection):
     for animal in list_animals:
         print('animalID: '+str(animal.keys()))
         if not animal['ID'] in rfid_detection_animals.keys():
-            rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
+            rfid_detection_animals[animal['ID']] = {'nbRFIDdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
             # else:
@@ -399,7 +399,7 @@ def getRFIDmatchDetections(connection):
 
     for animal in list_animals:
         if not animal['ID'] in rfidmatch_detection_animals.keys():
-            rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
+            rfidmatch_detection_animals[animal['ID']] = {'nbRFIDmatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
             # else:
@@ -435,7 +435,7 @@ def getRFIDmismatchDetections(connection):
 
     for animal in list_animals:
         if not animal['ID'] in rfidmismatch_detection_animals.keys():
-            rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
+            rfidmismatch_detection_animals[animal['ID']] = {'nbRFIDmismatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
             # else:
