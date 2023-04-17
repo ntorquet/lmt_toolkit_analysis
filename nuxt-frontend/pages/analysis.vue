@@ -439,7 +439,25 @@ export default {
                 break
               case 8:
                 console.log("step 8")
+                // console.log(this.animalsInfo)
                 this.results = this.task.result
+                // // animal info update
+                let index = 0
+                for(let animal in this.results){
+                    console.log(this.results[animal]['rfid'])
+                    for(let infoAnimal in this.animalsInfo){
+                        console.log(infoAnimal)
+                        if(this.animalsInfo[infoAnimal]['RFID']==animal){
+                            this.results[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
+                            this.results[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
+                        }
+                    }
+                }
+                // this.results.forEach((animal, index) => {
+                //     console.log(animal)
+                //   // this.results[animal]['setup'] = this.animalsInfo[index]['SETUP']
+                //   // this.results[animal]['treatment'] = this.animalsInfo[index]['TREATMENT']
+                // })
                 this.stepUp()
                 break
 

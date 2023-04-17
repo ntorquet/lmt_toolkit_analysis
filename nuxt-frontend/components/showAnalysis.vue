@@ -23,6 +23,7 @@ Code under GPL v3.0 licence
             <th>Name</th>
             <th>Sex</th>
             <th>Genotype</th>
+            <th>Treatment</th>
             <th v-for="item in activity_variable">{{item}}</th>
           </tr>
           </thead>
@@ -32,6 +33,7 @@ Code under GPL v3.0 licence
             <td>{{ key.animal }}</td>
             <td>{{ key.sex }}</td>
             <td>{{ key.genotype }}</td>
+            <td>{{ key.treatment }}</td>
             <td>{{ key.totalDistance.toFixed(2) }}</td>
             <td>{{ key['Move isolated Nb'] }}</td>
             <td>{{ key['Move isolated TotalLen'].toFixed(2) }}</td>

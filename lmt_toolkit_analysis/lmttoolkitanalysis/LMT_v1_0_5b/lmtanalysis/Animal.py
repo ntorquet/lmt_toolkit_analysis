@@ -1062,23 +1062,23 @@ class AnimalPool():
         print ( "Fields available in lmtanalysis: " , field_names )
 
         #build query
-        # query = "SELECT "
-        # nbField = len( field_names )
-        # if ( nbField == 3 ):
-        #     query+="ID,RFID,NAME"
-        # elif ( nbField == 4 ):
-        #     query+="ID,RFID,NAME,GENOTYPE"
-        # elif ( nbField == 5 ):
-        #     query+="ID,RFID,NAME,GENOTYPE,TREATMENT"
-        # elif ( nbField == 7 ):
-        #     query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN"
-        # elif ( nbField == 8 ):
-        #     query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN,SETUP"
-        # elif ( nbField == 9 ):
-        #     query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN,SETUP,TREATMENT"
+        query = "SELECT "
+        nbField = len( field_names )
+        if ( nbField == 3 ):
+            query+="ID,RFID,NAME"
+        elif ( nbField == 4 ):
+            query+="ID,RFID,NAME,GENOTYPE"
+        elif ( nbField == 5 ):
+            query+="ID,RFID,NAME,GENOTYPE,TREATMENT"
+        elif ( nbField == 7 ):
+            query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN"
+        elif ( nbField == 8 ):
+            query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN,SETUP"
+        elif ( nbField == 9 ):
+            query+="ID,RFID,NAME,GENOTYPE,AGE,SEX,STRAIN,SETUP,TREATMENT"
         #
-        # query += " FROM ANIMAL ORDER BY GENOTYPE"
-        query = "SELECT * FROM ANIMAL ORDER BY GENOTYPE"
+        query += " FROM ANIMAL ORDER BY GENOTYPE"
+        # query = "SELECT * FROM ANIMAL ORDER BY GENOTYPE"
         print ( "SQL Query: " + query )
 
         cursor.execute( query )

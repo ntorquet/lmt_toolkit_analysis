@@ -737,8 +737,8 @@ def getDataProfile(connection, minT, maxT, file):
     # head, tail = os.path.split(file)
     # extension = head[-4:]
     # print('extension: ', extension)
-    profileData = {}
-    profileData[file] = {}
+    # profileData = {}
+    # profileData[file] = {}
 
     # text_file = getFileNameInput()
     # text_file_name = 'extra_'+file.split('\\')[2].split('.')[0]+".txt"
