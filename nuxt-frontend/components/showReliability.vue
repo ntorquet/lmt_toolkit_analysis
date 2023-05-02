@@ -49,7 +49,7 @@ Code under GPL v3.0 licence
         </v-row>
 
         <br />
-        <v-alert show :color="tempColor">
+        <v-alert :color="tempColor">
           <h4>Temperature</h4>
           <p>{{ data.highTempInformation }}</p>
           <p>{{ data.lowTempInformation }}</p>
@@ -252,7 +252,7 @@ export default {
 
     // temperature message
     if(this.data.highTemp == 'veryHigh' || this.data.highTemp == 'veryLow'){
-     this.tempColor = 'danger'
+     this.tempColor = 'error'
     }
     else if(this.data.highTemp == 'high' || this.data.highTemp == 'low'){
       this.tempColor = 'warning'
@@ -272,7 +272,7 @@ export default {
       this.frameColor = 'warning'
     }
     else {
-      this.frameColor = 'danger'
+      this.frameColor = 'error'
     }
 
     // animal detections
@@ -281,19 +281,19 @@ export default {
       loopNumber = Object.keys(this.data.aboutDetections).length -1
       this.data.aboutDetections['null'].animalId = 'None'
       if(this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor == "red") {
-        this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'danger'
+        this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'error'
       }
       else {
         this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'success'
       }
       if(this.data.aboutDetections['null'].detectionPercentRecordedFramesColor == 'red') {
-        this.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'danger'
+        this.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'error'
       }
       else {
         this.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'success'
       }
       if (this.data.aboutDetections['null'].messageDetectionFrameColor == 'red') {
-        this.data.aboutDetections['null'].messageDetectionFrameColor = 'danger'
+        this.data.aboutDetections['null'].messageDetectionFrameColor = 'error'
       }
       else {
         this.data.aboutDetections['null'].messageDetectionFrameColor = 'success'
@@ -305,7 +305,7 @@ export default {
     for(let i = 1; i <= loopNumber; i++){
 
       if(this.data.aboutDetections[i].detectionPercentTheoricalFramesColor == "red") {
-        this.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'danger'
+        this.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'error'
       }
       else {
         this.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'success'
