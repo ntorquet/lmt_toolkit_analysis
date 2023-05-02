@@ -105,7 +105,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lmttoolkitreliability',
+    'lmttoolkitanalysis',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -180,7 +180,7 @@ You need 3 terminal windows (type cmd in the windows search bar). Each of these 
 #### Django server:
 In the 1st terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
 
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis```
+```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
 Activate the python virtual environment:
 
@@ -207,7 +207,7 @@ Quit the server with CTRL-BREAK.
 #### Celery server
 In the second terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
 
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis```
+```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
 Activate the python virtual environment:
 
@@ -255,9 +255,9 @@ If this works, the lines below should appear:
 [2022-08-26 13:28:06,458: INFO/MainProcess] celery@PP2-1063-B ready.
 ```
 
-#### Vue.js serveur
+#### Nuxt Vue.js server
 In the 3rd terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis\lmt_toolkit_analysis\nuxt-frontend```
+```cd pathToTheLMTtoolkitFolder\nuxt-frontend```
 
 Launch the server:
 ```npm run dev```
