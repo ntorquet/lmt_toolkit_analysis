@@ -21,3 +21,7 @@ class VersionSerializer(serializers.ModelSerializer):
         model = Version
         fields = '__all__'
 
+class EventDocumentationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventDocumentation
+        fields = '__all__'

@@ -16,6 +16,7 @@ from celery_progress.backend import ProgressRecorder
 # from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
 # from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
 from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
+from .LMT_v1_0_5b.lmtanalysis.TaskLogger import TaskLogger
 from .methods import *
 from .models import File
 from datetime import date
@@ -23,7 +24,6 @@ import requests
 import json
 from lmttoolkitanalysis.methods import *
 from lmt_toolkit_analysis.settings import MEDIA_ROOT, MEDIA_URL
-import requests
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
@@ -396,6 +396,113 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     return reliabilityContext
 
 
+@shared_task(bind=True)
+def rebuildSQLite(self, file, file_id, version):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file
+    :return: job done
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 4, f'Starting')
+
+    connection = create_connection(file)
+    print('File: '+file)
+
+    progress_recorder.set_progress(1, 4, f'File loaded')
+    print(connection)
+
+    StartEndFrames = getStartEndExperiment(connection)
+    minT = StartEndFrames[0]
+    maxT = StartEndFrames[1]
+
+    connection.close()
+
+    # Rebuild_all_event from minT to maxT
+    progress_recorder.set_progress(3, 4, f'first analysis done - start Rebuild_all_event')
+    process(file, minT, maxT)
+
+    connection = create_connection(file)
+    t = TaskLogger(connection)
+    t.addLog("Rebuild all events", version=version)
+    connection.close()
+
+    # update file in database: rebuild field with version number
+    api_url = f"http://127.0.0.1:8000/api/v1/files/{file_id}/"
+    todo = {"rebuild": version}
+    response = requests.patch(api_url, json=todo)
+    # print(response.json())
+    print(response.status_code)
+    progress_recorder.set_progress(4, 4, f'Rebuild done - compute analysis')
+
+    return {"message": "Rebuild done"}
+
+
+@shared_task(bind=True)
+def saveAnimalInfoTask(self, data):
+    '''
+    :param data: contains the SQLite LMT_v1_0_3 file and the info to save
+    :return: job done
+    '''
+    print("in saveAnimalInfoTask")
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 4, f'Starting')
+    file = data['file']
+    animalsInfo = data ['animalsInfo']
+    version = data['version']
+    print(version)
+
+
+    print('File: '+file)
+    progress_recorder.set_progress(1, 4, f'File loaded')
+
+    saveAnimalInfo(file, animalsInfo, version)
+
+    progress_recorder.set_progress(3, 4, f'writing into the database')
+
+
+
+    progress_recorder.set_progress(4, 4, f'Saving done')
+
+    return {"message": "Saving done"}
+
+
+@shared_task(bind=True)
+def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitMinT = None, unitMaxT = None):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file, tmin and tmax and their units (unitMinT and unitMaxT) as start and end for the analysis
+    :return: profile (results of behaviors) for each animal
+    '''
+
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 2, f'Starting')
+
+    connection = create_connection(file)
+
+    StartEndFrames = getStartEndExperiment(connection)
+    if int(tmin) == 0 or unitMinT == None or unitMinT == "null" or unitMinT == "":
+        minT = StartEndFrames[0]
+    else:
+        minT = int(tmin)*int(timeUnit[unitMinT])
+    if tmax == "-" or unitMaxT == None or unitMaxT == "null" or unitMaxT == "":
+        maxT = StartEndFrames[1]
+    else:
+        maxT = int(tmax)*int(timeUnit[unitMaxT])
+
+    progress_recorder.set_progress(1, 2, f'Start and end frames found')
+
+    profileData = getDataProfile(connection, minT, maxT, file)
+    print("tmin: " + str(tmin))
+    print("unitMinT: "+str(unitMinT))
+    print("tmax: " + str(tmax))
+    print("unitMaxT: "+str(unitMaxT))
+    print("minT: "+str(minT))
+    print("maxT: "+str(maxT))
+
+    progress_recorder.set_progress(2, 2, f'Analysis done')
+
+    connection.close()
+
+    return profileData
 
 
 @shared_task(bind=True)
@@ -536,7 +643,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     rfidDetection = False
     about_rfid_detections = {}
     for mouse in mice:
-        if not 'RFID' in mouse['tag_subject']:
+        if not 'RFID' in mouse['RFID']:
             rfidDetection = True
     print(str(rfidDetection))
 

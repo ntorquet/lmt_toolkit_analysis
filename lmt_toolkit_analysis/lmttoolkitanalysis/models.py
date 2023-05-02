@@ -14,6 +14,7 @@ import os
 class File(models.Model):
     file_name = models.CharField(max_length=255)
     sqlite = models.FileField(upload_to='.', max_length=255)
+    rebuild = models.CharField(max_length=255, null=True, blank=True)
     tmin = models.IntegerField(null=True, blank=True)
     tmax = models.IntegerField(null=True, blank=True)
     unitMinT = models.CharField(max_length=255, null=True, blank=True)
@@ -55,3 +56,8 @@ class Version(models.Model):
     class Meta:
         verbose_name = 'Version'
         verbose_name_plural = 'Versions'
+
+class EventDocumentation(models.Model):
+    name = models.CharField(max_length=255)
+    representation = models.ImageField(upload_to='./img/', height_field=None, width_field=None, null=True,)
+    description = models.TextField(null=True, blank=True)

@@ -23,10 +23,16 @@ router.register('analyse', AnalyseLMTFile, basename="analyse")
 router.register('reliability', ReliabilityLMTFile, basename="reliability")
 router.register('files', FileViewSet, basename='files')
 router.register('versions', VersionViewSet, basename='versions')
+router.register('eventDocumentation', EventDocumentationViewSet, basename='eventDocumentation')
+# router.register('checkReliability', CheckReliabilityAPIView, basename='CheckReliability')
 
 urlpatterns = [
     path('', include(router.urls)),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # path('analyse_reliability/', views.analyse_reliability.as_view(), name="analyse_reliability"),
     path(r'read_file/', views.ReadFileAPIView.as_view(), name="read_file"),
+    path(r'checkReliability/', views.CheckReliabilityAPIView.as_view(), name="checkReliability"),
+    path(r'rebuild/', views.RebuildSqliteAPIView.as_view(), name="rebuild"),
+    path(r'saveAnimalInfo/', views.SaveAnimalInfoView.as_view(), name="saveAnimalInfo"),
+    path(r'extractAnalysis/', views.ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

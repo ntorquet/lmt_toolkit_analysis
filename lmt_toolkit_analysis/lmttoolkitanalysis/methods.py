@@ -17,6 +17,7 @@ from .LMT_v1_0_5b.lmtanalysis.Animal import *
 from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_5b.lmtanalysis.FileUtil import behaviouralEventOneMouse
 from .LMT_v1_0_5b.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
+from .LMT_v1_0_5b.scripts.Rebuild_info_animals import addColumns, updateFieldFromDico
 
 oneFrame = 1
 oneSecond = 30
@@ -53,18 +54,24 @@ def findMiceInSQLiteFile(connection):
     cursor = connection.cursor()
     query = "SELECT * FROM ANIMAL"
     cursor.execute(query)
-
+    columnNames = [description[0] for description in cursor.description]
     print("Into findMiceInSQLiteFile")
 
     list_animals = []
     rows = cursor.fetchall()
     for row in rows:
-        animalId = row[0]
-        rfid = row[1]
-        genotype = row[2]
-        name = row[3]
-        list_animals.append({'animalId': animalId, 'tag_subject': rfid, 'genotype': genotype, 'name_subject': name})
+        dicoTemp = {}
+        for i in range(0, len(row)):
+            dicoTemp[columnNames[i]] = row[i]
+        list_animals.append(dicoTemp)
+        # animalId = row[0]
+        # rfid = row[1]
+        # genotype = row[2]
+        # name = row[3]
+        # list_animals.append({'animalId': animalId, 'tag_subject': rfid, 'genotype': genotype, 'name_subject': name})
     cursor.close()
+    print(str(columnNames))
+    print(str(list_animals))
     return list_animals
 
 
@@ -355,8 +362,9 @@ def getRFIDdetections(connection):
     c.close()
 
     for animal in list_animals:
-        if not animal['animalId'] in rfid_detection_animals.keys():
-            rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
+        print('animalID: '+str(animal.keys()))
+        if not animal['ID'] in rfid_detection_animals.keys():
+            rfid_detection_animals[animal['ID']] = {'nbRFIDdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfid_detection_animals[animal['animalId']] = {'nbRFIDdetection': 0}
             # else:
@@ -390,8 +398,8 @@ def getRFIDmatchDetections(connection):
     c.close()
 
     for animal in list_animals:
-        if not animal['animalId'] in rfidmatch_detection_animals.keys():
-            rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
+        if not animal['ID'] in rfidmatch_detection_animals.keys():
+            rfidmatch_detection_animals[animal['ID']] = {'nbRFIDmatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmatch_detection_animals[animal['animalId']] = {'nbRFIDmatchdetection': 0}
             # else:
@@ -426,8 +434,8 @@ def getRFIDmismatchDetections(connection):
     c.close()
 
     for animal in list_animals:
-        if not animal['animalId'] in rfidmismatch_detection_animals.keys():
-            rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
+        if not animal['ID'] in rfidmismatch_detection_animals.keys():
+            rfidmismatch_detection_animals[animal['ID']] = {'nbRFIDmismatchdetection': 0}
             # if not 'RFID' in animal['tag_subject']:
             #     rfidmismatch_detection_animals[animal['animalId']] = {'nbRFIDmismatchdetection': 0}
             # else:
@@ -729,8 +737,8 @@ def getDataProfile(connection, minT, maxT, file):
     # head, tail = os.path.split(file)
     # extension = head[-4:]
     # print('extension: ', extension)
-    profileData = {}
-    profileData[file] = {}
+    # profileData = {}
+    # profileData[file] = {}
 
     # text_file = getFileNameInput()
     # text_file_name = 'extra_'+file.split('\\')[2].split('.')[0]+".txt"
@@ -750,3 +758,20 @@ def getDataProfile(connection, minT, maxT, file):
         profileData[mouse]['Period of analysis'] = 'From start frame to end frame'
 
     return profileData
+
+
+def saveAnimalInfo(file, animalsInfo, version):
+    print("in SaveAnimalInfo method")
+    addColumns(file)
+    formatedJson = {}
+    print(str(animalsInfo))
+    for line in animalsInfo:
+        print(line)
+        formatedJson[line['RFID']] = {}
+        for key, value in line.items():
+            if (key != 'RFID' and key != 'ID'):
+                formatedJson[line['RFID']][key] = value
+
+    print(str(formatedJson))
+    updateFieldFromDico(file, formatedJson, version)
+    return "Done"

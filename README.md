@@ -51,46 +51,49 @@ django-admin startproject lmt_toolkit_analysis
 
 
 ## Javascript Requirements and installations
-- vue-cli
+- nuxt
 - axios
-- bootstrap-vue-3@0.3.12
-- bootstrap-icons-vue
-- vue3-popper
+- vuetify@3.1.14
+- pinia@2.0.34
+- vue-chartjs@5.2.0
 - chart.js (for plots)
 - vue-chartjs (for plots)
-- vue-toaster (for toasts)
-- stylus-loader (for toasts)
-- npm install vue-json-csv
+- vue-json-csv
 ```
-npm install -g @vue/cli
-vue create frontend
+npx nuxi@latest init nuxt-frontend
+cd nuxt-frontend
+npm i
 ```
-Select Manually select features.
-
-Select (with the space bar) Babel, Router, Vuex et CSS Pre-processors. Unselect Linter / Formatter.
-
-Vue version: select 3.x
-
- Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n) -> Y
-
-Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): (Use arrow keys) -> select Sass/SCSS (with dart-sass)
-
-Where do you prefer placing config for Babel, ESLint, etc.? (Use arrow keys)   -> select In dedicated config files
-
-Save this as a preset for future projects? (y/N) -> N
+Nuxt is now installed.
 
 
 ```
-cd frontend
+npm install pinia @pinia/nuxt
+npm i vuetify@next sass
+npm i @mdi/font
 npm install axios
-npm i bootstrap-vue-3@0.3.12
-npm i bootstrap-icons-vue
-npm i vue3-popper
 npm install vue-chartjs chart.js
-npm install @meforma/vue-toaster
-npm install stylus-loader@3 stylus
-npm run serve
+npm run dev
 ```
+
+In the nuxt package.json, add the following:
+```
+"overrides": {
+  "vue": "latest"
+}
+```
+and add the following to the nuxt.config.js file:
+```
+// nuxt.config.js
+export default defineNuxtConfig({
+  // ... other options
+  modules: [
+    // ...
+    '@pinia/nuxt',
+  ],
+})
+```
+
 
 ## Django configuration
 ### Django settings
@@ -102,7 +105,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lmttoolkitreliability',
+    'lmttoolkitanalysis',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -177,7 +180,7 @@ You need 3 terminal windows (type cmd in the windows search bar). Each of these 
 #### Django server:
 In the 1st terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
 
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis```
+```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
 Activate the python virtual environment:
 
@@ -204,7 +207,7 @@ Quit the server with CTRL-BREAK.
 #### Celery server
 In the second terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
 
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis```
+```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
 Activate the python virtual environment:
 
@@ -252,18 +255,21 @@ If this works, the lines below should appear:
 [2022-08-26 13:28:06,458: INFO/MainProcess] celery@PP2-1063-B ready.
 ```
 
-#### Vue.js serveur
+#### Nuxt Vue.js server
 In the 3rd terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
-```cd C:\Users\admin\Documents\GitHub\lmt_toolkit_analysis\lmt_toolkit_analysis\frontend```
+```cd pathToTheLMTtoolkitFolder\nuxt-frontend```
 
 Launch the server:
-```npm run serve```
+```npm run dev```
 
 If this works, the lines below should appear:
 ```
-  App running at:
-  - Local:   http://localhost:3000/
-  - Network: http://192.168.54.8:3000/
+Nuxi 3.4.1                                                                                                                                                                                                                    16:12:58
+Nuxt 3.4.1 with Nitro 2.3.3                                                                                                                                                                                                   16:12:58
+                                                                                                                                                                                                                              16:12:59
+  > Local:    http://localhost:3000/                                                                                                                                                                                                  
+  > Network:  http://172.31.48.1:3000/                                                                                                                                                                                                
+  > Network:  http://192.168.53.55:3000/       
 ```
 
 Use one of these url in your internet browser to use LMT-toolkit.
