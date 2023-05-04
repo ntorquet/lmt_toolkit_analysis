@@ -169,6 +169,9 @@ def getSensorInSQLiteFile(connection):
             soundToReturn.append(sound[i])
             lightvisibleToReturn.append(lightvisible[i])
             lightvisibleandirToReturn.append(lightvisibleandir[i])
+
+        if sum(temperatureToReturn)+sum(humidityToReturn)+sum(humidityToReturn)+sum(lightvisibleToReturn)+sum(lightvisibleandirToReturn) == 0:
+            return "no sensors"
         result = {'timeline': timelineToReturn, 'temperature': temperatureToReturn, 'humidity': humidityToReturn, 'sound': soundToReturn,
                   'lightvisible': lightvisibleToReturn, 'lightvisibleandir': lightvisibleandirToReturn, 'highTemp': highTemp, 'lowTemp': lowTemp}
         return result
