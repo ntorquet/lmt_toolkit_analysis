@@ -148,6 +148,11 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+### Load data for documentation and versions
+```
+python manage.py loaddata datatostart.json
+```
+
 ### Start the server Django
 ```
 python manage.py runserver
