@@ -13,4 +13,5 @@ from .models import *
 
 admin.site.register(File)
 admin.site.register(Version)
+admin.site.register(EventDocumentation)
 
