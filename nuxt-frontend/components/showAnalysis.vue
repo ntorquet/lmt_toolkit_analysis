@@ -233,7 +233,7 @@ export default {
       tmax: '',
       analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT_v1_0_5-toolkit_v0-2_',
+      name_csv: 'LMT_v1_0_5-toolkit_v1_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
       analysis_parameters_data: [],
@@ -334,32 +334,32 @@ export default {
     this.convertJsonToCSVFormat()
     let dataToConvert = this.data
     let index = 0
-    for(let mouse in dataToConvert){
-      this.tmin = dataToConvert[mouse]['Start frame']
-      this.tmax = dataToConvert[mouse]['End frame']
-      this.analysisPeriod = dataToConvert[mouse]['Period of analysis']
+    for(let animal in dataToConvert){
+      this.tmin = dataToConvert[animal]['Start frame']
+      this.tmax = dataToConvert[animal]['End frame']
+      this.analysisPeriod = dataToConvert[animal]['Period of analysis']
       // Analysis parameters
       this.analysis_parameters_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Start frame'], dataToConvert[mouse]['End frame'], dataToConvert[mouse]['Period of analysis']],
+            data: [dataToConvert[animal]['Start frame'], dataToConvert[animal]['End frame'], dataToConvert[animal]['Period of analysis']],
             showLine: false
           }
       )
       // Activity
       this.activity_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-                dataToConvert[mouse].totalDistance, dataToConvert[mouse]['Move isolated Nb'], dataToConvert[mouse]['Move isolated TotalLen'], dataToConvert[mouse]['Move isolated MeanDur'],
-                dataToConvert[mouse]['Move in contact Nb'], dataToConvert[mouse]['Move in contact TotalLen'], dataToConvert[mouse]['Move in contact MeanDur'],
-                dataToConvert[mouse]['Stop isolated Nb'], dataToConvert[mouse]['Stop isolated TotalLen'], dataToConvert[mouse]['Stop isolated MeanDur']
+                dataToConvert[animal].totalDistance, dataToConvert[animal]['Move isolated Nb'], dataToConvert[animal]['Move isolated TotalLen'], dataToConvert[animal]['Move isolated MeanDur'],
+                dataToConvert[animal]['Move in contact Nb'], dataToConvert[animal]['Move in contact TotalLen'], dataToConvert[animal]['Move in contact MeanDur'],
+                dataToConvert[animal]['Stop isolated Nb'], dataToConvert[animal]['Stop isolated TotalLen'], dataToConvert[animal]['Stop isolated MeanDur']
             ],
             showLine: false
           }
@@ -367,12 +367,12 @@ export default {
       // Activity distance
       this.activity_data_distance.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-                dataToConvert[mouse].totalDistance
+                dataToConvert[animal].totalDistance
             ],
             showLine: false
           }
@@ -380,14 +380,14 @@ export default {
       // Activity number
       this.activity_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-                dataToConvert[mouse]['Move isolated Nb'],
-                dataToConvert[mouse]['Move in contact Nb'],
-                dataToConvert[mouse]['Stop isolated Nb']
+                dataToConvert[animal]['Move isolated Nb'],
+                dataToConvert[animal]['Move in contact Nb'],
+                dataToConvert[animal]['Stop isolated Nb']
             ],
             showLine: false
           }
@@ -395,14 +395,14 @@ export default {
       // Activity totalLen
       this.activity_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-                dataToConvert[mouse]['Move isolated TotalLen'],
-                dataToConvert[mouse]['Move in contact TotalLen'],
-                dataToConvert[mouse]['Stop isolated TotalLen']
+                dataToConvert[animal]['Move isolated TotalLen'],
+                dataToConvert[animal]['Move in contact TotalLen'],
+                dataToConvert[animal]['Stop isolated TotalLen']
             ],
             showLine: false
           }
@@ -410,14 +410,14 @@ export default {
       // Activity meandur
       this.activity_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-                dataToConvert[mouse]['Move isolated MeanDur'],
-                dataToConvert[mouse]['Move in contact MeanDur'],
-                dataToConvert[mouse]['Stop isolated MeanDur']
+                dataToConvert[animal]['Move isolated MeanDur'],
+                dataToConvert[animal]['Move in contact MeanDur'],
+                dataToConvert[animal]['Stop isolated MeanDur']
             ],
             showLine: false
           }
@@ -426,12 +426,12 @@ export default {
       // Exploration
       this.exploration_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Rear isolated Nb'], dataToConvert[mouse]['Rear isolated TotalLen'], dataToConvert[mouse]['Rear isolated MeanDur'],
-              dataToConvert[mouse]['Rear in contact Nb'], dataToConvert[mouse]['Rear in contact TotalLen'], dataToConvert[mouse]['Rear in contact MeanDur']
+            data: [dataToConvert[animal]['Rear isolated Nb'], dataToConvert[animal]['Rear isolated TotalLen'], dataToConvert[animal]['Rear isolated MeanDur'],
+              dataToConvert[animal]['Rear in contact Nb'], dataToConvert[animal]['Rear in contact TotalLen'], dataToConvert[animal]['Rear in contact MeanDur']
             ],
             showLine: false
           }
@@ -439,33 +439,33 @@ export default {
       // Exploration nb
       this.exploration_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Rear isolated Nb'], dataToConvert[mouse]['Rear in contact Nb']],
+            data: [dataToConvert[animal]['Rear isolated Nb'], dataToConvert[animal]['Rear in contact Nb']],
             showLine: false
           }
       )
       // Exploration totalLen
       this.exploration_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Rear isolated TotalLen'], dataToConvert[mouse]['Rear in contact TotalLen']],
+            data: [dataToConvert[animal]['Rear isolated TotalLen'], dataToConvert[animal]['Rear in contact TotalLen']],
             showLine: false
           }
       )
       // Exploration meanDur
       this.exploration_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Rear isolated MeanDur'], dataToConvert[mouse]['Rear in contact MeanDur']],
+            data: [dataToConvert[animal]['Rear isolated MeanDur'], dataToConvert[animal]['Rear in contact MeanDur']],
             showLine: false
           }
       )
@@ -473,17 +473,17 @@ export default {
       // Contacts
       this.contacts_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Contact Nb'], dataToConvert[mouse]['Contact TotalLen'], dataToConvert[mouse]['Contact MeanDur'],
-              dataToConvert[mouse]['Group2 Nb'], dataToConvert[mouse]['Group2 TotalLen'], dataToConvert[mouse]['Group2 MeanDur'],
-              dataToConvert[mouse]['Group3 Nb'], dataToConvert[mouse]['Group3 TotalLen'], dataToConvert[mouse]['Group3 MeanDur'],
-              dataToConvert[mouse]['Oral-oral Contact Nb'], dataToConvert[mouse]['Oral-oral Contact TotalLen'], dataToConvert[mouse]['Oral-oral Contact MeanDur'],
-              dataToConvert[mouse]['Oral-genital Contact Nb'], dataToConvert[mouse]['Oral-genital Contact TotalLen'], dataToConvert[mouse]['Oral-genital Contact MeanDur'],
-              dataToConvert[mouse]['Side by side Contact Nb'], dataToConvert[mouse]['Side by side Contact TotalLen'], dataToConvert[mouse]['Side by side Contact MeanDur'],
-              dataToConvert[mouse]['Side by side Contact, opposite way Nb'], dataToConvert[mouse]['Side by side Contact, opposite way TotalLen'], dataToConvert[mouse]['Side by side Contact, opposite way MeanDur']
+            data: [dataToConvert[animal]['Contact Nb'], dataToConvert[animal]['Contact TotalLen'], dataToConvert[animal]['Contact MeanDur'],
+              dataToConvert[animal]['Group2 Nb'], dataToConvert[animal]['Group2 TotalLen'], dataToConvert[animal]['Group2 MeanDur'],
+              dataToConvert[animal]['Group3 Nb'], dataToConvert[animal]['Group3 TotalLen'], dataToConvert[animal]['Group3 MeanDur'],
+              dataToConvert[animal]['Oral-oral Contact Nb'], dataToConvert[animal]['Oral-oral Contact TotalLen'], dataToConvert[animal]['Oral-oral Contact MeanDur'],
+              dataToConvert[animal]['Oral-genital Contact Nb'], dataToConvert[animal]['Oral-genital Contact TotalLen'], dataToConvert[animal]['Oral-genital Contact MeanDur'],
+              dataToConvert[animal]['Side by side Contact Nb'], dataToConvert[animal]['Side by side Contact TotalLen'], dataToConvert[animal]['Side by side Contact MeanDur'],
+              dataToConvert[animal]['Side by side Contact, opposite way Nb'], dataToConvert[animal]['Side by side Contact, opposite way TotalLen'], dataToConvert[animal]['Side by side Contact, opposite way MeanDur']
             ],
             showLine: false
           }
@@ -491,17 +491,17 @@ export default {
       // Contacts nb
       this.contacts_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Contact Nb'],
-              dataToConvert[mouse]['Group2 Nb'],
-              dataToConvert[mouse]['Group3 Nb'],
-              dataToConvert[mouse]['Oral-oral Contact Nb'],
-              dataToConvert[mouse]['Oral-genital Contact Nb'],
-              dataToConvert[mouse]['Side by side Contact Nb'],
-              dataToConvert[mouse]['Side by side Contact, opposite way TotalLen']
+            data: [dataToConvert[animal]['Contact Nb'],
+              dataToConvert[animal]['Group2 Nb'],
+              dataToConvert[animal]['Group3 Nb'],
+              dataToConvert[animal]['Oral-oral Contact Nb'],
+              dataToConvert[animal]['Oral-genital Contact Nb'],
+              dataToConvert[animal]['Side by side Contact Nb'],
+              dataToConvert[animal]['Side by side Contact, opposite way TotalLen']
             ],
             showLine: false
           }
@@ -509,17 +509,17 @@ export default {
       // Contacts totalLen
       this.contacts_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Contact TotalLen'],
-              dataToConvert[mouse]['Group2 TotalLen'],
-              dataToConvert[mouse]['Group3 TotalLen'],
-              dataToConvert[mouse]['Oral-oral Contact TotalLen'],
-              dataToConvert[mouse]['Oral-genital Contact TotalLen'],
-              dataToConvert[mouse]['Side by side Contact TotalLen'],
-              dataToConvert[mouse]['Side by side Contact, opposite way TotalLen']
+            data: [dataToConvert[animal]['Contact TotalLen'],
+              dataToConvert[animal]['Group2 TotalLen'],
+              dataToConvert[animal]['Group3 TotalLen'],
+              dataToConvert[animal]['Oral-oral Contact TotalLen'],
+              dataToConvert[animal]['Oral-genital Contact TotalLen'],
+              dataToConvert[animal]['Side by side Contact TotalLen'],
+              dataToConvert[animal]['Side by side Contact, opposite way TotalLen']
             ],
             showLine: false
           }
@@ -527,17 +527,17 @@ export default {
       // Contacts meanDur
       this.contacts_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Contact MeanDur'],
-              dataToConvert[mouse]['Group2 MeanDur'],
-              dataToConvert[mouse]['Group3 MeanDur'],
-              dataToConvert[mouse]['Oral-oral Contact MeanDur'],
-              dataToConvert[mouse]['Oral-genital Contact MeanDur'],
-              dataToConvert[mouse]['Side by side Contact MeanDur'],
-              dataToConvert[mouse]['Side by side Contact, opposite way MeanDur']
+            data: [dataToConvert[animal]['Contact MeanDur'],
+              dataToConvert[animal]['Group2 MeanDur'],
+              dataToConvert[animal]['Group3 MeanDur'],
+              dataToConvert[animal]['Oral-oral Contact MeanDur'],
+              dataToConvert[animal]['Oral-genital Contact MeanDur'],
+              dataToConvert[animal]['Side by side Contact MeanDur'],
+              dataToConvert[animal]['Side by side Contact, opposite way MeanDur']
             ],
             showLine: false
           }
@@ -546,12 +546,12 @@ export default {
       // Follows
       this.follows_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Train2 Nb'], dataToConvert[mouse]['Train2 TotalLen'], dataToConvert[mouse]['Train2 MeanDur'],
-              dataToConvert[mouse]['FollowZone Nb'], dataToConvert[mouse]['FollowZone TotalLen'], dataToConvert[mouse]['FollowZone MeanDur']
+            data: [dataToConvert[animal]['Train2 Nb'], dataToConvert[animal]['Train2 TotalLen'], dataToConvert[animal]['Train2 MeanDur'],
+              dataToConvert[animal]['FollowZone Nb'], dataToConvert[animal]['FollowZone TotalLen'], dataToConvert[animal]['FollowZone MeanDur']
             ],
             showLine: false
           }
@@ -559,12 +559,12 @@ export default {
       // Follows nb
       this.follows_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Train2 Nb'],
-              dataToConvert[mouse]['FollowZone Nb']
+            data: [dataToConvert[animal]['Train2 Nb'],
+              dataToConvert[animal]['FollowZone Nb']
             ],
             showLine: false
           }
@@ -572,12 +572,12 @@ export default {
       // Follows totalLen
       this.follows_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Train2 TotalLen'],
-              dataToConvert[mouse]['FollowZone TotalLen']
+            data: [dataToConvert[animal]['Train2 TotalLen'],
+              dataToConvert[animal]['FollowZone TotalLen']
             ],
             showLine: false
           }
@@ -585,12 +585,12 @@ export default {
       // Follows meanDur
       this.follows_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Train2 MeanDur'],
-              dataToConvert[mouse]['FollowZone MeanDur']
+            data: [dataToConvert[animal]['Train2 MeanDur'],
+              dataToConvert[animal]['FollowZone MeanDur']
             ],
             showLine: false
           }
@@ -599,13 +599,13 @@ export default {
       // Approaches
       this.approaches_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Social approach Nb'], dataToConvert[mouse]['Social approach TotalLen'], dataToConvert[mouse]['Social approach MeanDur'],
-              dataToConvert[mouse]['Approach contact Nb'], dataToConvert[mouse]['Approach contact TotalLen'], dataToConvert[mouse]['Approach contact MeanDur'],
-              dataToConvert[mouse]['Group 3 make Nb'], dataToConvert[mouse]['Group 4 make Nb']
+            data: [dataToConvert[animal]['Social approach Nb'], dataToConvert[animal]['Social approach TotalLen'], dataToConvert[animal]['Social approach MeanDur'],
+              dataToConvert[animal]['Approach contact Nb'], dataToConvert[animal]['Approach contact TotalLen'], dataToConvert[animal]['Approach contact MeanDur'],
+              dataToConvert[animal]['Group 3 make Nb'], dataToConvert[animal]['Group 4 make Nb']
             ],
             showLine: false
           }
@@ -613,13 +613,13 @@ export default {
       // Approaches nb
       this.approaches_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Social approach Nb'],
-              dataToConvert[mouse]['Approach contact Nb'],
-              dataToConvert[mouse]['Group 3 make Nb'], dataToConvert[mouse]['Group 4 make Nb']
+            data: [dataToConvert[animal]['Social approach Nb'],
+              dataToConvert[animal]['Approach contact Nb'],
+              dataToConvert[animal]['Group 3 make Nb'], dataToConvert[animal]['Group 4 make Nb']
             ],
             showLine: false
           }
@@ -627,12 +627,12 @@ export default {
       // Approaches totalLen
       this.approaches_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Social approach TotalLen'],
-              dataToConvert[mouse]['Approach contact TotalLen']
+            data: [dataToConvert[animal]['Social approach TotalLen'],
+              dataToConvert[animal]['Approach contact TotalLen']
             ],
             showLine: false
           }
@@ -640,12 +640,12 @@ export default {
       // Approaches meanDur
       this.approaches_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
-            data: [dataToConvert[mouse]['Social approach MeanDur'],
-              dataToConvert[mouse]['Approach contact MeanDur']
+            data: [dataToConvert[animal]['Social approach MeanDur'],
+              dataToConvert[animal]['Approach contact MeanDur']
             ],
             showLine: false
           }
@@ -654,13 +654,13 @@ export default {
       // Escapes
       this.escapes_data.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-              dataToConvert[mouse]['Break contact Nb'], dataToConvert[mouse]['Break contact TotalLen'], dataToConvert[mouse]['Break contact MeanDur'],
-              dataToConvert[mouse]['Group 3 break Nb'], dataToConvert[mouse]['Group 4 break Nb']
+              dataToConvert[animal]['Break contact Nb'], dataToConvert[animal]['Break contact TotalLen'], dataToConvert[animal]['Break contact MeanDur'],
+              dataToConvert[animal]['Group 3 break Nb'], dataToConvert[animal]['Group 4 break Nb']
             ],
             showLine: false
           }
@@ -668,13 +668,13 @@ export default {
       // Escapes nb
       this.escapes_data_nb.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-              dataToConvert[mouse]['Break contact Nb'],
-              dataToConvert[mouse]['Group 3 break Nb'], dataToConvert[mouse]['Group 4 break Nb']
+              dataToConvert[animal]['Break contact Nb'],
+              dataToConvert[animal]['Group 3 break Nb'], dataToConvert[animal]['Group 4 break Nb']
             ],
             showLine: false
           }
@@ -682,12 +682,12 @@ export default {
       // Escapes totalLen
       this.escapes_data_total_length.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-              dataToConvert[mouse]['Break contact TotalLen']
+              dataToConvert[animal]['Break contact TotalLen']
             ],
             showLine: false
           }
@@ -695,12 +695,12 @@ export default {
       // Escapes meanDur
       this.escapes_data_meandur.push(
           {
-            label: mouse,
+            label: animal,
             fill: false,
             borderColor: this.colorList[index],
             backgroundColor: this.colorList[index],
             data: [
-              dataToConvert[mouse]['Break contact MeanDur']
+              dataToConvert[animal]['Break contact MeanDur']
             ],
             showLine: false
           }

@@ -10,7 +10,7 @@ Code under GPL v3.0 licence
   <v-footer color="black" height="100em">
     <div class="px-4 py-2 bg-black text-center w-100">
       <v-row>
-        <v-col>LMT-toolkit v0.2 - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022</v-col>
+        <v-col>LMT-toolkit {{ lastVersion }} - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022</v-col>
       </v-row>
       <v-row>
         <v-col>
@@ -28,15 +28,17 @@ export default {
   data:function (){
 		return{
       versions: [],
+      lastVersion: ""
     }
   },
   methods: {
     getVersions() {
       this.files = []
       this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/v1/versions`)
+      axios.get(`http://127.0.0.1:8000/api/v1/versions/`)
           .then(response => {
             this.versions = response.data
+            this.lastVersion = this.versions[this.versions.length-1]["lmt_toolkit_version"]
             this.organizeFiles()
           })
           .catch(error => {

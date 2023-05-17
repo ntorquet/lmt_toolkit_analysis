@@ -27,7 +27,7 @@ Code under GPL v3.0 licence
   </section>
 
   <footer class="bg-dark text-center text-white">
-    <p><router-link to="/about" class="text">About</router-link> - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - <router-link to="/versions">v0.2</router-link></p>
+    <p><router-link to="/about" class="text">About</router-link> - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022 - <router-link to="/versions">v1</router-link></p>
   </footer>
 </template>
 
