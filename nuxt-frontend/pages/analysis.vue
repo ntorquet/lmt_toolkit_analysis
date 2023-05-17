@@ -54,7 +54,7 @@ Code under GPL v3.0 licence
                 label="Select a file"
                 @change="onFilePicked($event)"
             ></v-file-input>
-            <v-btn v-if="file && !uploading && !checked" @click="upload">Check the experiment</v-btn>
+            <v-btn v-if="file && !uploading && !checked" @click="upload"><v-icon icon="mdi-arrow-right-bold"></v-icon> Check the experiment</v-btn>
           </v-card-text>
         </v-window-item>
 
@@ -90,8 +90,8 @@ Code under GPL v3.0 licence
 
         <v-window-item :value="4">
           <div class="pa-4 text-center">
-            <v-btn @click="functionToShowReliability">See reliability</v-btn>
-            <v-btn @click="stepUp">Next step: animal information</v-btn>
+            <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
+            <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="800">
               <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
             </v-dialog>
@@ -124,7 +124,7 @@ Code under GPL v3.0 licence
                   </tr>
                 </tbody>
               </v-table>
-              <v-btn @click="saveAnimalInfo">Save animals information</v-btn>
+              <v-btn @click="saveAnimalInfo" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and continue</v-btn>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -176,7 +176,7 @@ Code under GPL v3.0 licence
                       {{ durationChecker }}
                     </v-alert>
                     <v-btn v-else @click="doAnalysis('simplePreset')">
-                        Analyse
+                        <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
                     </v-btn>
                 </v-card-text>
             </v-card>

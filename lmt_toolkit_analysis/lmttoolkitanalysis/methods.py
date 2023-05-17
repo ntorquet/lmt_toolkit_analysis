@@ -732,6 +732,9 @@ def getDistanceAndTimeInContact(connection, minT, maxT, file):
     return dataDic
 
 def getDataProfile(connection, minT, maxT, file):
+    print("minT: "+str(minT))
+    print("maxT: "+str(maxT))
+
     animalPool = AnimalPool()
     #
     # # load infos about the animals

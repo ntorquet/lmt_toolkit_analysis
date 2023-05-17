@@ -491,12 +491,12 @@ def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitM
     progress_recorder.set_progress(1, 2, f'Start and end frames found')
 
     profileData = getDataProfile(connection, minT, maxT, file)
-    print("tmin: " + str(tmin))
-    print("unitMinT: "+str(unitMinT))
-    print("tmax: " + str(tmax))
-    print("unitMaxT: "+str(unitMaxT))
-    print("minT: "+str(minT))
-    print("maxT: "+str(maxT))
+    # print("tmin: " + str(tmin))
+    # print("unitMinT: "+str(unitMinT))
+    # print("tmax: " + str(tmax))
+    # print("unitMaxT: "+str(unitMaxT))
+    # print("minT: "+str(minT))
+    # print("maxT: "+str(maxT))
 
     progress_recorder.set_progress(2, 2, f'Analysis done')
 
