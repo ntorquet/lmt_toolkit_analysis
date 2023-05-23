@@ -33,7 +33,7 @@ We do our best to verify the accuracy of the results. It is your responsibility 
 | **Break group 3**	         |                                                                                                                                                              | The focal animal is leaving a group of three animals to leave a group of two animals in contact; the focal animal has the highest speed among the three animals in contact (number of events). This event has to be validated!|
 | **Break group 4**	         |                                                                                                                                                              | The focal animal is leaving a group of four animals, that remain as a group of three animals in contact; the focal animal has the highest speed among the four animals in contact (number of events). This event has to be validated!|
 
-This table will be completed with each new behavior extraction possibility.
+This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
 
 ## How to extract results
 LMT-toolkit provides a step-by-step process:
