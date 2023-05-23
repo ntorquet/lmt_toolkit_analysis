@@ -70,7 +70,7 @@ LMT-toolkit uses the LMT-analysis code provided on [GitHub](https://github.com/f
 
 ## Python Requirements (See [requirements.txt](requirements.txt))
 - Django>=4.0.2
-- djangorestframework==3.13.1
+- djangorestframework==3.14
 - django-filter==21.1
 - djoser==2.1.0
 - django-cors-headers==3.11.0
