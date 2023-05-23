@@ -32,10 +32,11 @@ We do our best to verify the accuracy of the results. It is your responsibility 
 | **Break contact**          | ![alt break contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_break_cct.jpg?raw=true)          | The focal animal is getting away (higher speed) from the animal it has been in contact with; the speed of the focal animal is higher than the speed of the other animal (number of events).|
 | **Break group 3**	         |                                                                                                                                                              | The focal animal is leaving a group of three animals to leave a group of two animals in contact; the focal animal has the highest speed among the three animals in contact (number of events). This event has to be validated!|
 | **Break group 4**	         |                                                                                                                                                              | The focal animal is leaving a group of four animals, that remain as a group of three animals in contact; the focal animal has the highest speed among the four animals in contact (number of events). This event has to be validated!|
-This table will be completed with each new behavior extraction possibility.
+
+This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
 
 ## How to extract results
-LMT-toolkit provides a step-by-step process
+LMT-toolkit provides a step-by-step process:
 
 ### Select a SQLite file
 ![alt SQLite file selection](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_1_select_file.PNG?raw=true)
@@ -57,7 +58,7 @@ By default, the analysis will be done on the total duration of the experiment. Y
 
 ### Save the results
 You can see the results divided in different tables, and download the whole in CSV file.
-![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_results.PNG?raw=true)
+![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
 
 
 ## Licence
