@@ -4,6 +4,7 @@ djangorestframework==3.14
 django-filter==21.1
 djoser==2.1.0
 django-cors-headers==3.11.0
+Celery
 django-celery
 django-celery-results
 celery-progress==0.1.2

@@ -61,19 +61,25 @@ You can see the results divided in different tables, and download the whole in C
 ![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
 
 
-## Licence
-LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
+## Installation
+LMT-toolkit works thanks to 3 different servers:
+- a Django server with a REST API (Python)
+- a Nuxt server for the frontend (the interface) (JavaScript - Vue)
+- a Celery server to manage asynchronous tasks between the frontend and the Django server (Python)
 
-Copyright (C) 2022 CNRS - INSERM - UNISTRA - ICS - IGBMC
+![alt LMT-toolkit schema](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/lmt-toolkit_schema.png?raw=true)
 
-LMT-toolkit uses the LMT-analysis code provided on [GitHub](https://github.com/fdechaumont/lmt-analysis). This code is also under the GPL v3.0 licence.
+It is recommended to create a [python virtual environment](https://docs.python.org/3/library/venv.html) into the root folder of the application to 
+install the python required packages.
+[To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
-## Python Requirements (See [requirements.txt](requirements.txt))
+### Python Requirements (See [requirements.txt](requirements.txt))
 - Django>=4.0.2
 - djangorestframework==3.14
 - django-filter==21.1
 - djoser==2.1.0
 - django-cors-headers==3.11.0
+- Celery
 - django-celery
 - django-celery-results
 - celery-progress==0.1.2
@@ -95,109 +101,6 @@ Install this list with the command:
 pip install -r requirements.txt
 ```
 
-## Django installation
-Create the Django project
-```
-django-admin startproject lmt_toolkit_analysis
-```
-
-
-
-
-## Javascript Requirements and installations
-- nuxt
-- axios
-- vuetify@3.1.14
-- pinia@2.0.34
-- vue-chartjs@5.2.0
-- chart.js (for plots)
-- vue-chartjs (for plots)
-- vue-json-csv
-```
-npx nuxi@latest init nuxt-frontend
-cd nuxt-frontend
-npm i
-```
-Nuxt is now installed.
-
-
-```
-npm install pinia @pinia/nuxt
-npm i vuetify@next sass
-npm i @mdi/font
-npm install axios
-npm install vue-chartjs chart.js
-npm run dev
-```
-
-In the nuxt package.json, add the following:
-```
-"overrides": {
-  "vue": "latest"
-}
-```
-and add the following to the nuxt.config.js file:
-```
-// nuxt.config.js
-export default defineNuxtConfig({
-  // ... other options
-  modules: [
-    // ...
-    '@pinia/nuxt',
-  ],
-})
-```
-
-
-## Django configuration
-### Django settings
-```
-import os
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'lmttoolkitanalysis',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'corsheaders',
-    'djoser',
-    'django_celery_results',
-    'celery_progress',
-]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-```
-
-At the end of the settings.py file, add:
-```
-broker_url = 'amqp://guest:guest@localhost:5672//'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_TIMEZONE = "Europe/Paris"
-CELERY_IMPORTS = 'lmttoolkitanalysis.tasks'
-CELERY_RESULT_BACKEND = 'django-db'
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
-
-# To upload
-MEDIA_URL = '/media/temp/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/temp/')
-PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media/temp/')
-```
-
 ### Database migration
 ```
 python manage.py makemigrations
@@ -206,25 +109,71 @@ python manage.py migrate
 
 ### Load data for documentation and versions
 ```
-python manage.py loaddata datatostart.json
+python manage.py loaddata fixtures/datatostart.json
 ```
 
-### Start the server Django
+
+
+### Javascript Requirements and installations
+First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
+Then you will have to install these packages using npm or yarn package managers:
+- nuxt
+- axios
+- vuetify@3.1.14
+- pinia@2.0.34
+- vue-chartjs@5.2.0
+- chart.js (for plots)
+- vue-chartjs (for plots)
+- vue-json-csv
+
+It is recommended to first rename the nuxt-frontend folder to first create a new nuxt application and 
+then copy / past files from the previous nuxt-frontend to the new one.
+
 ```
-python manage.py runserver
+npx nuxi@latest init nuxt-frontend
+```
+The above command will create a new nuxt application in a new nuxt-frontend folder.
+You can then copy / paste all the folders and files from the previous nuxt-folder, except the .nuxt 
+and the node_modules folders.
+```
+cd nuxt-frontend
+npm i
+```
+Nuxt is now installed.
+
+Then install the packages (example with npm):
+```
+npm install pinia @pinia/nuxt
+npm i vuetify sass
+npm i @mdi/font
+npm install axios
+npm install vue-chartjs chart.js
+npm install vue-json-csv
 ```
 
-## Celery
+
+### Celery
 Celery is used to make asynchronous tasks.
+We need a broker to make a pip between Celery and Django. It is possible to use [RabbitMQ](https://www.rabbitmq.com/).
+On windows, RabbitMQ needs erlang to work:
 
-To start Celery, in the console, go to the application folder
-```
-cd lmt_toolkit_analysis
-```
-and then write this command:
-```
-celery -A lmt_toolkit_analysis worker -l info -P solo  
-```
+https://erlang.org/download/otp_versions_tree.html
+
+Download the latest version of erlang and install it.
+
+Download RabbitMq and install it:
+
+https://rabbitmq.com/install-windows.html
+
+Once RabbitMQ is installed, it runs by itself and it is possible to access its terminal via the start menu (RabbitMQ Command Prompt).
+
+If needed (normally it is created by default), create a new RabbitMQ user from this Command Prompt:
+
+```rabbitmqctl add_user guest```
+
+The two guests (user and password) are the ones found in the settings.py file of the Django application (already added)
+
+```broker_url = 'amqp://guest:guest@localhost:5672//'```
 
 
 ## How to launch the application on a Windows computer
@@ -336,7 +285,15 @@ Nuxt 3.4.1 with Nitro 2.3.3                                                     
 Use one of these url in your internet browser to use LMT-toolkit.
 
 
-## Features attributions:
+### Licence
+LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
+
+Copyright (C) 2022 CNRS - INSERM - UNISTRA - ICS - IGBMC
+
+LMT-toolkit uses the LMT-analysis code provided on [GitHub](https://github.com/fdechaumont/lmt-analysis). This code is also under the GPL v3.0 licence.
+
+
+### Features attributions:
 Code for LMT analysis on [GitHub](https://github.com/fdechaumont/lmt-analysis)
 
 Mice in the different behavioural events drawn by P. Dugast (from the [Live Mouse Tracker publication](https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D), DOI: [10.1038/s41551-019-0396-1](https://doi.org/10.1038/s41551-019-0396-1))
