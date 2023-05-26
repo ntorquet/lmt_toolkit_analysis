@@ -105,7 +105,7 @@ Code under GPL v3.0 licence
               <v-table>
                 <thead>
                   <tr>
-                    <th v-for="(value, name) in data.mouse[0]" or>{{ name }}</th>
+                    <th v-for="(value, name) in animalsInfo[0]" or>{{ name }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -344,11 +344,6 @@ export default {
       let formData = new FormData();
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
-      // formData.append('tmin', parseInt(this.minT))
-      // formData.append('tmax', parseInt(this.maxT))
-      // formData.append('unitMinT', this.unitMinT)
-      // formData.append('unitMaxT', this.unitMaxT)
-      // formData.append('deleteFile', this.deleteFile)
 
       axios.post(`http://127.0.0.1:8000/api/v1/files/`, formData, {
         onUploadProgress: function (progressEvent) {
@@ -408,21 +403,21 @@ export default {
                 console.log("step 4")
                 this.animalsInfo = this.data.mouse
                 for(let animal in this.animalsInfo) {
-                  console.log(Object.keys(this.animalsInfo[animal]))
-                  if(!"age" in Object.keys(this.animalsInfo[animal])){
-                    this.animalsInfo[animal]['age'] = ""
+                  if(!this.animalsInfo[animal].hasOwnProperty("AGE")){
+                    console.log(Object.keys(this.animalsInfo[animal]))
+                    this.animalsInfo[animal]['AGE'] = ""
                   }
-                  if(!"sex" in Object.keys(this.animalsInfo[animal])){
-                    this.animalsInfo[animal]['sex'] = ""
+                  if(!this.animalsInfo[animal].hasOwnProperty("SEX")){
+                    this.animalsInfo[animal]['SEX'] = ""
                   }
-                  if(!"strain" in Object.keys(this.animalsInfo[animal])){
-                    this.animalsInfo[animal]['strain'] = ""
+                  if(!this.animalsInfo[animal].hasOwnProperty("STRAIN")){
+                    this.animalsInfo[animal]['STRAIN'] = ""
                   }
-                  if(!"setup" in Object.keys(this.animalsInfo[animal])){
-                    this.animalsInfo[animal]['setup'] = ""
+                  if(!this.animalsInfo[animal].hasOwnProperty("SETUP")){
+                    this.animalsInfo[animal]['SETUP'] = ""
                   }
-                  if(!"treatment" in Object.keys(this.animalsInfo[animal])){
-                    this.animalsInfo[animal]['treatment'] = ""
+                  if(!this.animalsInfo[animal].hasOwnProperty("TREATMENT")){
+                    this.animalsInfo[animal]['TREATMENT'] = ""
                   }
                 }
                 this.fileURL = "http://127.0.0.1:8000/api/v1/files/".concat(this.data.file_url)
