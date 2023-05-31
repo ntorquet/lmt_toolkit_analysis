@@ -23,7 +23,7 @@ After the upload of the file, LMT-toolkit provides a report of the reliability o
 - comparison between number of frames recorded and expected: sometimes the computer lacks the resources needed for high-quality acquisition (when doing an update for example).
 - percent of identification for each animal.
 - percent of identification for each animal from RFID antennas.
-- 
+
 All together, this information will tell you whether the experiment has been carried out under the right experimental and material conditions to be exploited.
 ![alt reliability](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_2_reliability.PNG?raw=true)
 
