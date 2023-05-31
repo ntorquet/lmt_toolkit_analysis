@@ -1,11 +1,51 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-# lmt_toolkit_analysis
-LMT-toolkit analysis is an open source web application created to check the reliability of Live Mouse Tracker (LMT) experiments and to analyse LMT data.
+# lmt-toolkit
+LMT-toolkit is an open source web application created to analyse Live Mouse Tracker (LMT) data easily and intuitively. LMT stores data in SQLite files that cannot be easily manipulated without some computer skills. 
+LMT-toolkit makes it easy to calculate and extract behavior profiles for each animal tested by following several steps.
+
+LMT-toolkit also provides a report of the reliability of your LMT experiments: you get information about the experimental environment (if you use temperature/humidity/sound/light sensor), and about the acquisition quality. 
 
 Find more information about LMT on its [website](https://livemousetracker.org/) and [publication](https://www.nature.com/articles/s41551-019-0396-1.epdf?shared_access_token=8wpLBUUytAaGAtXL96vwIdRgN0jAjWel9jnR3ZoTv0MWp3GqbF86Gf14i30j-gtSG2ayVLmU-s57ZbhM2WJjw18inKlRYt31Cg_hLJbPCqlKdjWBImyT1OrH5tewfPqUthmWceoct6RVAL_Vt8H-Og%3D%3D).
 
 LMT-toolkit uses analysis scripts that are constantly updated and improved.
 We do our best to verify the accuracy of the results. It is your responsibility to check data accuracy.
+
+## How to extract results
+LMT-toolkit provides a step-by-step process:
+
+### Select a SQLite file
+First, select the LMT SQLite file you want to analyse:
+![alt SQLite file selection](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_1_select_file.PNG?raw=true)
+
+### Check the reliability
+After the upload of the file, LMT-toolkit provides a report of the reliability of the experiment:
+- information from temperature/humidity/sound/light sensor if you use it: this to check if the experimental environment was as expected during the experiment.
+- comparison between number of frames recorded and expected: sometimes the computer lacks the resources needed for high-quality acquisition (when doing an update for example).
+- percent of identification for each animal.
+- percent of identification for each animal from RFID antennas.
+- 
+All together, this information will tell you whether the experiment has been carried out under the right experimental and material conditions to be exploited.
+![alt reliability](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_2_reliability.PNG?raw=true)
+
+### Add animal information
+You can add information about the animal (genotype, name, treatment, sex...). This information will be stored into the SQLite file and given in the result table.
+![alt animal info](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_3_animal_info.PNG?raw=true)
+
+### Rebuild the database
+Before being extracted, behaviors must be rebuilt. These events are stored into the SQLite file.
+![alt rebuild](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_4_rebuild.PNG?raw=true)
+
+### Configure the analysis
+By default, the analysis will be done on the total duration of the experiment. You can limit the analysis. This step will be enhanced with new analysis presets. 
+![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config.PNG?raw=true)
+
+### Save the results
+You can see the results divided in different tables, and download the whole in CSV file.
+![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
+
+
+
+
 
 ## Behaviors extracted by LMT-toolkit
 | Name                   | Representation                                                                                                                                               | Description                                                                                                                                                                                                                                                  |
@@ -34,31 +74,6 @@ We do our best to verify the accuracy of the results. It is your responsibility 
 | **Break group 4**	         |                                                                                                                                                              | The focal animal is leaving a group of four animals, that remain as a group of three animals in contact; the focal animal has the highest speed among the four animals in contact (number of events). This event has to be validated!|
 
 This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
-
-## How to extract results
-LMT-toolkit provides a step-by-step process:
-
-### Select a SQLite file
-![alt SQLite file selection](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_1_select_file.PNG?raw=true)
-
-### Check the reliability
-![alt reliability](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_2_reliability.PNG?raw=true)
-
-### Add animal information
-These information will be stored into the SQLite file.
-![alt animal info](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_3_animal_info.PNG?raw=true)
-
-### Rebuild the database
-Before being extracted, behaviors must be rebuilt. These events are stored into the SQLite file.
-![alt rebuild](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_4_rebuild.PNG?raw=true)
-
-### Configure the analysis
-By default, the analysis will be done on the total duration of the experiment. You can limit the analysis.
-![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config.PNG?raw=true)
-
-### Save the results
-You can see the results divided in different tables, and download the whole in CSV file.
-![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
 
 
 ## Installation
