@@ -93,7 +93,7 @@ virtualenv venv
 
 Launch the virtual environment to install requirements:
 ```
-venv\Script\activate
+venv\Scripts\activate
 ```
 
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
