@@ -86,9 +86,20 @@ LMT-toolkit works thanks to 3 different servers:
 
 It is recommended to create a [python virtual environment](https://docs.python.org/3/library/venv.html) into the root folder of the application to 
 install the python required packages.
+```
+pip install virtualenv 
+virtualenv venv
+```
+
+Launch the virtual environment to install requirements:
+```
+venv\Script\activate
+```
+
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
+- setuptools<58.0.0
 - Django>=4.0.2
 - djangorestframework==3.14
 - django-filter==21.1
@@ -118,6 +129,7 @@ pip install -r requirements.txt
 
 ### Database migration
 ```
+cd lmt_toolkit_api
 python manage.py makemigrations
 python manage.py migrate
 ```
