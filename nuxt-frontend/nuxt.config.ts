@@ -8,12 +8,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     css: ['vuetify/lib/styles/main.sass', '@mdi/font/css/materialdesignicons.min.css'],
-    // modules: ['@nuxtjs/axios'],
-    // axios: {
-    //     baseURL: 'http://localhost:8000'
-    // },
     build: {
         transpile: ['vuetify', 'chart.js']
     },
-    modules: ['@pinia/nuxt']
+    modules: ['@pinia/nuxt'],
+    app: {
+        head: {
+            link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+            title: 'LMT-toolkit'
+        }
+    },
 })

@@ -213,7 +213,7 @@ Activate the python virtual environment:
 
 Go to the lmt_toolkit_analysis folder:
 
-```cd lmt_toolkit_analysis```
+```cd lmt_toolkit_api```
 
 Launch the Django server:
 
@@ -240,7 +240,7 @@ Activate the python virtual environment:
 
 Go to the lmt_toolkit_analysis folder:
 
-```cd lmt_toolkit_analysis```
+```cd lmt_toolkit_api```
 
 Launch the Celery server:
 
