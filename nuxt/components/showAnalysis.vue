@@ -233,7 +233,7 @@ export default {
       tmax: '',
       analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT_v1_0_5-toolkit_v1_',
+      name_csv: 'LMT_v1_0_5-toolkit_v2_simple-preset_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
       analysis_parameters_data: [],
@@ -325,8 +325,8 @@ export default {
     convertJsonToCSVFormat() {
       let dataToConvert = this.data
       console.log(this.data)
-      for(let mouse in dataToConvert){
-        this.dataToCSV.push(dataToConvert[mouse])
+      for(let animal in dataToConvert){
+        this.dataToCSV.push(dataToConvert[animal])
       }
     },
   },
@@ -709,6 +709,9 @@ export default {
       index += 1
     }
   },
+  updated() {
+    this.convertJsonToCSVFormat()
+  }
 }
 </script>
 

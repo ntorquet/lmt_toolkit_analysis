@@ -24,7 +24,6 @@ router.register('reliability', ReliabilityLMTFile, basename="reliability")
 router.register('files', FileViewSet, basename='files')
 router.register('versions', VersionViewSet, basename='versions')
 router.register('eventDocumentation', EventDocumentationViewSet, basename='eventDocumentation')
-# router.register('checkReliability', CheckReliabilityAPIView, basename='CheckReliability')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -35,4 +34,5 @@ urlpatterns = [
     path(r'rebuild/', views.RebuildSqliteAPIView.as_view(), name="rebuild"),
     path(r'saveAnimalInfo/', views.SaveAnimalInfoView.as_view(), name="saveAnimalInfo"),
     path(r'extractAnalysis/', views.ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
+    path(r'activityPerTimeBin/', views.ActivityPerTimeBinAPIView.as_view(), name="activityPerTimeBin")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

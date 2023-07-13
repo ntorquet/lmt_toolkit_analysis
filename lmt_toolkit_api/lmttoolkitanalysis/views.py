@@ -252,3 +252,19 @@ class EventDocumentationViewSet(viewsets.ModelViewSet):
     queryset = EventDocumentation.objects.all()
     serializer_class = EventDocumentationSerializer
 
+
+class ActivityPerTimeBinAPIView(APIView):
+    def post(self, request):
+        version = Version.objects.latest('id')
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+        timeBin = int(request.data['timeBin'])
+        try:
+            activityPerTimeBin = tasks.activityPerTimeBin.delay(path_file, timeBin=timeBin)
+            # #
+            task_id = activityPerTimeBin.task_id
+            print(task_id)
+            return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the activity analysis'})

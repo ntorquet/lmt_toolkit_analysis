@@ -23,12 +23,16 @@ Code under GPL v3.0 licence
             <tr v-for="file, index in files">
               <td>{{ file.file_name }}</td>
               <td>{{ file.rebuild }}</td>
-              <td>{{ file.created_at }}</td>
+              <td>{{ file.created_at.split("T")[0] }}</td>
               <td>
                 <v-btn size="sm" :href="filesItems[index]['Link']">
                   <v-icon icon="mdi-download"></v-icon>
                    Download
                 </v-btn>
+              </td>
+              <td>
+                <v-chip class="mr-1" color="primary">Simple preset</v-chip>
+                <v-chip class="mr-1" color="secondary">Activity per time bin preset</v-chip>
               </td>
               <td>
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">
@@ -59,6 +63,9 @@ Code under GPL v3.0 licence
       </div>
     </v-container>
   </v-main>
+
+  <simple-preset></simple-preset>
+
 </template>
 
 <script>
@@ -68,9 +75,10 @@ export default {
   data:function (){
 		return{
       files: [],
-      fields: ['File name', 'Rebuild', 'Upload date', 'Download', 'Delete'],
+      fields: ['File name', 'Rebuild', 'Upload date', 'Download', 'Analyse', 'Delete'],
       filesItems: [],
       downloadableLinks: [],
+      showSimplePreset: false,
     }
   },
   methods: {

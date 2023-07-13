@@ -99,27 +99,25 @@ venv\Scripts\activate
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
-- setuptools<58.0.0
-- Django>=4.0.2
+- Django==4.0.2
 - djangorestframework==3.14
 - django-filter==21.1
 - djoser==2.1.0
 - django-cors-headers==3.11.0
-- Celery
-- django-celery
-- django-celery-results
+- Celery==5.3.1
+- django-celery-results==2.5.1
 - celery-progress==0.1.2
-- psycopg2-binary
+- psycopg2-binary==2.9.6
 - affine==2.3.1
-- numpy==1.23.1
+- numpy==1.25.1
 - tabulate==0.8.10
-- pandas==1.4.3
-- matplotlib==3.5.2
-- lxml==4.9.1
-- psutil==5.9.1
-- scipy==1.8.1
+- pandas==2.0.3
+- matplotlib==3.7.2
+- lxml==4.9.3
+- psutil==5.9.5
+- scipy==1.11.1
 - seaborn==0.11.2
-- statsmodels==0.13.2
+- statsmodels==0.14.0
 - networkx==2.8.5
 
 Install this list with the command:
@@ -144,23 +142,26 @@ python manage.py loaddata fixtures/datatostart.json
 ### Javascript Requirements and installations
 First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
 Then you will have to install these packages using npm or yarn package managers:
-- nuxt
-- axios
-- vuetify@3.1.14
-- pinia@2.0.34
-- vue-chartjs@5.2.0
-- chart.js (for plots)
-- vue-chartjs (for plots)
-- vue-json-csv
+- @mdi/font@7.2.96                                                  
+- @nuxt/devtools@0.6.7                                                                                                                                                                                                      12:02:22  
+- @pinia/nuxt@0.4.11                                                
+- @types/node@18.16.19
+- axios@1.4.0
+- chart.js@4.3.0 (for plots)
+- nuxt@3.6.2
+- pinia@2.1.4
+- sass@1.63.6
+- vue-chartjs@5.2.0 (for plots)
+- vue-json-csv@2.1.0 (for exportation to CSV files)
+- vuetify@3.3.7
 
-It is recommended to first rename the nuxt-frontend folder to first create a new nuxt application and 
-then copy / past files from the previous nuxt-frontend to the new one.
+#### Step-by-step installation procedure:
 
 ```
-npx nuxi@latest init nuxt-frontend
+npx nuxi@3.6.2 init nuxt-front
 ```
 The above command will create a new nuxt application in a new nuxt-frontend folder.
-You can then copy / paste all the folders and files from the previous nuxt-folder, except the .nuxt 
+You can then copy / paste all the folders and files from the nuxt folder, except the .nuxt 
 and the node_modules folders.
 ```
 cd nuxt-frontend
@@ -170,12 +171,52 @@ Nuxt is now installed.
 
 Then install the packages (example with npm):
 ```
-npm install pinia @pinia/nuxt
-npm i vuetify sass
-npm i @mdi/font
-npm install axios
-npm install vue-chartjs chart.js
-npm install vue-json-csv
+npm i vuetify@3.3.7 sass
+npm i @mdi/font@7.2.96
+npm install axios@1.4.0
+npm install vue-chartjs@5.2.0 chart.js@4.3.0
+npm install vue-json-csv@2.1.0
+```
+
+Open the nuxt-frontend/package.json and add this code at the end:
+```
+,
+"overrides": {
+    "vue": "latest"
+  }
+```
+The package.json file should look like:
+```
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@types/node": "^18",
+    "nuxt": "^3.6.2"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "@pinia/nuxt": "^0.4.11",
+    "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
+    "pinia": "^2.1.4",
+    "sass": "^1.63.6",
+    "vue-chartjs": "^5.2.0",
+    "vue-json-csv": "^2.1.0",
+    "vuetify": "^3.3.7"
+  },
+  "overrides": {
+    "vue": "latest"
+  }
+}
 ```
 
 
@@ -212,7 +253,7 @@ It then works on this copy and when the process is finished the copy is deleted.
 So the original database remains unchanged.
 
 ### Launch the application
-You need 3 terminal windows (type cmd in the windows search bar). Each of these terminals must remain open for the application to work.
+You need 3 terminal windows with administrator rights. Each of these terminals must remain open for the application to work.
 
 #### Django server:
 In the 1st terminal, go to the right folder (adapt the path according to the location of the application folder on your computer):

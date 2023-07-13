@@ -7,7 +7,7 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 <template>
-  <v-footer color="black" height="100em">
+  <v-footer color="black">
     <div class="px-4 py-2 bg-black text-center w-100">
       <v-row>
         <v-col>LMT-toolkit {{ lastVersion }} - Copyright © CNRS - INSERM - UNISTRA - ICS - IGBMC 2022</v-col>

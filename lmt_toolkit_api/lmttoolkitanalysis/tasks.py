@@ -17,6 +17,7 @@ from celery_progress.backend import ProgressRecorder
 # from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
 from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
 from .LMT_v1_0_5b.lmtanalysis.TaskLogger import TaskLogger
+from .LMT_v1_0_5b.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
 from .methods import *
 from .models import File
 from datetime import date
@@ -770,3 +771,20 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
 
     return reliabilityContext
 
+
+@shared_task(bind=True)
+def activityPerTimeBin(self, file, timeBin=10):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file
+    :return: activity per timeBin during the whole experiment
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 2, f'Starting')
+
+    # Extract activity
+    progress_recorder.set_progress(1, 2, f'Extracting activity for each animal')
+    activityPerTimeBin = extractActivityPerAnimalWholeExperiment(file, timeBin)
+
+    progress_recorder.set_progress(2, 2, f'Job done: activity extracted')
+
+    return activityPerTimeBin

@@ -145,10 +145,12 @@ Code under GPL v3.0 licence
         </v-window-item>
 
         <v-window-item :value="7">
-            <v-card>
-          <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
-          <v-card-text>
-            <v-card>
+          <v-card>
+            <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
+            <v-card-text class="align-center">
+              <v-col>
+              <v-row>
+              <v-card class="mt-4 mr-4" width="400">
                 <v-card-title> Simple preset</v-card-title>
                 <v-card-text>
                   <v-alert class="mb-2">
@@ -179,7 +181,24 @@ Code under GPL v3.0 licence
                         <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
                     </v-btn>
                 </v-card-text>
-            </v-card>
+              </v-card>
+              <v-card class="mt-4 mr-4" width="400">
+                <v-card-title> Activity preset</v-card-title>
+                <v-card-text>
+                  <v-alert class="mb-2">
+                      The activity preset will give you the activity (distance travelled in meters) by each animal. <br />
+                      By default, the analysis will be done on the total duration of the experiment.<br />
+                      You have to select a time bin to proceed.
+                    </v-alert>
+                    <v-text-field label="Time bin in minutes" type="number" v-model.number="timeBin"></v-text-field>
+
+                    <v-btn v-if="timeBin!=''" @click="doAnalysis('activityPerTimeBinPreset')">
+                        <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
+                    </v-btn>
+                </v-card-text>
+              </v-card>
+              </v-row>
+              </v-col>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -202,11 +221,17 @@ Code under GPL v3.0 licence
         <v-window-item :value="9">
           <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
           <v-card-text>
-            <show-analysis :data="results" :filename="filename"></show-analysis>
+            <show-analysis v-if="preset=='simplePreset'" :data="resultsSimplePreset" :filename="filename"></show-analysis>
+
+            <showActivityPerTimeBin v-if="preset=='activityPerTimeBinPreset'" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
           </v-card-text>
         </v-window-item>
 
       </v-window>
+      <v-btn v-if="step==9" class="mr-4" @click="stepDown">
+        <v-icon icon="mdi-arrow-left-bold"></v-icon>
+        Come back to the previous step
+      </v-btn>
 
     </v-container>
   </v-main>
@@ -313,7 +338,11 @@ export default {
       reliabilityModalOpen: false,
       animalsInfo: {},
       messageStep6: '',
-      results: {},
+      resultsSimplePreset: {},
+      resultsActivityPerTimeBin: {},
+      preset: null,
+      timeBin: 10,
+      analysisToShow: null
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -434,20 +463,40 @@ export default {
                 break
               case 8:
                 console.log("step 8")
-                // console.log(this.animalsInfo)
-                this.results = this.task.result
-                // // animal info update
-                let index = 0
-                for(let animal in this.results){
-                    console.log(this.results[animal]['rfid'])
-                    for(let infoAnimal in this.animalsInfo){
-                        console.log(infoAnimal)
-                        if(this.animalsInfo[infoAnimal]['RFID']==animal){
-                            this.results[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
-                            this.results[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
+                switch(this.preset){
+                  case "simplePreset":
+                    this.resultsSimplePreset = this.task.result
+                    // // animal info update
+                    for(let animal in this.resultsSimplePreset){
+                        console.log(this.resultsSimplePreset[animal]['rfid'])
+                        for(let infoAnimal in this.animalsInfo){
+                            console.log(infoAnimal)
+                            if(this.animalsInfo[infoAnimal]['RFID']==animal){
+                                this.resultsSimplePreset[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
+                                this.resultsSimplePreset[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
+                            }
+                        }
+                    }
+                  case "activityPerTimeBinPreset":
+                    this.resultsActivityPerTimeBin = this.task.result
+                    // // animal info update
+                    for(let animal in this.resultsActivityPerTimeBin.results){
+                        console.log(this.resultsActivityPerTimeBin.results[animal]['animal'])
+                        for(let infoAnimal in this.animalsInfo){
+                            console.log(infoAnimal)
+                            if(this.animalsInfo[infoAnimal]['RFID']==this.resultsActivityPerTimeBin.results[animal]['animal']){
+                                this.resultsActivityPerTimeBin.results[animal]['genotype'] = this.animalsInfo[infoAnimal]['GENOTYPE']
+                                this.resultsActivityPerTimeBin.results[animal]['name'] = this.animalsInfo[infoAnimal]['NAME']
+                                this.resultsActivityPerTimeBin.results[animal]['age'] = this.animalsInfo[infoAnimal]['AGE']
+                                this.resultsActivityPerTimeBin.results[animal]['sex'] = this.animalsInfo[infoAnimal]['SEX']
+                                this.resultsActivityPerTimeBin.results[animal]['strain'] = this.animalsInfo[infoAnimal]['STRAIN']
+                                this.resultsActivityPerTimeBin.results[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
+                                this.resultsActivityPerTimeBin.results[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
+                            }
                         }
                     }
                 }
+
                 // this.results.forEach((animal, index) => {
                 //     console.log(animal)
                 //   // this.results[animal]['setup'] = this.animalsInfo[index]['SETUP']
@@ -578,7 +627,13 @@ export default {
       this.stepToTimeLine()
     },
     stepDown() {
-      this.step--
+      if(this.step==9){
+        this.step=this.step-2
+        // reinitialize some variables here to avoid nuxt/vue problems
+      }
+      else{
+        this.step--
+      }
       this.stepToTimeLine()
     },
     saveAnimalInfo() {
@@ -612,9 +667,14 @@ export default {
       })
     },
     doAnalysis(preset){
-      switch (preset){
+      console.log(preset)
+      this.preset = preset
+      // this.resultsSimplePreset = {}
+      // this.resultsActivityPerTimeBin = {}
+      let formData = new FormData();
+      switch (this.preset){
         case 'simplePreset':
-          let formData = new FormData();
+          // self.preset = 'simplePreset'
           formData.append('file_id', this.file_id)
           formData.append('tmin', parseInt(this.minT))
           formData.append('tmax', parseInt(this.maxT))
@@ -628,6 +688,23 @@ export default {
             this.stepUp()
             this.getProgression()
             // console.log('success!!')
+
+          }).catch(error => {
+            console.log('FAILURE!!')
+            console.log(JSON.stringify(error))
+            this.error = true
+          })
+          break
+        case 'activityPerTimeBinPreset':
+          formData.append('file_id', this.file_id)
+          formData.append('timeBin', parseInt(this.timeBin))
+          axios.post(`http://127.0.0.1:8000/api/v1/activityPerTimeBin/`, formData)
+          .then(response => {
+            console.log('Do analysis')
+            // this.data = response.data.reliabilityContext
+            this.task_id = response.data.task_id
+            this.stepUp()
+            this.getProgression()
 
           }).catch(error => {
             console.log('FAILURE!!')
