@@ -106,6 +106,54 @@
     }
   },
   {
+    "model": "lmttoolkitanalysis.version",
+    "pk": 9,
+    "fields":
+    {
+      "lmt_toolkit_version": "v1.0.1",
+      "lmt_toolkit_version_link": "https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v1.0.1",
+      "lmt_toolkit_version_date": "2023-05-25",
+      "lmt_toolkit_version_changes": "Improved documentation and installation.",
+      "lmt_analysis_version": "v1.0.5",
+      "lmt_analysis_version_link": "https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5",
+      "lmt_analysis_version_changes": "",
+      "created_at": "2023-06-01T11:57:37.361446Z",
+      "modified_at": "2023-06-01T11:57:37.361446Z"
+    }
+  },
+  {
+    "model": "lmttoolkitanalysis.version",
+    "pk": 10,
+    "fields":
+    {
+      "lmt_toolkit_version": "v1.0.2",
+      "lmt_toolkit_version_link": "https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v1.0.2",
+      "lmt_toolkit_version_date": "2023-05-26",
+      "lmt_toolkit_version_changes": "Bug with animals information fixed.",
+      "lmt_analysis_version": "v1.0.5",
+      "lmt_analysis_version_link": "https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5",
+      "lmt_analysis_version_changes": "",
+      "created_at": "2023-06-01T11:58:20.226649Z",
+      "modified_at": "2023-06-01T11:58:20.226649Z"
+    }
+  },
+  {
+    "model": "lmttoolkitanalysis.version",
+    "pk": 11,
+    "fields":
+    {
+      "lmt_toolkit_version": "v1.1",
+      "lmt_toolkit_version_link": "https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v1.1",
+      "lmt_toolkit_version_date": "2023-07-13",
+      "lmt_toolkit_version_changes": "Nuxt version upgraded. Installation improvements. Activity per time bin analysis added.",
+      "lmt_analysis_version": "v1.0.5",
+      "lmt_analysis_version_link": "https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.5",
+      "lmt_analysis_version_changes": "New function added to analyse activity per time bin. TODO: add the new function and create a new lmt-analysis release.",
+      "created_at": "2023-07-13T14:52:18.399817Z",
+      "modified_at": "2023-07-13T15:00:58.350164Z"
+    }
+  },
+  {
     "model": "lmttoolkitanalysis.eventdocumentation",
     "pk": 1,
     "fields": {
