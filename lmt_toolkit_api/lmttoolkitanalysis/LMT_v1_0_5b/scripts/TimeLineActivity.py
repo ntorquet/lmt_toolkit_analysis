@@ -193,7 +193,7 @@ def extractActivityPerAnimalWholeExperiment(file, timeBin):
 
     connection.close()
 
-    return {'timeLine': timeLine, 'totalDistance': totalDistance, 'activity':activity, 'startTime': startTime, 'results': results}
+    return {'timeLine': timeLine, 'totalDistance': totalDistance, 'activity':activity, 'startTime': startTime.strftime("%d/%m/%Y %H:%M:%S.%f"), 'results': results}
 
 
 def extractActivityPerAnimalStartEndInput(file, tmin, tmax):
