@@ -81,6 +81,8 @@ This table will be completed with each new behavior extraction possibility. This
 
 
 ## Installation
+LMT-toolkit needs Python 3.10.
+
 LMT-toolkit works thanks to 3 different servers:
 - a Django server with a REST API (Python)
 - a Nuxt server for the frontend (the interface) (JavaScript - Vue)
@@ -144,6 +146,8 @@ python manage.py loaddata fixtures/datatostart.json
 
 
 ### Javascript Requirements and installations
+To install the frontend part of LMT-toolkit, we will first install and configure a nuxt environment and then copy / paste the code in the environment's folder.
+
 First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
 Then you will have to install these packages using npm or yarn package managers:
 - @mdi/font@7.2.96                                                  
@@ -164,9 +168,7 @@ Then you will have to install these packages using npm or yarn package managers:
 ```
 npx nuxi@3.6.2 init nuxt-front
 ```
-The above command will create a new nuxt application in a new nuxt-frontend folder.
-You can then copy / paste all the folders and files from the nuxt folder, except the .nuxt 
-and the node_modules folders.
+Nuxt configuration:
 ```
 cd nuxt-frontend
 npm i
@@ -222,7 +224,9 @@ The package.json file should look like:
   }
 }
 ```
-
+The nuxt environment is ready.
+You can then copy / paste all the folders and files from the nuxt folder into the nuxt-frontend one, except the .nuxt 
+and the node_modules folders.
 
 ### Celery
 Celery is used to make asynchronous tasks.
