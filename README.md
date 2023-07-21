@@ -36,15 +36,19 @@ Before being extracted, behaviors must be fine-tuned. These rebuilt events are s
 ![alt rebuild](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_4_rebuild.PNG?raw=true)
 
 ### Configure the analysis
-By default, the analysis will be done on the total duration of the experiment. You can constrain the analysis by changing time limits. This step will be improved with new analysis presets. 
-![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config.PNG?raw=true)
+You can choose between two kind of analysis: a global analysis (Simple preset) or a report of the activity per time bin (Activity preset).
+If you choose the simple preset, by default the analysis will be done on the total duration of the experiment (see the [Behaviors extracted by LMT-toolkit table](#behaviors-extracted-by-lmt-toolkit) for more information). You can constrain the analysis by changing time limits. This step will be improved with new analysis presets. 
+If you choose the Activity preset, by default the time bin is set to 10 minutes. This analysis return the distance travelled in cm by each animal for each time bin over the entire duration of the experiment.
+![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config_v1-1-0.PNG?raw=true)
 
 ### Save the results
+#### Simple preset
 You can see the results divided in different tables, and download the whole in CSV format.
-![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
+![alt simple prest](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
 
-
-
+#### Activity preset
+You can see the total distance travelled by each animal, a plot of the distance per the chosen time bin. You can download the data in CSV format.
+![alt activity preset](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_7_resultats_activitypertimebin.PNG?raw=true)
 
 
 ## Behaviors extracted by LMT-toolkit

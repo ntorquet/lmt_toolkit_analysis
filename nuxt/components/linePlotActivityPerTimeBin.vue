@@ -10,7 +10,7 @@ Code under GPL v3.0 licence
   <v-card color="white">
     <v-card-title>{{ title }}</v-card-title>
     <v-card-text>
-      <canvas id="plot" style="width: 50%; height: 20vh"></canvas>
+      <canvas id="plot" style="height:40vh; width:80vw"></canvas>
     </v-card-text>
   </v-card>
 </template>

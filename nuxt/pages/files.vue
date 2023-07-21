@@ -31,8 +31,8 @@ Code under GPL v3.0 licence
                 </v-btn>
               </td>
               <td>
-                <v-chip class="mr-1" color="primary">Simple preset</v-chip>
-                <v-chip class="mr-1" color="secondary">Activity per time bin preset</v-chip>
+<!--                <v-chip class="mr-1" color="primary">Simple preset</v-chip>-->
+<!--                <v-chip class="mr-1" color="secondary">Activity per time bin preset</v-chip>-->
               </td>
               <td>
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">
@@ -64,7 +64,7 @@ Code under GPL v3.0 licence
     </v-container>
   </v-main>
 
-  <simple-preset></simple-preset>
+  <simple-preset v-show="false"></simple-preset>
 
 </template>
 
