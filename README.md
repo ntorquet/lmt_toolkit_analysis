@@ -1,7 +1,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # lmt-toolkit
 LMT-toolkit is an open source web application created to analyse Live Mouse Tracker (LMT) data easily and intuitively. LMT stores data in SQLite files that cannot be easily manipulated without some computer skills. 
-LMT-toolkit makes it easy to calculate and extract behavior profiles for each animal tested by following several steps.
+LMT-toolkit makes it easy to compute and extract behavior profiles for each animal tested following a step-by-step process.
 
 LMT-toolkit also provides a report of the reliability of your LMT experiments: you get information about the experimental environment (if you use temperature/humidity/sound/light sensor), and about the acquisition quality. 
 
@@ -22,9 +22,9 @@ After the upload of the file, LMT-toolkit provides a report of the reliability o
 - information from temperature/humidity/sound/light sensor if you use it: this to check if the experimental environment was as expected during the experiment.
 - comparison between number of frames recorded and expected: sometimes the computer lacks the resources needed for high-quality acquisition (when doing an update for example).
 - percent of identification for each animal.
-- percent of identification for each animal from RFID antennas.
+- percent of detection for each animal from RFID antennas.
 
-All together, this information will tell you whether the experiment has been carried out under the right experimental and material conditions to be exploited.
+As a whole, this information will tell you whether the experiment has been carried out under the expected experimental and material conditions.
 ![alt reliability](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_2_reliability.PNG?raw=true)
 
 ### Add animal information
@@ -32,51 +32,58 @@ You can add information about the animal (genotype, name, treatment, sex...). Th
 ![alt animal info](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_3_animal_info.PNG?raw=true)
 
 ### Rebuild the database
-Before being extracted, behaviors must be rebuilt. These events are stored into the SQLite file.
+Before being extracted, behaviors must be fine-tuned. These rebuilt events are stored into the SQLite file.
 ![alt rebuild](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_4_rebuild.PNG?raw=true)
 
 ### Configure the analysis
-By default, the analysis will be done on the total duration of the experiment. You can limit the analysis. This step will be enhanced with new analysis presets. 
-![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config.PNG?raw=true)
+You can choose between two types of analysis: a global analysis (Simple preset) or a report of the activity per time bin (Activity preset).
+![alt analysis config](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_5_analysis_config_v1-1-0.PNG?raw=true)
+- If you choose the simple preset, by default the analysis will be done on the total duration of the experiment (see the [Behaviors extracted by LMT-toolkit table](#behaviors-extracted-by-lmt-toolkit) for more information). You can constrain the analysis by changing time limits. 
+- If you choose the Activity preset, by default the time bin is set to 10 minutes. This analysis return the distance travelled in cm by each animal for each time bin over the entire duration of the experiment.
+
 
 ### Save the results
-You can see the results divided in different tables, and download the whole in CSV file.
-![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
+#### Simple preset
+You can see the results divided in different tables, and download the whole in CSV format.
+![alt simple prest](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_6_results.PNG?raw=true)
 
-
-
+#### Activity preset
+You can see the total distance travelled by each animal and a plot of the distance per time bin. You can download the data in CSV format.
+![alt activity preset](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/screenshot_7_resultats_activitypertimebin.PNG?raw=true)
 
 
 ## Behaviors extracted by LMT-toolkit
-| Name                   | Representation                                                                                                                                               | Description                                                                                                                                                                                                                                                  |
-|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Total distance**     |                                                                                                                                                              | Total distance in meter travelled by the focus animal during all the experiment.      |
-| **Single move**           | ![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_moving.jpg?raw=true)               | The focal animal is moving (speed > 5 m/s) without being in contact with any other animal (total duration, number of events, mean duration of events). |
-| **Move in contact**        |                                                                                                                                                              | The focal animal is moving (speed > 5 m/s) while being in contact with another animal (total duration, number of events, mean duration of events).                                                                                                           |
-| **Stop isolated**          |                                                                                                                                                              | The focal animal is resting (not moving) without being in contact with any other animal (total duration, number of events, mean duration of events).                                                                                                         |
-| **Rear isolated**          | ![alt rearing](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_rearing.jpg?raw=true)                  | The focal animal is straightened on its hindlegs (either unsupported or against the wall). Rearing is considered when the body slope is higher than a threshold (total duration, number of events, mean duration of events). This event has to be validated! |
-| **Rear in contact**        |                                                                                                                                                              | The focal animal is straightened on its hindlegs (either unsupported or against the wall). Rearing is considered when the body slope is higher than a threshold (total duration, number of events, mean duration of events). This event has to be validated! |
-| **Contact**                | ![alt contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_cct.jpg?raw=true)                      |The focal animal is touching another individual (total duration, number of events, mean duration of events).|
-| **Group of 2**             |                                                                                                                                                              |The focal animal is touching one and only one other individual (total duration, number of events, mean duration of events). This event has to be validated!|
-| **Group of 3**             |                                                                                                                                                              |The focal animal is touching two and only two other individuals (total duration, number of events, mean duration of events). This event has to be validated!|
-| **Nose-nose**              | ![alt nose-nose](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_nose-nose.jpg?raw=true)              |The focal animal is sniffing the nose of another animal (i.e., the nose is at a whisker distance from the nose of the other animal) (total duration, number of events, mean duration of events).|
-| **Nose-anogenital**        | ![alt nose-tail](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_nose-anogenital.jpg?raw=true)        |The focal animal is sniffing the ano-genital region of another animal (i.e., the nose is at a whisker distance from the tail basis of the other animal) (total duration, number of events, mean duration of events).|
-| **Side-side**              | ![alt side-side](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_side-side.jpg?raw=true)              | The flank of the focal animal is in contact with the flank of another animal; both animals head in the same direction (total duration, number of events, mean duration of events).|
-| **Side-side head-to-tail** | ![alt side-side opposite](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_side-side_opp.jpg?raw=true) |The flank of the focal animal is in contact with the flank of another animal; both animals head in opposite directions (total duration, number of events, mean duration of events).|
-| **Train 2**                | ![alt train2](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_train2.jpg?raw=true)                    | The focal animal is moving (speed > 5 m/s) while sniffing the ano-genital region of another animal also moving (total duration, number of events, mean duration of events).|
-| **Follow**                 |                                                                                                                                                              | The focal animal is walking in the path of another individual: the two animals are moving at a speed >5 cm/s, the angles between the two animals are less than 45° apart, and the mass centre of the follower (the focal animal) is within a follow zone of one mean body length of width and two mean body lengths of length (total duration, number of events, mean duration of events).|
-| **Social approach**        | ![alt social approach](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_soc_app.jpg?raw=true)          | The focal animal gets closer to another one within a circular zone of 2 body lengths around the approached animal (total duration, number of events, mean duration of events).|
-| **Approach contact**       | ![alt approach contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_app_cct.jpg?raw=true)         | The focal animal gets closer to another one within a circular zone of two body lengths around the approached animal; the approach ends by a contact between the two animals (total duration, number of events, mean duration of events).|
-| **Make group 3**           |                                                                                                                                                              | The focal animal is joining a group of two animals to form a group of three animals in contact (number of events). This event has to be validated!|
-| **Make group 4**           |                                                                                                                                                              | The focal animal is joining a group of three animals to form a group of four animals in contact (number of events). This event has to be validated!|
-| **Break contact**          | ![alt break contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_break_cct.jpg?raw=true)          | The focal animal is getting away (higher speed) from the animal it has been in contact with; the speed of the focal animal is higher than the speed of the other animal (number of events).|
-| **Break group 3**	         |                                                                                                                                                              | The focal animal is leaving a group of three animals to leave a group of two animals in contact; the focal animal has the highest speed among the three animals in contact (number of events). This event has to be validated!|
-| **Break group 4**	         |                                                                                                                                                              | The focal animal is leaving a group of four animals, that remain as a group of three animals in contact; the focal animal has the highest speed among the four animals in contact (number of events). This event has to be validated!|
+| Name                   | Representation                                                                                                                                               | Description                                                                                                                                                                                                                                                                                                                                                                                |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Total distance**     |                                                                                                                                                              | Total distance in meters travelled by the focus animal during all the experiment or between time limits.                                                                                                                                                                                                                                                                                   |
+| **Single move**           | ![alt single move](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_moving.jpg?raw=true)               | The focal animal is moving (speed > 5 m/s) without being in contact with any other animal (total duration, number of events, mean duration of events).                                                                                                                                                                                                                                     |
+| **Move in contact**        |                                                                                                                                                              | The focal animal is moving (speed > 5 m/s) while being in contact with another animal (total duration, number of events, mean duration of events).                                                                                                                                                                                                                                         |
+| **Stop isolated**          |                                                                                                                                                              | The focal animal is resting (not moving) without being in contact with any other animal (total duration, number of events, mean duration of events).                                                                                                                                                                                                                                       |
+| **Rear isolated**          | ![alt rearing](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_rearing.jpg?raw=true)                  | The focal animal is straightened on its hindlegs (either unsupported or against the wall). Rearing is considered when the body slope is higher than a threshold (total duration, number of events, mean duration of events). This event has to be validated!                                                                                                                               |
+| **Rear in contact**        |                                                                                                                                                              | The focal animal is straightened on its hindlegs (either unsupported or against the wall). Rearing is considered when the body slope is higher than a threshold (total duration, number of events, mean duration of events). This event has to be validated!                                                                                                                               |
+| **Contact**                | ![alt contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_cct.jpg?raw=true)                      | The focal animal is touching another individual (total duration, number of events, mean duration of events).                                                                                                                                                                                                                                                                               |
+| **Group of 2**             |                                                                                                                                                              | The focal animal is touching one and only one other individual (total duration, number of events, mean duration of events). This event has to be validated!                                                                                                                                                                                                                                |
+| **Group of 3**             |                                                                                                                                                              | The focal animal is touching two and only two other individuals (total duration, number of events, mean duration of events). This event has to be validated!                                                                                                                                                                                                                               |
+| **Nose-nose**              | ![alt nose-nose](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_nose-nose.jpg?raw=true)              | The focal animal is sniffing the nose of another animal (i.e., the nose is at a whisker distance from the nose of the other animal) (total duration, number of events, mean duration of events).                                                                                                                                                                                           |
+| **Nose-anogenital**        | ![alt nose-tail](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_nose-anogenital.jpg?raw=true)        | The focal animal is sniffing the ano-genital region of another animal (i.e., the nose is at a whisker distance from the tail basis of the other animal) (total duration, number of events, mean duration of events).                                                                                                                                                                       |
+| **Side-side**              | ![alt side-side](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_side-side.jpg?raw=true)              | The flank of the focal animal is in contact with the flank of another animal; both animals head in the same direction (total duration, number of events, mean duration of events).                                                                                                                                                                                                         |
+| **Side-side head-to-tail** | ![alt side-side opposite](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_side-side_opp.jpg?raw=true) | The flank of the focal animal is in contact with the flank of another animal; both animals head in opposite directions (total duration, number of events, mean duration of events).                                                                                                                                                                                                        |
+| **Train 2**                | ![alt train2](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_train2.jpg?raw=true)                    | The focal animal is moving (speed > 5 m/s) while sniffing the ano-genital region of another animal also moving (total duration, number of events, mean duration of events).                                                                                                                                                                                                                |
+| **Follow**                 |                                                                                                                                                              | The focal animal is walking in the path of another individual: the two animals are moving at a speed >5 cm/s, the angles between the two animals are less than 45° apart, and the mass centre of the follower (the focal animal) is within a follow zone of one mean body length of width and two mean body lengths of length (total duration, number of events, mean duration of events). |
+| **Social approach**        | ![alt social approach](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_soc_app.jpg?raw=true)          | The focal animal gets closer to another one within a circular zone of 2 body lengths around the approached animal (total duration, number of events, mean duration of events).                                                                                                                                                                                                             |
+| **Approach contact**       | ![alt approach contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_app_cct.jpg?raw=true)         | The focal animal gets closer to another one within a circular zone of two body lengths around the approached animal; the approach ends by a contact between the two animals (total duration, number of events, mean duration of events).                                                                                                                                                   |
+| **Make group 3**           |                                                                                                                                                              | The focal animal is joining a group of two animals to form a group of three animals in contact (number of events). This event has to be validated!                                                                                                                                                                                                                                         |
+| **Make group 4**           |                                                                                                                                                              | The focal animal is joining a group of three animals to form a group of four animals in contact (number of events). This event has to be validated!                                                                                                                                                                                                                                        |
+| **Break contact**          | ![alt break contact](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_analysis/media/uploaded/img/img_break_cct.jpg?raw=true)          | The focal animal is getting away (higher speed) from the animal it has been in contact with; the speed of the focal animal is higher than the speed of the other animal (number of events).                                                                                                                                                                                                |
+| **Break group 3**	         |                                                                                                                                                              | The focal animal is leaving a group of three animals to let a group of two animals in contact; the focal animal has the highest speed among the three animals in contact (number of events). This event has to be validated!                                                                                                                                                               |
+| **Break group 4**	         |                                                                                                                                                              | The focal animal is leaving a group of four animals, that remain as a group of three animals in contact; the focal animal has the highest speed among the four animals in contact (number of events). This event has to be validated!                                                                                                                                                      |
 
 This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
 
 
 ## Installation
+LMT-toolkit needs Python 3.10.
+
 LMT-toolkit works thanks to 3 different servers:
 - a Django server with a REST API (Python)
 - a Nuxt server for the frontend (the interface) (JavaScript - Vue)
@@ -86,29 +93,38 @@ LMT-toolkit works thanks to 3 different servers:
 
 It is recommended to create a [python virtual environment](https://docs.python.org/3/library/venv.html) into the root folder of the application to 
 install the python required packages.
+```
+pip install virtualenv 
+virtualenv venv
+```
+
+Launch the virtual environment to install requirements:
+```
+venv\Scripts\activate
+```
+
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
-- Django>=4.0.2
+- Django==4.0.2
 - djangorestframework==3.14
 - django-filter==21.1
 - djoser==2.1.0
 - django-cors-headers==3.11.0
-- Celery
-- django-celery
-- django-celery-results
+- Celery==5.3.1
+- django-celery-results==2.5.1
 - celery-progress==0.1.2
-- psycopg2-binary
+- psycopg2-binary==2.9.6
 - affine==2.3.1
-- numpy==1.23.1
+- numpy==1.25.1
 - tabulate==0.8.10
-- pandas==1.4.3
-- matplotlib==3.5.2
-- lxml==4.9.1
-- psutil==5.9.1
-- scipy==1.8.1
+- pandas==2.0.3
+- matplotlib==3.7.2
+- lxml==4.9.3
+- psutil==5.9.5
+- scipy==1.11.1
 - seaborn==0.11.2
-- statsmodels==0.13.2
+- statsmodels==0.14.0
 - networkx==2.8.5
 
 Install this list with the command:
@@ -118,6 +134,7 @@ pip install -r requirements.txt
 
 ### Database migration
 ```
+cd lmt_toolkit_api
 python manage.py makemigrations
 python manage.py migrate
 ```
@@ -130,26 +147,29 @@ python manage.py loaddata fixtures/datatostart.json
 
 
 ### Javascript Requirements and installations
+To install the frontend part of LMT-toolkit, you should first install and configure a nuxt environment and then copy / paste the code in the environment's folder.
+
 First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
 Then you will have to install these packages using npm or yarn package managers:
-- nuxt
-- axios
-- vuetify@3.1.14
-- pinia@2.0.34
-- vue-chartjs@5.2.0
-- chart.js (for plots)
-- vue-chartjs (for plots)
-- vue-json-csv
+- @mdi/font@7.2.96                                                  
+- @nuxt/devtools@0.6.7
+- @pinia/nuxt@0.4.11                                                
+- @types/node@18.16.19
+- axios@1.4.0
+- chart.js@4.3.0 (for plots)
+- nuxt@3.6.2
+- pinia@2.1.4
+- sass@1.63.6
+- vue-chartjs@5.2.0 (for plots)
+- vue-json-csv@2.1.0 (for exportation to CSV files)
+- vuetify@3.3.7
 
-It is recommended to first rename the nuxt-frontend folder to first create a new nuxt application and 
-then copy / past files from the previous nuxt-frontend to the new one.
+#### Step-by-step installation procedure:
 
 ```
-npx nuxi@latest init nuxt-frontend
+npx nuxi@3.6.2 init nuxt-front
 ```
-The above command will create a new nuxt application in a new nuxt-frontend folder.
-You can then copy / paste all the folders and files from the previous nuxt-folder, except the .nuxt 
-and the node_modules folders.
+Nuxt configuration:
 ```
 cd nuxt-frontend
 npm i
@@ -158,14 +178,55 @@ Nuxt is now installed.
 
 Then install the packages (example with npm):
 ```
-npm install pinia @pinia/nuxt
-npm i vuetify sass
-npm i @mdi/font
-npm install axios
-npm install vue-chartjs chart.js
-npm install vue-json-csv
+npm i vuetify@3.3.7 sass
+npm i @mdi/font@7.2.96
+npm install axios@1.4.0
+npm install vue-chartjs@5.2.0 chart.js@4.3.0
+npm install vue-json-csv@2.1.0
 ```
 
+Open the nuxt-frontend/package.json and add this code at the end:
+```
+,
+"overrides": {
+    "vue": "latest"
+  }
+```
+The package.json file should look like:
+```
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@types/node": "^18",
+    "nuxt": "^3.6.2"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "@pinia/nuxt": "^0.4.11",
+    "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
+    "pinia": "^2.1.4",
+    "sass": "^1.63.6",
+    "vue-chartjs": "^5.2.0",
+    "vue-json-csv": "^2.1.0",
+    "vuetify": "^3.3.7"
+  },
+  "overrides": {
+    "vue": "latest"
+  }
+}
+```
+The nuxt environment is ready.
+You can then copy / paste all the folders and files from the nuxt folder into the nuxt-frontend one, except the .nuxt and the node_modules folders.
 
 ### Celery
 Celery is used to make asynchronous tasks.
@@ -197,13 +258,13 @@ Make sure you have enough space on your computer!
 
 The application downloads the file: it makes a copy of it.
 It then works on this copy and when the process is finished the copy is deleted. During the analysis, the application needs to store this copy.
-So the original database remains unchanged. The changes made to the downloaded database during the analysis are not saved.
+So the original database remains unchanged.
 
 ### Launch the application
-You need 3 terminal windows (type cmd in the windows search bar). Each of these terminals must remain open for the application to work.
+You need 3 terminal windows with administrator rights. Each of these terminals must remain open for the application to work.
 
 #### Django server:
-In the 1st terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
+In the 1st terminal, go to the right folder (adapt the path according to the location of the application folder on your computer):
 
 ```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
@@ -213,7 +274,7 @@ Activate the python virtual environment:
 
 Go to the lmt_toolkit_analysis folder:
 
-```cd lmt_toolkit_analysis```
+```cd lmt_toolkit_api```
 
 Launch the Django server:
 
@@ -230,7 +291,7 @@ Quit the server with CTRL-BREAK.
 
 
 #### Celery server
-In the second terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
+In the second terminal, go to the right folder (adapt the path according to the location of the application folder on your computer):
 
 ```cd pathToTheLMTtoolkitFolder\lmt_toolkit_analysis```
 
@@ -240,7 +301,7 @@ Activate the python virtual environment:
 
 Go to the lmt_toolkit_analysis folder:
 
-```cd lmt_toolkit_analysis```
+```cd lmt_toolkit_api```
 
 Launch the Celery server:
 
@@ -281,10 +342,12 @@ If this works, the lines below should appear:
 ```
 
 #### Nuxt Vue.js server
-In the 3rd terminal, go to the right folder (adapt the path according to the location of the application folder on your compute):
+In the 3rd terminal, go to the right folder (adapt the path according to the location of the application folder on your computer):
+
 ```cd pathToTheLMTtoolkitFolder\nuxt-frontend```
 
 Launch the server:
+
 ```npm run dev```
 
 If this works, the lines below should appear:
