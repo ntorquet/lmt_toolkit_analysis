@@ -151,7 +151,7 @@ To install the frontend part of LMT-toolkit, we will first install and configure
 First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
 Then you will have to install these packages using npm or yarn package managers:
 - @mdi/font@7.2.96                                                  
-- @nuxt/devtools@0.6.7                                                                                                                                                                                                      12:02:22  
+- @nuxt/devtools@0.6.7
 - @pinia/nuxt@0.4.11                                                
 - @types/node@18.16.19
 - axios@1.4.0
