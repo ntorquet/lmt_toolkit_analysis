@@ -21,7 +21,7 @@
       "lmt_toolkit_version": "v0.1.1",
       "lmt_toolkit_version_link": "https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v0.1.1",
       "lmt_toolkit_version_date": "2022-10-05",
-      "lmt_toolkit_version_changes": "Pre release version:\r\nWrong message color if temperature higher than 26°C corrected.\r\nBootstrapVue3 updated to v0.3.11",
+      "lmt_toolkit_version_changes": "Pre release version:\r\nWrong message color if temperature higher than 26Â°C corrected.\r\nBootstrapVue3 updated to v0.3.11",
       "lmt_analysis_version": "v1.0.3",
       "lmt_analysis_version_link": "https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.3",
       "lmt_analysis_version_changes": "LMT-analysis upgraded (v1.0.0 to v1.0.3):\r\nEvent \"approach contact\" corrected (v1.0.1).\r\nEvents \"follow zone\" and \"side walk\" updated: they no longer compute on a detection where the head and tail are not detected (v1.0.1).\r\nFix a problem with the Nest3_ event. The stop condition necessary is now considered correctly (v1.0.2).\r\nFix an head/tail problem condition in the followzone event (v1.0.3).",
@@ -285,7 +285,7 @@
     "fields": {
       "name": "Follow",
       "representation": "",
-      "description": "The focal animal is walking in the path of another individual: the two animals are moving at a speed >5 cm/s, the angles between the two animals are less than 45° apart, and the mass centre of the follower (the focal animal) is within a follow zone of one mean body length of width and two mean body lengths of length (total duration, number of events, mean duration of events)."
+      "description": "The focal animal is walking in the path of another individual: the two animals are moving at a speed >5 cm/s, the angles between the two animals are less than 45Â° apart, and the mass centre of the follower (the focal animal) is within a follow zone of one mean body length of width and two mean body lengths of length (total duration, number of events, mean duration of events)."
     }
   },
   {

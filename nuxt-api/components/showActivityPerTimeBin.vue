@@ -58,7 +58,7 @@ export default {
   data() {
      return {
        dataToCSVActivity: [],
-       name_csv: 'LMT_v1_0_5-toolkit_v2_activitypertimebin_',
+       name_csv: 'LMT_v1_0_5-toolkit_v1-1_activitypertimebin_',
      }
   },
   methods: {

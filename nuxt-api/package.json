@@ -19,7 +19,7 @@
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
     "pinia": "^2.1.4",
-    "sass": "^1.63.6",
+    "sass": "^1.66.1",
     "vue-chartjs": "^5.2.0",
     "vue-json-csv": "^2.1.0",
     "vuetify": "^3.3.7"
