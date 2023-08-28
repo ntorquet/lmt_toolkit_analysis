@@ -106,7 +106,7 @@ venv\Scripts\activate
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
-- Django==4.0.2
+- Django==4.2.4
 - djangorestframework==3.14
 - django-filter==21.1
 - djoser==2.1.0
