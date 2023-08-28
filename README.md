@@ -226,7 +226,7 @@ The package.json file should look like:
 }
 ```
 The nuxt environment is ready.
-You can then copy / paste all the folders and files from the nuxt folder into the nuxt-frontend one, except the .nuxt and the node_modules folders.
+You can then copy / paste all the folders and files from the nuxt-api folder into the nuxt-frontend one, except the .nuxt and the node_modules folders.
 
 ### Celery
 Celery is used to make asynchronous tasks.
