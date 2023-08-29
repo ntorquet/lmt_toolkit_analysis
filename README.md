@@ -167,7 +167,7 @@ Then you will have to install these packages using npm or yarn package managers:
 #### Step-by-step installation procedure:
 
 ```
-npx nuxi@3.6.2 init nuxt-front
+npx nuxi@3.6.2 init nuxt-frontend
 ```
 Nuxt configuration:
 ```
@@ -183,50 +183,13 @@ npm i @mdi/font@7.2.96
 npm install axios@1.4.0
 npm install vue-chartjs@5.2.0 chart.js@4.3.0
 npm install vue-json-csv@2.1.0
+npm install pinia@2.1.4
+npm install @pinia/nuxt@0.4.11
 ```
 
-Open the nuxt-frontend/package.json and add this code at the end:
-```
-,
-"overrides": {
-    "vue": "latest"
-  }
-```
-The package.json file should look like:
-```
-{
-  "name": "nuxt-app",
-  "private": true,
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "@types/node": "^18",
-    "nuxt": "^3.6.2"
-  },
-  "dependencies": {
-    "@mdi/font": "^7.2.96",
-    "@pinia/nuxt": "^0.4.11",
-    "axios": "^1.4.0",
-    "chart.js": "^4.3.0",
-    "pinia": "^2.1.4",
-    "sass": "^1.63.6",
-    "vue-chartjs": "^5.2.0",
-    "vue-json-csv": "^2.1.0",
-    "vuetify": "^3.3.7"
-  },
-  "overrides": {
-    "vue": "latest"
-  }
-}
-```
+
 The nuxt environment is ready.
-You can then copy / paste all the folders and files from the nuxt-api folder into the nuxt-frontend one, except the .nuxt and the node_modules folders.
+You can then copy / paste all the folders and files from the nuxt-api folder into the nuxt-frontend one.
 
 ### Celery
 Celery is used to make asynchronous tasks.
