@@ -6,7 +6,7 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 '''
-
+import math
 import os
 
 from lmt_toolkit_analysis.celery import app
@@ -18,6 +18,22 @@ from celery_progress.backend import ProgressRecorder
 from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
 from .LMT_v1_0_5b.lmtanalysis.TaskLogger import TaskLogger
 from .LMT_v1_0_5b.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
+from .LMT_v1_0_5b.lmtanalysis import BuildEventApproachContact, BuildEventOtherContact, BuildEventPassiveAnogenitalSniff, BuildEventHuddling, BuildEventTrain3, BuildEventTrain4, BuildEventTrain2, BuildEventFollowZone, BuildEventRear5, BuildEventCenterPeripheryLocation, BuildEventRearCenterPeriphery, BuildEventFloorSniffing, BuildEventSocialApproach, BuildEventSocialEscape, BuildEventApproachContact,BuildEventOralOralContact, BuildEventApproachRear, BuildEventGroup2, BuildEventGroup3, BuildEventGroup4, BuildEventOralGenitalContact, BuildEventStop, BuildEventWaterPoint, BuildEventMove, BuildEventGroup3MakeBreak, BuildEventGroup4MakeBreak, BuildEventSideBySide, BuildEventSideBySideOpposite, BuildEventDetection, BuildDataBaseIndex, BuildEventWallJump, BuildEventSAP, BuildEventOralSideSequence, CheckWrongAnimal, CorrectDetectionIntegrity, BuildEventNest4, BuildEventNest3, BuildEventGetAway
+from psutil import virtual_memory
+import sys
+import traceback
+from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import flushEventTimeLineCache,\
+    disableEventTimeLineCache
+from .LMT_v1_0_5b.lmtanalysis.Animal import *
+from .LMT_v1_0_5b.lmtanalysis.Event import *
+from .LMT_v1_0_5b.lmtanalysis.Measure import *
+
+from .LMT_v1_0_5b.lmtanalysis.Util import getAllEvents
+
+from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_5b.lmtanalysis.AnimalType import AnimalType
+
+
 from .methods import *
 from .models import File
 from datetime import date
@@ -28,8 +44,7 @@ from lmt_toolkit_analysis.settings import MEDIA_ROOT, MEDIA_URL
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
-from .LMT_v1_0_5b.lmtanalysis.Animal import *
-from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+
 
 
 
@@ -41,6 +56,61 @@ timeUnit = {
     'day(s)': 30*60*60*24,
     'week(s)': 30*60*60*24*7,
 }
+
+''' time window to compute the events. '''
+windowT = 1*oneDay
+
+USE_CACHE_LOAD_DETECTION_CACHE = True
+
+global animalType
+animalType = AnimalType.MOUSE
+
+class FileProcessException(Exception):
+    pass
+
+
+def flushEvents( connection, eventClassList):
+
+    print("Flushing events...")
+
+    for ev in eventClassList:
+
+        chrono = Chronometer( "Flushing event " + str(ev) )
+        ev.flush( connection );
+        chrono.printTimeInS()
+
+
+def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassList, progress_recorder, lengthProcess, currentProcessLenght):
+
+    global animalType
+    CheckWrongAnimal.check( connection, tmin=currentMinT, tmax=currentMaxT )
+
+    # Warning: enabling this process (CorrectDetectionIntegrity) will alter the database permanently
+    # CorrectDetectionIntegrity.correct( connection, tmin=0, tmax=maxT )
+
+    # BuildEventDetection.reBuildEvent( connection, file, tmin=currentMinT, tmax=currentMaxT )
+
+    animalPool = None
+
+    flushEventTimeLineCache()
+
+    if ( USE_CACHE_LOAD_DETECTION_CACHE ):
+        print("Caching load of animal detection...")
+        animalPool = AnimalPool( )
+        animalPool.loadAnimals( connection )
+        animalPool.loadDetection( start = currentMinT, end = currentMaxT )
+        print("Caching load of animal detection done.")
+
+    for ev in eventClassList:
+        progress_recorder.set_progress(currentProcessLenght, lengthProcess, f'{ev}')
+        chrono = Chronometer( str( ev ) )
+        ev.reBuildEvent( connection, file, tmin=currentMinT, tmax=currentMaxT, pool = animalPool, animalType = animalType )
+        chrono.printTimeInS()
+        currentProcessLenght += 1
+
+    return currentProcessLenght
+
+
 
 
 
@@ -403,24 +473,165 @@ def rebuildSQLite(self, file, file_id, version):
     :param file: the SQLite LMT_v1_0_3 file
     :return: job done
     '''
+
+    eventClassList = [
+        # BuildEventHuddling,
+        BuildEventDetection,
+        BuildEventOralOralContact,
+        BuildEventOralGenitalContact,
+        BuildEventSideBySide,
+        BuildEventSideBySideOpposite,
+        BuildEventTrain2,
+        BuildEventTrain3,
+        BuildEventTrain4,
+        BuildEventMove,
+        BuildEventFollowZone,
+        BuildEventRear5,
+        BuildEventCenterPeripheryLocation,
+        BuildEventRearCenterPeriphery,
+        BuildEventSocialApproach,
+        BuildEventGetAway,
+        BuildEventSocialEscape,
+        BuildEventApproachRear,
+        BuildEventGroup2,
+        BuildEventGroup3,
+        BuildEventGroup4,
+        BuildEventGroup3MakeBreak,
+        BuildEventGroup4MakeBreak,
+        BuildEventStop,
+        BuildEventWaterPoint,
+        BuildEventApproachContact,
+        # BuildEventWallJump,
+        BuildEventSAP,
+        BuildEventOralSideSequence,
+        BuildEventNest3,
+        BuildEventNest4
+    ]
+
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 4, f'Starting')
+    # number of step for progress is evaluated from number of events to rebuild, it will be calculated a bit later
+    progress_recorder.set_progress(0, len(eventClassList)+3, f'Starting')
 
     connection = create_connection(file)
     print('File: '+file)
-
-    progress_recorder.set_progress(1, 4, f'File loaded')
     print(connection)
-
+    progress_recorder.set_progress(1, len(eventClassList)+3, f'File loaded')
     StartEndFrames = getStartEndExperiment(connection)
     minT = StartEndFrames[0]
     maxT = StartEndFrames[1]
-
     connection.close()
 
+    nbOfTimeWindows = ceil((maxT-minT)/windowT)
+    lengthProcess = 4 + len(eventClassList*nbOfTimeWindows)
+    print(f"LengthProcess: {lengthProcess}")
+
     # Rebuild_all_event from minT to maxT
-    progress_recorder.set_progress(3, 4, f'first analysis done - start Rebuild_all_event')
-    process(file, minT, maxT)
+    progress_recorder.set_progress(3, lengthProcess, f'first analysis done - start Rebuild_all_event')
+    currentLenghtProcess = 4
+
+    # process event rebuild one by one
+    mem = virtual_memory()
+    availableMemoryGB = mem.total / 1000000000
+    print( "Total memory on computer: (GB)", availableMemoryGB )
+
+    if availableMemoryGB < 10:
+        print( "Not enough memory to use cache load of events.")
+        disableEventTimeLineCache()
+
+    chronoFullFile = Chronometer("File " + file)
+
+    connection = sqlite3.connect(file)
+
+    # update missing fields
+    try:
+        connection = sqlite3.connect(file)
+        c = connection.cursor()
+        query = "ALTER TABLE EVENT ADD METADATA TEXT";
+        c.execute(query)
+        connection.commit()
+
+    except:
+        print("METADATA field already exists", file)
+
+    BuildDataBaseIndex.buildDataBaseIndex(connection, force=False)
+    # build sensor data
+    animalPool = AnimalPool()
+    animalPool.loadAnimals(connection)
+    # animalPool.buildSensorData(file)
+
+    currentT = minT
+
+    try:
+        flushEvents(connection, eventClassList)
+
+        while currentT < maxT:
+            currentMinT = currentT
+            currentMaxT = currentT + windowT
+            if (currentMaxT > maxT):
+                currentMaxT = maxT
+
+            chronoTimeWindowFile = Chronometer(
+                "File " + file + " currentMinT: " + str(currentMinT) + " currentMaxT: " + str(currentMaxT));
+            currentLenghtProcess = processTimeWindow(connection, file, currentMinT, currentMaxT, eventClassList, progress_recorder, lengthProcess, currentLenghtProcess)
+            chronoTimeWindowFile.printTimeInS()
+
+            currentT += windowT
+
+            print(f"currentLengthProcess: {currentLenghtProcess}")
+
+        print("Full file process time: ")
+        chronoFullFile.printTimeInS()
+
+        TEST_WINDOWING_COMPUTATION = False
+
+        if (TEST_WINDOWING_COMPUTATION):
+
+            print("*************")
+            print("************* TEST START SECTION")
+            print("************* Test if results are the same with or without the windowing.")
+
+            # display and record to a file all events found, checking with rolling idA from None to 4. Save nbEvent and total len
+
+            # eventTimeLineList = []
+            #
+            # eventList = getAllEvents(connection)
+            #file = open("outEvent" + str(windowT) + ".txt", "w")
+            #file.write("Event name\nnb event\ntotal duration")
+
+            # for eventName in eventList:
+            #     print(eventName)
+            #     for animal in range(0, 5):
+            #         idA = animal
+            #         if idA == 0:
+            #             idA = None
+            #         timeLine = EventTimeLineCached(connection, file, eventName, idA, minFrame=minT, maxFrame=maxT)
+            #         eventTimeLineList.append(timeLine)
+            #         file.write(timeLine.eventNameWithId + "\t" + str(len(timeLine.eventList)) + "\t" + str(
+            #             timeLine.getTotalLength()) + "\n")
+            #
+            # file.close()
+
+            # plotMultipleTimeLine( eventTimeLineList )
+
+            print("************* END TEST")
+
+        flushEventTimeLineCache()
+
+    except:
+
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        error = ''.join('!! ' + line for line in lines)
+
+        t = TaskLogger(connection)
+        t.addLog(error)
+        flushEventTimeLineCache()
+
+        print(error, file=sys.stderr)
+
+        raise FileProcessException()
+
+    # process(file, minT, maxT)
 
     connection = create_connection(file)
     t = TaskLogger(connection)
@@ -433,7 +644,7 @@ def rebuildSQLite(self, file, file_id, version):
     response = requests.patch(api_url, json=todo)
     # print(response.json())
     print(response.status_code)
-    progress_recorder.set_progress(4, 4, f'Rebuild done - compute analysis')
+    progress_recorder.set_progress(currentLenghtProcess, lengthProcess, f'Rebuild done - compute analysis')
 
     return {"message": "Rebuild done"}
 
