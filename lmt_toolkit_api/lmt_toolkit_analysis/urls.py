@@ -7,7 +7,6 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 '''
 
-
 from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.static import serve

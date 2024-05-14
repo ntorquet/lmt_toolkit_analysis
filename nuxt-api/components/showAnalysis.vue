@@ -233,7 +233,7 @@ export default {
       tmax: '',
       analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT_v1_0_5-toolkit_v2_simple-preset_',
+      name_csv: 'LMT_v1_0_5-toolkit_v1-1_simple-preset_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
       analysis_parameters_data: [],

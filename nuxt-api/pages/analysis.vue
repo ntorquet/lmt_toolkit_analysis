@@ -132,6 +132,11 @@ Code under GPL v3.0 licence
         <v-window-item :value="6">
           <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
           <v-card-text>
+            <v-col
+              class="text-subtitle-1 text-center"
+              cols="12"
+            >
+            </v-col>
             <v-progress-linear
                 v-model="tasksProgression"
                 color="blue-grey"
@@ -525,6 +530,7 @@ export default {
           }
           // console.log(response.data.state)
           this.tasksProgression = response.data.progress.current
+          console.log("task progression: "+response.data.result.message)
         })
         .catch(error => {
           console.log(JSON.stringify(error))
