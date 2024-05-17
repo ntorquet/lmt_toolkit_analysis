@@ -186,7 +186,12 @@ Code under GPL v3.0 licence
                         <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
                     </v-btn>
                 </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                </v-card-actions>
               </v-card>
+
               <v-card class="mt-4 mr-4" width="400">
                 <v-card-title> Activity preset</v-card-title>
                 <v-card-text>
@@ -201,7 +206,34 @@ Code under GPL v3.0 licence
                         <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
                     </v-btn>
                 </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                </v-card-actions>
               </v-card>
+
+              <OpenFieldPreset :duration="openfieldDuration"></OpenFieldPreset>
+
+              <v-card class="mt-4 mr-4" width="400">
+                <v-card-title> Dyadic preset</v-card-title>
+                <v-card-text>
+                  <v-alert class="mb-2">
+                      This preset can be used to analyze dyadic experiments with a two animals in the arena.<br />
+                      By default, the analysis will be done on the total duration of the experiment.<br />
+                      You can select a duration. The analysis starts at the beginning of the experiment.
+                  </v-alert>
+                  <v-text-field label="Duration in minutes" v-model="durationComponent"></v-text-field>
+
+                  <v-btn v-if="durationComponent!=''" @click="doAnalysis('openfieldPreset')">
+                      <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
+                  </v-btn>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                </v-card-actions>
+              </v-card>
+
               </v-row>
               </v-col>
             </v-card-text>
@@ -245,11 +277,12 @@ Code under GPL v3.0 licence
 <script>
 import axios from "axios";
 import {th} from "vuetify/locale";
+import OpenFieldPreset from "~/components/openFieldPreset.vue";
 export default {
   name: "analysis",
   data:function (){
 		return{
-       timelineItems: {
+      timelineItems: {
         selectSqlite: {
           title: 'Select a SQLite file',
           icon: 'mdi-download',
@@ -347,7 +380,8 @@ export default {
       resultsActivityPerTimeBin: {},
       preset: null,
       timeBin: 10,
-      analysisToShow: null
+      analysisToShow: null,
+      openfieldDuration: 15,
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -739,5 +773,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
