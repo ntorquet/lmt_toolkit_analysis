@@ -106,26 +106,26 @@ venv\Scripts\activate
 [To run the 3 servers, we need 3 command prompts.](##How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
-- Django==4.2.4
-- djangorestframework==3.14
-- django-filter==21.1
-- djoser==2.1.0
-- django-cors-headers==3.11.0
-- Celery==5.3.1
-- django-celery-results==2.5.1
-- celery-progress==0.1.2
-- psycopg2-binary==2.9.6
-- affine==2.3.1
-- numpy==1.25.1
-- tabulate==0.8.10
-- pandas==2.0.3
-- matplotlib==3.7.2
-- lxml==4.9.3
-- psutil==5.9.5
-- scipy==1.11.1
-- seaborn==0.11.2
-- statsmodels==0.14.0
-- networkx==2.8.5
+* Django==5.0.6
+* djangorestframework==3.15.1
+* django-filter==24.2
+* djoser==2.2.2
+* django-cors-headers==4.3.1
+* Celery==5.4.0
+* django-celery-results==2.5.1
+* celery-progress==0.3
+* psycopg2-binary==2.9.9
+* affine==2.4.0
+* numpy==1.26.4
+* tabulate==0.9.0
+* pandas==2.2.2
+* matplotlib==3.9.0
+* lxml==5.2.2
+* psutil==5.9.8
+* scipy==1.13.0
+* seaborn==0.13.2
+* statsmodels==0.14.2
+* networkx==3.3
 
 Install this list with the command:
 ```
@@ -151,18 +151,18 @@ To install the frontend part of LMT-toolkit, you should first install and config
 
 First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
 Then you will have to install these packages using npm or yarn package managers:
-- @mdi/font@7.2.96                                                  
-- @nuxt/devtools@0.6.7
+- @mdi/font@7.4.47                                                  
+- @nuxt/devtools@1.3.1
 - @pinia/nuxt@0.4.11                                                
-- @types/node@18.16.19
-- axios@1.4.0
-- chart.js@4.3.0 (for plots)
-- nuxt@3.6.2
-- pinia@2.1.4
-- sass@1.63.6
-- vue-chartjs@5.2.0 (for plots)
-- vue-json-csv@2.1.0 (for exportation to CSV files)
-- vuetify@3.3.7
+- @types/node@18.19.33
+- axios@1.6.8
+- chart.js@4.4.2
+- nuxt@3.11.2
+- pinia@2.1.7
+- sass@1.77.1
+- vue-chartjs@5.3.1
+- vue-json-csv@2.1.0
+- vuetify@3.6.6
 
 #### Step-by-step installation procedure:
 
@@ -178,12 +178,12 @@ Nuxt is now installed.
 
 Then install the packages (example with npm):
 ```
-npm i vuetify@3.3.7 sass
-npm i @mdi/font@7.2.96
-npm install axios@1.4.0
-npm install vue-chartjs@5.2.0 chart.js@4.3.0
+npm i vuetify@3.6.6 sass
+npm i @mdi/font@7.4.47
+npm install axios@1.6.8
+npm install vue-chartjs@5.3.1 chart.js@4.4.2
 npm install vue-json-csv@2.1.0
-npm install pinia@2.1.4
+npm install pinia@2.1.7
 npm install @pinia/nuxt@0.4.11
 ```
 
