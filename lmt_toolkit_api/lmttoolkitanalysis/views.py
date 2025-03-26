@@ -144,6 +144,11 @@ class CheckReliabilityAPIView(APIView):
             return JsonResponse({'Error': 'An error occurs during the reliability check'})
 
 
+# class getLogInfo(APIView):
+#     def get(self, request):
+
+
+
 class SaveAnimalInfoView(APIView):
     def post(self, request):
         print("into save animal info view")

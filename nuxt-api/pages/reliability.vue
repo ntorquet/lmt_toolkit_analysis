@@ -114,7 +114,7 @@ export default {
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
 
-      axios.post(`http://127.0.0.1:8000/api/v1/reliability/`, formData, {
+      axios.post(`http://127.0.0.1:8000/api/reliability/`, formData, {
         onUploadProgress: function (progressEvent) {
           this.selectFile = false
           this.uploading = true

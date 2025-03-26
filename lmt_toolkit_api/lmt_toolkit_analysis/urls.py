@@ -16,9 +16,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('lmttoolkitanalysis.urls')),
-    # path('api/v1/', include('djoser.urls.authtoken')),
+    path('api/', include('djoser.urls')),
+    path('api/', include('lmttoolkitanalysis.urls')),
+    # path('api/', include('djoser.urls.authtoken')),
     re_path(r'^celery-progress/', include('celery_progress.urls')),
     # to download files:
     re_path(r'^media/uploaded/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

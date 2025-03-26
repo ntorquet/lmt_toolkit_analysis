@@ -13,7 +13,7 @@ import datetime
 from math import *
 from sqlite3 import Error
 
-from .LMT_v1_0_5b.lmtanalysis.Animal import *
+from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import *
 from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_5b.lmtanalysis.FileUtil import behaviouralEventOneMouse
 from .LMT_v1_0_5b.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
@@ -676,7 +676,7 @@ def getStartEndExperiment(connection):
 
 def getDistanceAndTimeInContact(connection, minT, maxT, file):
     # load animal pool
-    pool = AnimalPool()
+    pool = AnimalPoolToolkit()
     pool.loadAnimals(connection)
 
     dataDic = {}
@@ -735,7 +735,7 @@ def getDataProfile(connection, minT, maxT, file):
     print("minT: "+str(minT))
     print("maxT: "+str(maxT))
 
-    animalPool = AnimalPool()
+    animalPool = AnimalPoolToolkit()
     #
     # # load infos about the animals
     animalPool.loadAnimals(connection)
@@ -781,3 +781,34 @@ def saveAnimalInfo(file, animalsInfo, version):
     print(str(formatedJson))
     updateFieldFromDico(file, formatedJson, version)
     return "Done"
+
+
+def getLogInfo(connection):
+    '''
+    :param connection: connection to the SQLite LMT_v1_0_3 file
+    :return: logs in list of dico
+    '''
+    cursor = connection.cursor()
+    # check if LOG table exists
+    queryCheck = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'LOG'"
+    cursor.execute(queryCheck)
+    rows = cursor.fetchall()
+    if rows < 1:
+        return None
+    else:
+        query = "SELECT * FROM LOG"
+        cursor.execute(query)
+        columnNames = [description[0] for description in cursor.description]
+        print("Into getLogInfo")
+
+        list_log = []
+        rows = cursor.fetchall()
+        for row in rows:
+            dicoTemp = {}
+            for i in range(0, len(row)):
+                dicoTemp[columnNames[i]] = row[i]
+            list_log.append(dicoTemp)
+        cursor.close()
+        print(str(columnNames))
+        print(str(list_log))
+        return list_log

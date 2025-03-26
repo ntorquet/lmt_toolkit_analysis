@@ -413,7 +413,7 @@ export default {
       formData.append('file_name', this.filename)
       formData.append('sqlite', this.file)
 
-      axios.post(`http://127.0.0.1:8000/api/v1/files/`, formData, {
+      axios.post(`http://127.0.0.1:8000/api/files/`, formData, {
         onUploadProgress: function (progressEvent) {
           this.selectFile = false
           this.uploading = true
@@ -426,7 +426,7 @@ export default {
         this.uploading = false
 
 
-        // get the new id from http://127.0.0.1:8000/api/v1/files/
+        // get the new id from http://127.0.0.1:8000/api/files/
         this.file_id = response.data.file_id
         this.checkReliability(this.file_id)
         this.step = 3
@@ -488,7 +488,7 @@ export default {
                     this.animalsInfo[animal]['TREATMENT'] = ""
                   }
                 }
-                this.fileURL = "http://127.0.0.1:8000/api/v1/files/".concat(this.data.file_url)
+                this.fileURL = "http://127.0.0.1:8000/api/files/".concat(this.data.file_url)
                 break
               case 5:
                 this.stepUp()
@@ -608,7 +608,7 @@ export default {
       }
     },
     downloadFile(fileId) {
-      axios.get(`http://127.0.0.1:8000/api/v1/files/${fileId}/`)
+      axios.get(`http://127.0.0.1:8000/api/files/${fileId}/`)
       .then(response => {
         // this.fileURL = window.URL.createObjectURL(new Blob([response.data]))
         var fileURL = window.URL.createObjectURL(new Blob([response.data]));
@@ -628,7 +628,7 @@ export default {
     checkReliability() {
       let formData = new FormData();
       formData.append('file_id', this.file_id)
-      axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
+      axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
         this.getProgression()
@@ -685,7 +685,7 @@ export default {
       let formData = new FormData();
       formData.append('file_id', this.file_id)
       formData.append('animalsInfo', JSON.stringify( this.animalsInfo))
-      axios.post(`http://127.0.0.1:8000/api/v1/saveAnimalInfo/`, formData)
+      axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
         this.getProgression()
@@ -697,7 +697,7 @@ export default {
     rebuildSQLiteFile() {
       let formData = new FormData();
       formData.append('file_id', this.file_id)
-      axios.post(`http://127.0.0.1:8000/api/v1/rebuild/`, formData)
+      axios.post(`http://127.0.0.1:8000/api/rebuild/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
         this.getProgression()
@@ -720,7 +720,7 @@ export default {
           formData.append('tmax', parseInt(this.maxT))
           formData.append('unitMinT', this.unitMinT)
           formData.append('unitMaxT', this.unitMaxT)
-          axios.post(`http://127.0.0.1:8000/api/v1/extractAnalysis/`, formData)
+          axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData)
           .then(response => {
             console.log('Do analysis')
             // this.data = response.data.reliabilityContext
@@ -738,7 +738,7 @@ export default {
         case 'activityPerTimeBinPreset':
           formData.append('file_id', this.file_id)
           formData.append('timeBin', parseInt(this.timeBin))
-          axios.post(`http://127.0.0.1:8000/api/v1/activityPerTimeBin/`, formData)
+          axios.post(`http://127.0.0.1:8000/api/activityPerTimeBin/`, formData)
           .then(response => {
             console.log('Do analysis')
             // this.data = response.data.reliabilityContext

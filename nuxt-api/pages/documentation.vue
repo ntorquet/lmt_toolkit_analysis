@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     getEventDocumentation() {
-      axios.get(`http://127.0.0.1:8000/api/v1/eventDocumentation`)
+      axios.get(`http://127.0.0.1:8000/api/eventDocumentation`)
           .then(response => {
             this.documentation = response.data
           })

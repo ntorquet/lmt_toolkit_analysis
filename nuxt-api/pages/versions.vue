@@ -62,7 +62,7 @@ export default {
     getVersions() {
       this.files = []
       this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/v1/versions`)
+      axios.get(`http://127.0.0.1:8000/api/versions`)
           .then(response => {
             this.versions = response.data
             this.organizeFiles()

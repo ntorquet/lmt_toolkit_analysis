@@ -13,25 +13,25 @@ from lmt_toolkit_analysis.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 
-# from .LMT_v1_0_3.lmtanalysis.FileUtil import behaviouralEventOneMouse
-# from .LMT_v1_0_3.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile, computeProfileWithoutText_file
-from .LMT_v1_0_5b.scripts.Rebuild_All_Events import process
-from .LMT_v1_0_5b.lmtanalysis.TaskLogger import TaskLogger
-from .LMT_v1_0_5b.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
-from .LMT_v1_0_5b.lmtanalysis import BuildEventApproachContact, BuildEventOtherContact, BuildEventPassiveAnogenitalSniff, BuildEventHuddling, BuildEventTrain3, BuildEventTrain4, BuildEventTrain2, BuildEventFollowZone, BuildEventRear5, BuildEventCenterPeripheryLocation, BuildEventRearCenterPeriphery, BuildEventFloorSniffing, BuildEventSocialApproach, BuildEventSocialEscape, BuildEventApproachContact,BuildEventOralOralContact, BuildEventApproachRear, BuildEventGroup2, BuildEventGroup3, BuildEventGroup4, BuildEventOralGenitalContact, BuildEventStop, BuildEventWaterPoint, BuildEventMove, BuildEventGroup3MakeBreak, BuildEventGroup4MakeBreak, BuildEventSideBySide, BuildEventSideBySideOpposite, BuildEventDetection, BuildDataBaseIndex, BuildEventWallJump, BuildEventSAP, BuildEventOralSideSequence, CheckWrongAnimal, CorrectDetectionIntegrity, BuildEventNest4, BuildEventNest3, BuildEventGetAway
+
+from .LMT_v1_0_6.scripts.Rebuild_All_Events import process
+from .LMT_v1_0_6.lmtanalysis.TaskLogger import TaskLogger
+from .LMT_v1_0_6.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
+from .LMT_v1_0_6.lmtanalysis import BuildEventApproachContact, BuildEventOtherContact, BuildEventPassiveAnogenitalSniff, BuildEventHuddling, BuildEventTrain3, BuildEventTrain4, BuildEventTrain2, BuildEventFollowZone, BuildEventRear5, BuildEventCenterPeripheryLocation, BuildEventRearCenterPeriphery, BuildEventFloorSniffing, BuildEventSocialApproach, BuildEventSocialEscape, BuildEventApproachContact,BuildEventOralOralContact, BuildEventApproachRear, BuildEventGroup2, BuildEventGroup3, BuildEventGroup4, BuildEventOralGenitalContact, BuildEventStop, BuildEventWaterPoint, BuildEventMove, BuildEventGroup3MakeBreak, BuildEventGroup4MakeBreak, BuildEventSideBySide, BuildEventSideBySideOpposite, BuildEventDetection, BuildDataBaseIndex, BuildEventWallJump, BuildEventSAP, BuildEventOralSideSequence, CheckWrongAnimal, CorrectDetectionIntegrity, BuildEventNest4, BuildEventNest3, BuildEventGetAway
 from psutil import virtual_memory
 import sys
 import traceback
-from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import flushEventTimeLineCache,\
+from .LMT_v1_0_6.lmtanalysis.EventTimeLineCache import flushEventTimeLineCache,\
     disableEventTimeLineCache
-from .LMT_v1_0_5b.lmtanalysis.Animal import *
-from .LMT_v1_0_5b.lmtanalysis.Event import *
-from .LMT_v1_0_5b.lmtanalysis.Measure import *
+# from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import *
+from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import AnimalPoolToolkit as AnimalPool
+from .LMT_v1_0_6.lmtanalysis.Event import *
+from .LMT_v1_0_6.lmtanalysis.Measure import *
 
-from .LMT_v1_0_5b.lmtanalysis.Util import getAllEvents
+from .LMT_v1_0_6.lmtanalysis.Util import getAllEvents
 
-from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT_v1_0_5b.lmtanalysis.AnimalType import AnimalType
+from .LMT_v1_0_6.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_6.lmtanalysis.AnimalType import AnimalType
 
 
 from .methods import *
@@ -62,8 +62,11 @@ windowT = 1*oneDay
 
 USE_CACHE_LOAD_DETECTION_CACHE = True
 
-global animalType
-animalType = AnimalType.MOUSE
+
+def setAnimalType( aType ):
+    global animalType
+    animalType = aType
+
 
 class FileProcessException(Exception):
     pass
@@ -82,7 +85,8 @@ def flushEvents( connection, eventClassList):
 
 def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassList, progress_recorder, lengthProcess, currentProcessLenght):
 
-    global animalType
+    setAnimalType( AnimalType.MOUSE )
+    print(f"--- tasks process timeWindow animalType {animalType} ---")
     CheckWrongAnimal.check( connection, tmin=currentMinT, tmax=currentMaxT )
 
     # Warning: enabling this process (CorrectDetectionIntegrity) will alter the database permanently
@@ -96,7 +100,7 @@ def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassLis
 
     if ( USE_CACHE_LOAD_DETECTION_CACHE ):
         print("Caching load of animal detection...")
-        animalPool = AnimalPool( )
+        animalPool = AnimalPoolToolkit( )
         animalPool.loadAnimals( connection )
         animalPool.loadDetection( start = currentMinT, end = currentMaxT )
         print("Caching load of animal detection done.")
@@ -104,6 +108,7 @@ def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassLis
     for ev in eventClassList:
         progress_recorder.set_progress(currentProcessLenght, lengthProcess, f'{ev}')
         chrono = Chronometer( str( ev ) )
+        print(f"------------- {ev} ANIMALTYPE: {animalType} ------------")
         ev.reBuildEvent( connection, file, tmin=currentMinT, tmax=currentMaxT, pool = animalPool, animalType = animalType )
         chrono.printTimeInS()
         currentProcessLenght += 1
@@ -555,7 +560,7 @@ def rebuildSQLite(self, file, file_id, version):
 
     BuildDataBaseIndex.buildDataBaseIndex(connection, force=False)
     # build sensor data
-    animalPool = AnimalPool()
+    animalPool = AnimalPoolToolkit()
     animalPool.loadAnimals(connection)
     # animalPool.buildSensorData(file)
 
