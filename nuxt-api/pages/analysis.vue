@@ -382,6 +382,7 @@ export default {
       timeBin: 10,
       analysisToShow: null,
       openfieldDuration: 15,
+      logInfo: {}
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -489,6 +490,7 @@ export default {
                   }
                 }
                 this.fileURL = "http://127.0.0.1:8000/api/files/".concat(this.data.file_url)
+                this.getLogInfo()
                 break
               case 5:
                 this.stepUp()
@@ -632,6 +634,19 @@ export default {
       .then(response => {
         this.task_id = response.data.task_id
         this.getProgression()
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error))
+      })
+    },
+    getLogInfo() {
+      let formData = new FormData();
+      formData.append('file_id', this.file_id)
+      axios.post(`http://127.0.0.1:8000/api/logInfo/`, formData)
+      .then(response => {
+        this.task_id = response.data.task_id
+        this.logInfo = response.data.logInfo
+        console.log(this.logInfo)
       })
       .catch(error => {
         console.log(JSON.stringify(error))

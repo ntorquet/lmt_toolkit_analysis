@@ -14,24 +14,24 @@ from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 
 
-from .LMT_v1_0_6.scripts.Rebuild_All_Events import process
-from .LMT_v1_0_6.lmtanalysis.TaskLogger import TaskLogger
-from .LMT_v1_0_6.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
-from .LMT_v1_0_6.lmtanalysis import BuildEventApproachContact, BuildEventOtherContact, BuildEventPassiveAnogenitalSniff, BuildEventHuddling, BuildEventTrain3, BuildEventTrain4, BuildEventTrain2, BuildEventFollowZone, BuildEventRear5, BuildEventCenterPeripheryLocation, BuildEventRearCenterPeriphery, BuildEventFloorSniffing, BuildEventSocialApproach, BuildEventSocialEscape, BuildEventApproachContact,BuildEventOralOralContact, BuildEventApproachRear, BuildEventGroup2, BuildEventGroup3, BuildEventGroup4, BuildEventOralGenitalContact, BuildEventStop, BuildEventWaterPoint, BuildEventMove, BuildEventGroup3MakeBreak, BuildEventGroup4MakeBreak, BuildEventSideBySide, BuildEventSideBySideOpposite, BuildEventDetection, BuildDataBaseIndex, BuildEventWallJump, BuildEventSAP, BuildEventOralSideSequence, CheckWrongAnimal, CorrectDetectionIntegrity, BuildEventNest4, BuildEventNest3, BuildEventGetAway
+from .LMT_v1_0_7.scripts.Rebuild_All_Events import process
+from .LMT_v1_0_7.lmtanalysis.TaskLogger import TaskLogger
+from .LMT_v1_0_7.scripts.TimeLineActivity import extractActivityPerAnimalWholeExperiment
+from .LMT_v1_0_7.lmtanalysis import BuildEventApproachContact, BuildEventOtherContact, BuildEventPassiveAnogenitalSniff, BuildEventHuddling, BuildEventTrain3, BuildEventTrain4, BuildEventTrain2, BuildEventFollowZone, BuildEventRear5, BuildEventCenterPeripheryLocation, BuildEventRearCenterPeriphery, BuildEventFloorSniffing, BuildEventSocialApproach, BuildEventSocialEscape, BuildEventApproachContact,BuildEventOralOralContact, BuildEventApproachRear, BuildEventGroup2, BuildEventGroup3, BuildEventGroup4, BuildEventOralGenitalContact, BuildEventStop, BuildEventWaterPoint, BuildEventMove, BuildEventGroup3MakeBreak, BuildEventGroup4MakeBreak, BuildEventSideBySide, BuildEventSideBySideOpposite, BuildEventDetection, BuildDataBaseIndex, BuildEventWallJump, BuildEventSAP, BuildEventOralSideSequence, CheckWrongAnimal, CorrectDetectionIntegrity, BuildEventNest4, BuildEventNest3, BuildEventGetAway
 from psutil import virtual_memory
 import sys
 import traceback
-from .LMT_v1_0_6.lmtanalysis.EventTimeLineCache import flushEventTimeLineCache,\
+from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import flushEventTimeLineCache,\
     disableEventTimeLineCache
-# from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import *
-from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import AnimalPoolToolkit as AnimalPool
-from .LMT_v1_0_6.lmtanalysis.Event import *
-from .LMT_v1_0_6.lmtanalysis.Measure import *
+# from .LMT_v1_0_7.experimental.Animal_LMTtoolkit import *
+from .LMT_v1_0_7.experimental.Animal_LMTtoolkit import AnimalPoolToolkit as AnimalPool
+from .LMT_v1_0_7.lmtanalysis.Event import *
+from .LMT_v1_0_7.lmtanalysis.Measure import *
 
-from .LMT_v1_0_6.lmtanalysis.Util import getAllEvents
+from .LMT_v1_0_7.lmtanalysis.Util import getAllEvents
 
-from .LMT_v1_0_6.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT_v1_0_6.lmtanalysis.AnimalType import AnimalType
+from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_7.lmtanalysis.AnimalType import AnimalType
 
 
 from .methods import *
@@ -117,6 +117,21 @@ def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassLis
 
 
 
+@shared_task(bind=True)
+def getLogInfoTask(self, file):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file
+    :return: extracted log info from file
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 2, f'Starting')
+    connection = create_connection(file)
+    progress_recorder.set_progress(1, 2, f'File connected')
+    logInfo = getLogInfo(connection)
+    progress_recorder.set_progress(2, 2, f'Log info extracted')
+    connection.close()
+
+    return logInfo
 
 
 @shared_task(bind=True)

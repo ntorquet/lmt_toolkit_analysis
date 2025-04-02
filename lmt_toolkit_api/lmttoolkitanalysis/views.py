@@ -144,9 +144,20 @@ class CheckReliabilityAPIView(APIView):
             return JsonResponse({'Error': 'An error occurs during the reliability check'})
 
 
-# class getLogInfo(APIView):
-#     def get(self, request):
-
+class LogInfoAPIView(APIView):
+    def post(self, request):
+        print("logInfoAPIView")
+        print(f"Request: {request}")
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+        try:
+            logInfo = tasks.getLogInfoTask.delay(path_file, deleteFile=False, file_id=file_id)
+            task_id = logInfo.task_id
+            print(task_id)
+            return JsonResponse({'task_id': task_id, 'logInfo': logInfo})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the log export'})
 
 
 class SaveAnimalInfoView(APIView):

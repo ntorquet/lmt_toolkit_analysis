@@ -13,11 +13,11 @@ import datetime
 from math import *
 from sqlite3 import Error
 
-from .LMT_v1_0_6.experimental.Animal_LMTtoolkit import *
-from .LMT_v1_0_5b.lmtanalysis.EventTimeLineCache import EventTimeLineCached
-from .LMT_v1_0_5b.lmtanalysis.FileUtil import behaviouralEventOneMouse
-from .LMT_v1_0_5b.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
-from .LMT_v1_0_5b.scripts.Rebuild_info_animals import addColumns, updateFieldFromDico
+from .LMT_v1_0_7.experimental.Animal_LMTtoolkit import *
+from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
+from .LMT_v1_0_7.lmtanalysis.FileUtil import behaviouralEventOneMouse
+from .LMT_v1_0_7.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
+from .LMT_v1_0_7.scripts.Rebuild_info_mice import addColumns, updateFieldFromDico
 
 oneFrame = 1
 oneSecond = 30

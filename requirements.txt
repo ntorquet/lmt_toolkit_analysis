@@ -19,3 +19,4 @@ scipy
 seaborn
 statsmodels
 networkx
+django-environ

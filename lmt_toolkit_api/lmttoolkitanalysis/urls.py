@@ -34,5 +34,6 @@ urlpatterns = [
     path(r'rebuild/', views.RebuildSqliteAPIView.as_view(), name="rebuild"),
     path(r'saveAnimalInfo/', views.SaveAnimalInfoView.as_view(), name="saveAnimalInfo"),
     path(r'extractAnalysis/', views.ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
-    path(r'activityPerTimeBin/', views.ActivityPerTimeBinAPIView.as_view(), name="activityPerTimeBin")
+    path(r'activityPerTimeBin/', views.ActivityPerTimeBinAPIView.as_view(), name="activityPerTimeBin"),
+    path(r'logInfo/', views.LogInfoAPIView.as_view(), name="logInfo"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
