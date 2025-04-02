@@ -26,7 +26,7 @@ env = environ.Env(
 
 env_paths = [
     environ.Path(Path.joinpath(BASE_DIR, ".env")),
-    environ.Path("/etc/moustube/mousetube.env"),
+    environ.Path("/etc/lmt-toolkit/lmt-toolkit.env"),
 ]
 
 # Read all environment files

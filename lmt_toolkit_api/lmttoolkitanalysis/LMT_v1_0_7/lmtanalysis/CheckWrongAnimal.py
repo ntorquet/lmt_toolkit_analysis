@@ -10,7 +10,7 @@ This script should be used to detect those animal in databases.
 import sqlite3
 from time import *
 
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import AnimalPoolToolkit as AnimalPool
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
