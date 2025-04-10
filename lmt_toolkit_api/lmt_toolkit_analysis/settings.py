@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_celery_results',
     'celery_progress',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -174,6 +175,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 broker_url = 'amqp://guest:guest@localhost:5672//'

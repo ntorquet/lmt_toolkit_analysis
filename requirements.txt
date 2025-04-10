@@ -20,3 +20,4 @@ seaborn
 statsmodels
 networkx
 django-environ
+drf_spectacular

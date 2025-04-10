@@ -12,12 +12,15 @@ from django.urls import include, path, re_path
 from django.views.static import serve
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('djoser.urls')),
     path('api/', include('lmttoolkitanalysis.urls')),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     # path('api/', include('djoser.urls.authtoken')),
     re_path(r'^celery-progress/', include('celery_progress.urls')),
     # to download files:
