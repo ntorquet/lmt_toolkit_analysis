@@ -6,7 +6,7 @@ Created on 6 sept. 2017
 import sqlite3
 from time import *
 from ..lmtanalysis.Chronometer import Chronometer
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None, animalTyp
     Move isolated: animal A is moving and not in contact with any other animal.
     ''' 
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
 
     if len(pool.animalDictionary.keys()) == 1:

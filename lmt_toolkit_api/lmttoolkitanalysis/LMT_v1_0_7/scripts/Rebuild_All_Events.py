@@ -5,7 +5,7 @@ Created on 13 sept. 2017
 '''
 
 import sqlite3
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 import matplotlib.pyplot as plt
 from ..lmtanalysis.Event import *
 from ..lmtanalysis.Measure import *
@@ -155,7 +155,7 @@ def process( file ):
 
     BuildDataBaseIndex.buildDataBaseIndex( connection, force=False )
     # build sensor data
-    animalPool = AnimalPool( )
+    animalPool = AnimalPoolToolkit( )
     animalPool.loadAnimals( connection )
     #animalPool.buildSensorData(file)
 

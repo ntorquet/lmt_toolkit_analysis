@@ -123,6 +123,7 @@ def getLogInfoTask(self, file):
     :param file: the SQLite LMT_v1_0_3 file
     :return: extracted log info from file
     '''
+    print("task getLogInfoTask")
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(0, 2, f'Starting')
     connection = create_connection(file)

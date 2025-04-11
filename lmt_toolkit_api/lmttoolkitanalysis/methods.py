@@ -793,7 +793,7 @@ def getLogInfo(connection):
     queryCheck = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'LOG'"
     cursor.execute(queryCheck)
     rows = cursor.fetchall()
-    if rows < 1:
+    if len(rows) < 1:
         return None
     else:
         query = "SELECT * FROM LOG"

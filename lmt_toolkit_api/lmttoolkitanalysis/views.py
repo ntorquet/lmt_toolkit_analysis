@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 
 from django.http import JsonResponse
+from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework import viewsets, status, generics, parsers, permissions
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
@@ -129,8 +130,11 @@ class FileViewSet(viewsets.ModelViewSet):
 #         return JsonResponse({"Rebuild message": "done"})
 
 class CheckReliabilityAPIView(APIView):
+    @extend_schema(request=FileIdSerializer)
     def post(self, request):
-        file_id = int(request.data['file_id'])
+        serializer = FileIdSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        file_id = serializer.validated_data['file_id']
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         print(path_file)
@@ -145,22 +149,24 @@ class CheckReliabilityAPIView(APIView):
 
 
 class LogInfoAPIView(APIView):
+    @extend_schema(request=FileIdSerializer)
     def post(self, request):
         print("logInfoAPIView")
-        print(f"Request: {request}")
-        file_id = int(request.data['file_id'])
+        serializer = FileIdSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        file_id = serializer.validated_data['file_id']
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            logInfo = tasks.getLogInfoTask.delay(path_file, deleteFile=False, file_id=file_id)
+            logInfo = tasks.getLogInfoTask.delay(path_file)
             task_id = logInfo.task_id
             print(task_id)
-            return JsonResponse({'task_id': task_id, 'logInfo': logInfo})
+            return JsonResponse({'task_id': task_id})
         except:
             return JsonResponse({'Error': 'An error occurs during the log export'})
 
 
-class SaveAnimalInfoView(APIView):
+class SaveAnimalInfoAPIView(APIView):
     def post(self, request):
         print("into save animal info view")
 

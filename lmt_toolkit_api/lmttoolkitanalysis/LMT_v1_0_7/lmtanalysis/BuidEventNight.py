@@ -9,7 +9,7 @@ from time import *
 import datetime
 from lmtanalysis.Util import *
 
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import matplotlib.pyplot as plt
 from lmtanalysis.Event import *
 from lmtanalysis.Measure import *

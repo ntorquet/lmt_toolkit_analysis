@@ -124,7 +124,12 @@ Code under GPL v3.0 licence
                   </tr>
                 </tbody>
               </v-table>
-              <v-btn @click="saveAnimalInfo" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and continue</v-btn>
+              <v-card v-if="logInfo">
+                <v-card-title>Database already rebuilt</v-card-title>
+                <v-card-text>The database was already rebuilt by {{logInfo}}</v-card-text>
+                <v-card-actions><v-btn @click="saveAnimalInfo(false)" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and Skip the rebuild</v-btn></v-card-actions>
+              </v-card>
+              <v-btn @click="saveAnimalInfo" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and rebuild database</v-btn>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -382,7 +387,9 @@ export default {
       timeBin: 10,
       analysisToShow: null,
       openfieldDuration: 15,
-      logInfo: {}
+      logInfo: {},
+      logChecked: false,
+      logOnChecking: false,
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -465,34 +472,49 @@ export default {
 
             switch (this.step){
               case 3:
+                // processing reliability
                 this.stepUp()
                 break
               case 4:
+                // display reliability
                 this.data = this.task.result
                 console.log("step 4")
-                this.animalsInfo = this.data.mouse
-                for(let animal in this.animalsInfo) {
-                  if(!this.animalsInfo[animal].hasOwnProperty("AGE")){
-                    console.log(Object.keys(this.animalsInfo[animal]))
-                    this.animalsInfo[animal]['AGE'] = ""
+
+                if(!this.logChecked && !this.logOnChecking){
+                  this.animalsInfo = this.data.mouse
+                  for(let animal in this.animalsInfo) {
+                    if(!this.animalsInfo[animal].hasOwnProperty("AGE")){
+                      console.log(Object.keys(this.animalsInfo[animal]))
+                      this.animalsInfo[animal]['AGE'] = ""
+                    }
+                    if(!this.animalsInfo[animal].hasOwnProperty("SEX")){
+                      this.animalsInfo[animal]['SEX'] = ""
+                    }
+                    if(!this.animalsInfo[animal].hasOwnProperty("STRAIN")){
+                      this.animalsInfo[animal]['STRAIN'] = ""
+                    }
+                    if(!this.animalsInfo[animal].hasOwnProperty("SETUP")){
+                      this.animalsInfo[animal]['SETUP'] = ""
+                    }
+                    if(!this.animalsInfo[animal].hasOwnProperty("TREATMENT")){
+                      this.animalsInfo[animal]['TREATMENT'] = ""
+                    }
                   }
-                  if(!this.animalsInfo[animal].hasOwnProperty("SEX")){
-                    this.animalsInfo[animal]['SEX'] = ""
-                  }
-                  if(!this.animalsInfo[animal].hasOwnProperty("STRAIN")){
-                    this.animalsInfo[animal]['STRAIN'] = ""
-                  }
-                  if(!this.animalsInfo[animal].hasOwnProperty("SETUP")){
-                    this.animalsInfo[animal]['SETUP'] = ""
-                  }
-                  if(!this.animalsInfo[animal].hasOwnProperty("TREATMENT")){
-                    this.animalsInfo[animal]['TREATMENT'] = ""
-                  }
+                  this.getLogInfo()
+                  break
                 }
-                this.fileURL = "http://127.0.0.1:8000/api/files/".concat(this.data.file_url)
-                this.getLogInfo()
-                break
+                else if(!this.logChecked && this.logOnChecking){
+                  this.logInfo = this.data
+                  this.logOnChecking = false
+                  this.logChecked = true
+                  break
+                }
+
+                // this.fileURL = "http://127.0.0.1:8000/api/files/".concat(this.data.file_url)
+                // break
+
               case 5:
+                // processing rebuild
                 this.stepUp()
                 this.tasksProgression = 0
                 this.rebuildSQLiteFile()
@@ -518,6 +540,7 @@ export default {
                             }
                         }
                     }
+                  // the following case is not an integer, should be why it is not possible to come back to analysis presets after activity analysis
                   case "activityPerTimeBinPreset":
                     this.resultsActivityPerTimeBin = this.task.result
                     // // animal info update
@@ -640,13 +663,13 @@ export default {
       })
     },
     getLogInfo() {
+      this.logOnChecking = true
       let formData = new FormData();
       formData.append('file_id', this.file_id)
       axios.post(`http://127.0.0.1:8000/api/logInfo/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
-        this.logInfo = response.data.logInfo
-        console.log(this.logInfo)
+        this.getProgression()
       })
       .catch(error => {
         console.log(JSON.stringify(error))
@@ -691,7 +714,7 @@ export default {
       }
       this.stepToTimeLine()
     },
-    saveAnimalInfo() {
+    saveAnimalInfo(rebuild=true) {
       let formatedAnimalsInfo = {}
       for(let line in this.animalsInfo) {
           console.log(line)
@@ -703,6 +726,9 @@ export default {
       axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData)
       .then(response => {
         this.task_id = response.data.task_id
+        if(!rebuild){
+          this.stepUp()
+        }
         this.getProgression()
       })
       .catch(error => {

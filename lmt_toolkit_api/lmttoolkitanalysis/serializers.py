@@ -25,3 +25,7 @@ class EventDocumentationSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventDocumentation
         fields = '__all__'
+
+
+class FileIdSerializer(serializers.Serializer):
+    file_id = serializers.IntegerField()
