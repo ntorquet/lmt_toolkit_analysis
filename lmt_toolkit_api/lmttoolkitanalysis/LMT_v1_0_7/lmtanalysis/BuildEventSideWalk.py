@@ -6,7 +6,7 @@ Created on 6 sept. 2017
 import sqlite3
 from time import *
 from lmtanalysis.Chronometer import Chronometer
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 from lmtanalysis.Detection import *
 from lmtanalysis.Measure import *
 import numpy as np
@@ -61,7 +61,7 @@ def reBuildEvent( connection ):
     '''
     timeWindow =  oneHour*2
         
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     pool.loadDetection( start = 0, end = timeWindow )
     

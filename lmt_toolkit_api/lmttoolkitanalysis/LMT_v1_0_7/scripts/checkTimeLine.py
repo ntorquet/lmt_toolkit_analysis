@@ -6,7 +6,7 @@ Created on 18 dec. 2018
 
 import sqlite3
 from lmtanalysis.FileUtil import getFilesToProcess
-from lmtanalysis.Animal import AnimalPool
+from experimental.Animal_LMTtoolkit import AnimalPoolToolkit
 from lmtanalysis.Measure import *
 from lmtanalysis.Event import EventTimeLine, plotMultipleTimeLine
 
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         connection = sqlite3.connect( file )
         
         # create an animalPool, which basically contains your animals
-        animalPool = AnimalPool()
+        animalPool = AnimalPoolToolkit()
         
         # load infos about the animals
         animalPool.loadAnimals( connection )

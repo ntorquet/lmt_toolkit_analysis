@@ -9,7 +9,7 @@ from time import *
 from affine import Affine
 
 from ..lmtanalysis.Chronometer import Chronometer
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 #from ..lmtanalysis.Measure import  SPEED_THRESHOLD_LOW
 import numpy as np
@@ -123,7 +123,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None, animalTyp
     
     # create dedicated pool as we will alter detection pool with filters (I.e: we don't use the pool cache)
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     pool.loadDetection( start = tmin, end = tmax )
     

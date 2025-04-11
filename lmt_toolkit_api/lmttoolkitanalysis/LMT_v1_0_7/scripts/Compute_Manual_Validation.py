@@ -5,7 +5,7 @@ Created on 13 sept. 2017
 '''
 
 import sqlite3
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import matplotlib.pyplot as plt
 from database.Event import *
 from database.Measure import *
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         print(file)
         
         connection = sqlite3.connect( file )
-        pool = AnimalPool( )
+        pool = AnimalPoolToolkit( )
         pool.loadAnimals( connection )
         
         for behavEvent in behaviouralEvents:

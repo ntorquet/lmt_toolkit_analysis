@@ -6,7 +6,7 @@ Created on 6 sept. 2017
 import sqlite3
 from time import *
 from ..lmtanalysis.Chronometer import Chronometer
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None, animalTyp
     
     ''' use the pool provided or create it'''
     if ( pool == None ):
-        pool = AnimalPool( )
+        pool = AnimalPoolToolkit( )
         pool.loadAnimals( connection )
         pool.loadDetection( start = tmin, end = tmax )
     

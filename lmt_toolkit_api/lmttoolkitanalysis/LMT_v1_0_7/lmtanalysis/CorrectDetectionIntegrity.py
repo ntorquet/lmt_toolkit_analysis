@@ -17,7 +17,7 @@ After running this script detection at t without all identity recognized will be
 import sqlite3
 from time import *
 
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
@@ -58,7 +58,7 @@ def loadDetectionMap( connection, animal, start=None, end=None ):
 
 def correct( connection, tmin=None, tmax=None ): 
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     #pool.loadDetection( start = tmin, end = tmax )
     

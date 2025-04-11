@@ -9,7 +9,7 @@ import os
 
 from ..lmtanalysis.FileUtil import getFigureBehaviouralEventsLabelsFrench, behaviouralEventOneMouse, behaviouralEventOneMouseDic, getFigureBehaviouralEventsLabels, categoryList,\
     getJsonFilesToProcess, getJsonFilesWithSpecificNameToProcess
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 import numpy as np
 import matplotlib.pyplot as plt
 from ..lmtanalysis.Event import *
@@ -42,7 +42,7 @@ def computeProfile(file, minT, maxT, behaviouralEventList):
     
     connection = sqlite3.connect( file )
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     
     indList = []

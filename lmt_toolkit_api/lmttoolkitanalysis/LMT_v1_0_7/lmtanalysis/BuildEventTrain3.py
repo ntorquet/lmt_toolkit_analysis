@@ -6,7 +6,7 @@ Created on 6 sept. 2017
 import sqlite3
 from time import *
 from ..lmtanalysis.Chronometer import Chronometer
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None , pool = None, animalTy
 
     ''' use pool cache if available '''
     if ( pool == None ):
-        pool = AnimalPool( )
+        pool = AnimalPoolToolkit( )
         pool.loadAnimals( connection )
         if ( len ( pool.getAnimalList( ) ) < 3 ):
             print("Train 3 cannot be computed on an experiment with less than 3 animals")

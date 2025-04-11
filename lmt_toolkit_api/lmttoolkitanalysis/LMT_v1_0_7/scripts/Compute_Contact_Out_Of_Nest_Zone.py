@@ -5,7 +5,7 @@ Created on 19 juin 2019
 '''
 from lmtanalysis.Event import *
 from lmtanalysis.Measure import *
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import numpy as np; np.random.seed(0)
 from tkinter.filedialog import askopenfilename
 from lmtanalysis.Util import getMinTMaxTAndFileNameInput
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         nightTimeLine = {}
         nightTimeLine = EventTimeLine( connection, "night", minFrame = tmin, maxFrame = tmax )
         
-        pool = AnimalPool( )
+        pool = AnimalPoolToolkit( )
         pool.loadAnimals( connection )
         
         #pool.loadDetection( lightLoad = True )

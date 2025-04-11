@@ -7,7 +7,7 @@ import sqlite3
 from time import *
 
 from ..lmtanalysis.Chronometer import Chronometer
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Detection import *
 from ..lmtanalysis.Measure import *
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None , pool = None, animalTy
     parameters = getAnimalTypeParameters( animalType )
     
     if ( pool == None ):
-        pool = AnimalPool( )
+        pool = AnimalPoolToolkit( )
         pool.loadAnimals( connection )
         pool.loadDetection( start = tmin, end = tmax , lightLoad=True )
         

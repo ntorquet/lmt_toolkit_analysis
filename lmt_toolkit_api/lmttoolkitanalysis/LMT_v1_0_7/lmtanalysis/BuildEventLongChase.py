@@ -5,7 +5,7 @@ Created on 13 nov. 2024
 '''
 from ..lmtanalysis.Event import deleteEventTimeLineInBase, EventTimeLine
 from ..lmtanalysis.Parameters import getAnimalTypeParameters
-from ..lmtanalysis.Animal import AnimalPool
+from ..experimental.Animal_LMTtoolkit import AnimalPoolToolkit
 
 
 def flush( connection ):
@@ -40,7 +40,7 @@ def reBuildEvent( connection, file, tmin=None, tmax=None, pool = None, animalTyp
     
     # create dedicated pool as we will alter detection pool with filters (I.e: we don't use the pool cache)
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     
     eventTimeLineTrain2 = {}

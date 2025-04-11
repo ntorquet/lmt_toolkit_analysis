@@ -5,7 +5,7 @@ Created on 10. May 2021
 '''
 
 import matplotlib.pyplot as plt
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 from lmtanalysis.Event import *
 from lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from lmtanalysis.Measure import *
@@ -32,7 +32,7 @@ def computeSpeedDurationPerEvent(animalData, files, tmin, tmax, eventToTest=None
     print("Compute the speed and duration of specific events ")
     for file in files:
         connection = sqlite3.connect(file)
-        pool = AnimalPool()
+        pool = AnimalPoolToolkit()
         pool.loadAnimals(connection)
         pool.loadDetection(tmin, tmax, lightLoad=True)
         rfidList = []

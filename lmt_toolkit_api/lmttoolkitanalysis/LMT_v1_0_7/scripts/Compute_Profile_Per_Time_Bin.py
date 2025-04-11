@@ -10,7 +10,7 @@ from lmtanalysis.Util import getMinTMaxTInput
 from lmtanalysis.Measure import oneMinute, oneHour
 import os
 import sqlite3
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import numpy as np
 import pandas as pd
 import seaborn as sns

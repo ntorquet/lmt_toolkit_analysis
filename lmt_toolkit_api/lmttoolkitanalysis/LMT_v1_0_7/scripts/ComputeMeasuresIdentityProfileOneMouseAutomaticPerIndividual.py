@@ -7,7 +7,7 @@ Created on 13 sept. 2017
 import sqlite3
 
 from lmtanalysis.FileUtil import getFigureBehaviouralEventsLabelsFrench
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import numpy as np
 import matplotlib.pyplot as plt
 from lmtanalysis.Event import *
@@ -42,7 +42,7 @@ def computeProfilePerIndividual(file, minT, maxT, genoList, categoryList, behavi
     
     connection = sqlite3.connect( file )
     
-    pool = AnimalPool( )
+    pool = AnimalPoolToolkit( )
     pool.loadAnimals( connection )
     
     indList = []

@@ -5,7 +5,7 @@ Created on 13 sept. 2017
 '''
 
 import sqlite3
-from lmtanalysis.Animal import *
+from experimental.Animal_LMTtoolkit import *
 import matplotlib.pyplot as plt
 from lmtanalysis.Event import *
 from lmtanalysis.Measure import *
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
             print ( "Processing file" , file )
             connection = sqlite3.connect( file )
-            animalPool = AnimalPool( )
+            animalPool = AnimalPoolToolkit( )
             animalPool.loadAnimals( connection )
             currentMinT = 0
             #currentMaxT = 60*oneMinute
