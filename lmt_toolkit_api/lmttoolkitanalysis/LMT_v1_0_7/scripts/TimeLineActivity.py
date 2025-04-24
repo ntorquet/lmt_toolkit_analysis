@@ -8,7 +8,7 @@ Code under GPL v3.0 licence
 '''
 import datetime
 import sqlite3
-from ..lmtanalysis.Animal import *
+from ..experimental.Animal_LMTtoolkit import *
 from ..lmtanalysis.Event import *
 from ..lmtanalysis.Measure import *
 from ..lmtanalysis.FileUtil import getFilesToProcess
@@ -74,7 +74,7 @@ def plotNightTimeLine(file):
 
     nightTimeLineList = []
 
-    pool = AnimalPool()
+    pool = AnimalPoolToolkit()
     pool.loadAnimals(connection)
     # print( "Event: " + event)
     print("Loading event for file " + file)
@@ -96,7 +96,7 @@ def plotActivityPerAnimalWholeExperiment(file, timeBin):
     print(file)
     connection = sqlite3.connect(file)
 
-    pool = AnimalPool()
+    pool = AnimalPoolToolkit()
     pool.loadAnimals(connection)
 
     tmin = 0
@@ -160,7 +160,7 @@ def extractActivityPerAnimalWholeExperiment(file, timeBin):
     print(file)
     connection = sqlite3.connect(file)
 
-    pool = AnimalPool()
+    pool = AnimalPoolToolkit()
     pool.loadAnimals(connection)
 
     tmin = 0
@@ -199,7 +199,7 @@ def extractActivityPerAnimalWholeExperiment(file, timeBin):
 def extractActivityPerAnimalStartEndInput(file, tmin, tmax):
     connection = sqlite3.connect(file)
 
-    pool = AnimalPool()
+    pool = AnimalPoolToolkit()
     pool.loadAnimals(connection)
 
     pool.loadDetection(start=tmin, end=tmax, lightLoad=True)

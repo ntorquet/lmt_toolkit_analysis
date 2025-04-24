@@ -471,7 +471,7 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/v1/files/' + str(file_id['file_id'])
+        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}
@@ -660,10 +660,13 @@ def rebuildSQLite(self, file, file_id, version):
     connection.close()
 
     # update file in database: rebuild field with version number
-    api_url = f"http://127.0.0.1:8000/api/v1/files/{file_id}/"
+    api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+    print("*********************")
+    print(file_id)
     todo = {"rebuild": version}
     response = requests.patch(api_url, json=todo)
     # print(response.json())
+    print("*********************")
     print(response.status_code)
     progress_recorder.set_progress(currentLenghtProcess, lengthProcess, f'Rebuild done - compute analysis')
 
@@ -987,7 +990,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/v1/files/' + str(file_id['file_id'])
+        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}

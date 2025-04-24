@@ -113,6 +113,11 @@ class FileViewSet(viewsets.ModelViewSet):
         else:
             return JsonResponse({'error': 'There was a problem with the data'})
 
+    # def patch(self, request):
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+
 
 # class FileUpdateRebuild(generics.UpdateAPIView):
 #     queryset = File.objects.all()

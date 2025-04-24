@@ -124,9 +124,9 @@ Code under GPL v3.0 licence
                   </tr>
                 </tbody>
               </v-table>
-              <v-card v-if="logInfo">
+              <v-card v-if="Object.keys(rebuildVersion).length>0">
                 <v-card-title>Database already rebuilt</v-card-title>
-                <v-card-text>The database was already rebuilt by {{logInfo}}</v-card-text>
+                <v-card-text>The database was already rebuilt by {{rebuildVersion.version}}</v-card-text>
                 <v-card-actions><v-btn @click="saveAnimalInfo(false)" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and Skip the rebuild</v-btn></v-card-actions>
               </v-card>
               <v-btn @click="saveAnimalInfo" class="mt-4"><v-icon icon="mdi-content-save-outline"></v-icon> Save animals information and rebuild database</v-btn>
@@ -390,6 +390,7 @@ export default {
       logInfo: {},
       logChecked: false,
       logOnChecking: false,
+      rebuildVersion: {},
       // djangoRestURL: axios.defaults.baseURL,
     }
   },
@@ -507,6 +508,7 @@ export default {
                   this.logInfo = this.data
                   this.logOnChecking = false
                   this.logChecked = true
+                  this.checkRebuildLMTToolkitVersion()
                   break
                 }
 
@@ -674,6 +676,16 @@ export default {
       .catch(error => {
         console.log(JSON.stringify(error))
       })
+    },
+    checkRebuildLMTToolkitVersion() {
+      if(this.logInfo) {
+        for(let i=0; i<this.logInfo.length; i++) {
+          if(this.logInfo[i]['version'].includes("LMT-toolkit")){
+            this.rebuildVersion['version'] = this.logInfo[i]['version']
+            this.rebuildVersion['process'] = this.logInfo[i]['process']
+          }
+        }
+      }
     },
     stepToTimeLine() {
       switch (this.step){
