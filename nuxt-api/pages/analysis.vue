@@ -93,7 +93,7 @@ Code under GPL v3.0 licence
             <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
             <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="800">
-              <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
+              <show-reliability v-bind:data="dataReliability" v-bind:filename="file.name"></show-reliability>
             </v-dialog>
           </div>
         </v-window-item>
@@ -338,6 +338,7 @@ export default {
       // processing: false,
       showReliability: false,
       data: {},
+      dataReliability: {},
       task: {},
       filename: '',
       error: false,
@@ -478,11 +479,12 @@ export default {
                 break
               case 4:
                 // display reliability
-                this.data = this.task.result
+
                 console.log("step 4")
 
                 if(!this.logChecked && !this.logOnChecking){
-                  this.animalsInfo = this.data.mouse
+                  this.dataReliability = this.task.result
+                  this.animalsInfo = this.dataReliability.mouse
                   for(let animal in this.animalsInfo) {
                     if(!this.animalsInfo[animal].hasOwnProperty("AGE")){
                       console.log(Object.keys(this.animalsInfo[animal]))
@@ -505,7 +507,7 @@ export default {
                   break
                 }
                 else if(!this.logChecked && this.logOnChecking){
-                  this.logInfo = this.data
+                  this.logInfo = this.task.result
                   this.logOnChecking = false
                   this.logChecked = true
                   this.checkRebuildLMTToolkitVersion()
