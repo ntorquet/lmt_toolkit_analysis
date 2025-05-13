@@ -118,7 +118,7 @@ def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassLis
 
 
 @shared_task(bind=True)
-def getLogInfoTask(self, file):
+def getLogInfoTask(self, file, file_id):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :return: extracted log info from file
@@ -128,7 +128,7 @@ def getLogInfoTask(self, file):
     progress_recorder.set_progress(0, 2, f'Starting')
     connection = create_connection(file)
     progress_recorder.set_progress(1, 2, f'File connected')
-    logInfo = getLogInfo(connection)
+    logInfo = getLogInfo(connection, file_id)
     progress_recorder.set_progress(2, 2, f'Log info extracted')
     connection.close()
 

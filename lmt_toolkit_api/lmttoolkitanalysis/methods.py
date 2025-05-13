@@ -12,6 +12,7 @@ import sqlite3
 import datetime
 from math import *
 from sqlite3 import Error
+import requests
 
 from .LMT_v1_0_7.experimental.Animal_LMTtoolkit import *
 from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
@@ -45,6 +46,46 @@ def create_connection(db_file):
         print('Error '+e)
 
     return conn
+
+
+def getLogInfo(connection, file_id):
+    '''
+    :param connection: connection to the SQLite LMT_v1_0_3 file
+    :param file_id: file id to update the rebuild info in the LMT-toolkit database
+    :return: logs in list of dico
+    '''
+    cursor = connection.cursor()
+    # check if LOG table exists
+    queryCheck = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'LOG'"
+    cursor.execute(queryCheck)
+    rows = cursor.fetchall()
+    if len(rows) < 1:
+        return None
+    else:
+        query = "SELECT * FROM LOG"
+        cursor.execute(query)
+        columnNames = [description[0] for description in cursor.description]
+        print("Into getLogInfo")
+
+        list_log = []
+        rows = cursor.fetchall()
+        for row in rows:
+            dicoTemp = {}
+            for i in range(0, len(row)):
+                dicoTemp[columnNames[i]] = row[i]
+            list_log.append(dicoTemp)
+        cursor.close()
+        print(str(columnNames))
+        print(str(list_log))
+        version = dicoTemp['version']
+        # update file in database: rebuild field with version number
+        api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+        print("*********************")
+        print(file_id)
+        todo = {"rebuild": version}
+        response = requests.patch(api_url, json=todo)
+
+        return list_log
 
 def findMiceInSQLiteFile(connection):
     '''
@@ -783,32 +824,3 @@ def saveAnimalInfo(file, animalsInfo, version):
     return "Done"
 
 
-def getLogInfo(connection):
-    '''
-    :param connection: connection to the SQLite LMT_v1_0_3 file
-    :return: logs in list of dico
-    '''
-    cursor = connection.cursor()
-    # check if LOG table exists
-    queryCheck = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'LOG'"
-    cursor.execute(queryCheck)
-    rows = cursor.fetchall()
-    if len(rows) < 1:
-        return None
-    else:
-        query = "SELECT * FROM LOG"
-        cursor.execute(query)
-        columnNames = [description[0] for description in cursor.description]
-        print("Into getLogInfo")
-
-        list_log = []
-        rows = cursor.fetchall()
-        for row in rows:
-            dicoTemp = {}
-            for i in range(0, len(row)):
-                dicoTemp[columnNames[i]] = row[i]
-            list_log.append(dicoTemp)
-        cursor.close()
-        print(str(columnNames))
-        print(str(list_log))
-        return list_log

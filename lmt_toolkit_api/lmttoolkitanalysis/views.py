@@ -163,7 +163,7 @@ class LogInfoAPIView(APIView):
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            logInfo = tasks.getLogInfoTask.delay(path_file)
+            logInfo = tasks.getLogInfoTask.delay(file=path_file, file_id=file_id)
             task_id = logInfo.task_id
             print(task_id)
             return JsonResponse({'task_id': task_id})
