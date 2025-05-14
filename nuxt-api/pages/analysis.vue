@@ -217,27 +217,27 @@ Code under GPL v3.0 licence
                 </v-card-actions>
               </v-card>
 
-              <OpenFieldPreset :duration="openfieldDuration"></OpenFieldPreset>
+<!--              <OpenFieldPreset :duration="openfieldDuration"></OpenFieldPreset>-->
 
-              <v-card class="mt-4 mr-4" width="400">
-                <v-card-title> Dyadic preset</v-card-title>
-                <v-card-text>
-                  <v-alert class="mb-2">
-                      This preset can be used to analyze dyadic experiments with a two animals in the arena.<br />
-                      By default, the analysis will be done on the total duration of the experiment.<br />
-                      You can select a duration. The analysis starts at the beginning of the experiment.
-                  </v-alert>
-                  <v-text-field label="Duration in minutes" v-model="durationComponent"></v-text-field>
+<!--              <v-card class="mt-4 mr-4" width="400">-->
+<!--                <v-card-title> Dyadic preset</v-card-title>-->
+<!--                <v-card-text>-->
+<!--                  <v-alert class="mb-2">-->
+<!--                      This preset can be used to analyze dyadic experiments with a two animals in the arena.<br />-->
+<!--                      By default, the analysis will be done on the total duration of the experiment.<br />-->
+<!--                      You can select a duration. The analysis starts at the beginning of the experiment.-->
+<!--                  </v-alert>-->
+<!--                  <v-text-field label="Duration in minutes" v-model="durationComponent"></v-text-field>-->
 
-                  <v-btn v-if="durationComponent!=''" @click="doAnalysis('openfieldPreset')">
-                      <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse
-                  </v-btn>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
-                </v-card-actions>
-              </v-card>
+<!--                  <v-btn v-if="durationComponent!=''" @click="doAnalysis('openfieldPreset')">-->
+<!--                      <v-icon icon="mdi-arrow-right-bold"></v-icon>  Analyse-->
+<!--                  </v-btn>-->
+<!--                </v-card-text>-->
+<!--                <v-card-actions>-->
+<!--                  <v-spacer></v-spacer>-->
+<!--                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>-->
+<!--                </v-card-actions>-->
+<!--              </v-card>-->
 
               </v-row>
               </v-col>

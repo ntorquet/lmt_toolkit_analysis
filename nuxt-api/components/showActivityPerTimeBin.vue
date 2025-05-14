@@ -29,19 +29,24 @@ Code under GPL v3.0 licence
       </v-card-text>
     </v-card>
 
-    <v-btn>
+<!--    <v-btn>-->
+<!--      <v-icon icon="mdi-table-arrow-down"></v-icon>-->
+<!--      <download-csv-->
+<!--         :data = "dataToCSVActivity"-->
+<!--         :name = "name_csv+filename.split('.sqlite')[0]+'.csv'">-->
+<!--        Download Data as CSV file-->
+<!--        </download-csv>-->
+<!--    </v-btn>-->
+
+    <v-btn @click="downloadCSV(dataToCSVActivity, name_csv + filename.split('.sqlite')[0] + '.csv')">
       <v-icon icon="mdi-table-arrow-down"></v-icon>
-      <download-csv
-         :data = "dataToCSVActivity"
-         :name = "name_csv+filename.split('.sqlite')[0]+'.csv'">
         Download Data as CSV file
-        </download-csv>
     </v-btn>
   </div>
 </template>
 
 <script>
-import JsonCSV from 'vue-json-csv'
+// import JsonCSV from 'vue-json-csv'
 import linePlotActivityPerTimeBin from "~/components/linePlotActivityPerTimeBin.vue";
 
 export default {
@@ -52,30 +57,53 @@ export default {
     timeBin: Number,
   },
   components: {
-    'downloadCsv': JsonCSV,
+    // 'downloadCsv': JsonCSV,
     linePlotActivityPerTimeBin,
   },
   data() {
      return {
        dataToCSVActivity: [],
-       name_csv: 'LMT_v1_0_5-toolkit_v1-1_activitypertimebin_',
+       name_csv: 'LMT_v1_0_7-toolkit_v2_activitypertimebin_',
      }
   },
   methods: {
     convertJsonToCSVFormat() {
     //   let dataToConvert = this.data
     //   // console.log(this.data)
+      this.dataToCSVActivity = []
       for(let animal in this.dataActivity.results){
         this.dataToCSVActivity.push(this.dataActivity.results[animal])
       }
     },
+    downloadCSV(data, filename) {
+      const keys = [...new Set(data.flatMap(row => Object.keys(row)))];
+
+      const csvContent = [
+        keys.map(key => key.includes(',') ? `"${key}"` : key).join(','),
+        ...data.map(row =>
+          keys.map(key => {
+            const value = row[key] !== undefined ? row[key] : '';
+
+            return value;
+          }).join(',')
+        )
+      ].join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.setAttribute('download', filename)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   },
   mounted() {
     this.convertJsonToCSVFormat()
   },
-  updated() {
-    this.convertJsonToCSVFormat()
-  }
+  // updated() {
+  //   this.convertJsonToCSVFormat()
+  // }
 }
 </script>
 

@@ -204,13 +204,9 @@ Code under GPL v3.0 licence
       </v-card-text>
     </v-card>
 
-      <v-btn>
+      <v-btn @click="downloadCSV(dataToCSV, name_csv + filename.split('.sqlite')[0] + '.csv')">
         <v-icon icon="mdi-table-arrow-down"></v-icon>
-        <download-csv
-           :data = "dataToCSV"
-           :name = "name_csv+filename.split('.sqlite')[0]+'.csv'">
           Download Data as CSV file
-          </download-csv>
       </v-btn>
   </div>
 </template>
@@ -224,7 +220,7 @@ export default {
     data: Object,
   },
   components: {
-    'downloadCsv': JsonCSV,
+    // 'downloadCsv': JsonCSV,
     // ScatterPlot,
   },
   data() {
@@ -233,7 +229,7 @@ export default {
       tmax: '',
       analysisPeriod: '',
       dataToCSV: [],
-      name_csv: 'LMT_v1_0_5-toolkit_v1-1_simple-preset_',
+      name_csv: 'LMT_v1_0_7-toolkit_v2_simple-preset_',
       colorList: ['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00'],
       analysis_parameters_variable: ['Start frame', 'End frame', 'Period of analysis'],
       analysis_parameters_data: [],
@@ -323,15 +319,42 @@ export default {
   },
   methods: {
     convertJsonToCSVFormat() {
+      console.log("in convertJsonToCSVFormat")
       let dataToConvert = this.data
+      console.log("this data:")
       console.log(this.data)
+      this.dataToCSV = []
       for(let animal in dataToConvert){
         this.dataToCSV.push(dataToConvert[animal])
       }
     },
+    downloadCSV(data, filename) {
+      const keys = [...new Set(data.flatMap(row => Object.keys(row)))];
+
+      const csvContent = [
+        keys.map(key => key.includes(',') ? `"${key}"` : key).join(','),
+        ...data.map(row =>
+          keys.map(key => {
+            const value = row[key] !== undefined ? row[key] : '';
+
+            return value;
+          }).join(',')
+        )
+      ].join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.setAttribute('download', filename)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   },
   mounted() {
+    console.log("before convertJsonToCSVFormat")
     this.convertJsonToCSVFormat()
+    console.log("after convertJsonToCSVFormat")
     let dataToConvert = this.data
     let index = 0
     for(let animal in dataToConvert){
@@ -483,7 +506,7 @@ export default {
               dataToConvert[animal]['Oral-oral Contact Nb'], dataToConvert[animal]['Oral-oral Contact TotalLen'], dataToConvert[animal]['Oral-oral Contact MeanDur'],
               dataToConvert[animal]['Oral-genital Contact Nb'], dataToConvert[animal]['Oral-genital Contact TotalLen'], dataToConvert[animal]['Oral-genital Contact MeanDur'],
               dataToConvert[animal]['Side by side Contact Nb'], dataToConvert[animal]['Side by side Contact TotalLen'], dataToConvert[animal]['Side by side Contact MeanDur'],
-              dataToConvert[animal]['Side by side Contact, opposite way Nb'], dataToConvert[animal]['Side by side Contact, opposite way TotalLen'], dataToConvert[animal]['Side by side Contact, opposite way MeanDur']
+              dataToConvert[animal]['Side by side Contact opposite way Nb'], dataToConvert[animal]['Side by side Contact opposite way TotalLen'], dataToConvert[animal]['Side by side Contact opposite way MeanDur']
             ],
             showLine: false
           }
@@ -501,7 +524,7 @@ export default {
               dataToConvert[animal]['Oral-oral Contact Nb'],
               dataToConvert[animal]['Oral-genital Contact Nb'],
               dataToConvert[animal]['Side by side Contact Nb'],
-              dataToConvert[animal]['Side by side Contact, opposite way TotalLen']
+              dataToConvert[animal]['Side by side Contact opposite way TotalLen']
             ],
             showLine: false
           }
@@ -519,7 +542,7 @@ export default {
               dataToConvert[animal]['Oral-oral Contact TotalLen'],
               dataToConvert[animal]['Oral-genital Contact TotalLen'],
               dataToConvert[animal]['Side by side Contact TotalLen'],
-              dataToConvert[animal]['Side by side Contact, opposite way TotalLen']
+              dataToConvert[animal]['Side by side Contact opposite way TotalLen']
             ],
             showLine: false
           }
@@ -537,7 +560,7 @@ export default {
               dataToConvert[animal]['Oral-oral Contact MeanDur'],
               dataToConvert[animal]['Oral-genital Contact MeanDur'],
               dataToConvert[animal]['Side by side Contact MeanDur'],
-              dataToConvert[animal]['Side by side Contact, opposite way MeanDur']
+              dataToConvert[animal]['Side by side Contact opposite way MeanDur']
             ],
             showLine: false
           }
@@ -709,9 +732,6 @@ export default {
       index += 1
     }
   },
-  updated() {
-    this.convertJsonToCSVFormat()
-  }
 }
 </script>
 
