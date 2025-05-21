@@ -110,6 +110,7 @@ const renderChart = () => {
           datasets: datasets['activity']
         },
         options: {
+          responsive: false,
           elements: {
             point:{
               radius: 0
@@ -168,7 +169,7 @@ watch(() => props.activity, (newValue, oldValue) => {
   <v-card color="white">
     <v-card-title>{{ title }}</v-card-title>
     <v-card-text>
-      <canvas id="plot" style="height:40vh; width:80vw"></canvas>
+      <canvas id="plot" height="500" width="1500"></canvas>
     </v-card-text>
   </v-card>
 </template>
