@@ -64,7 +64,7 @@ Code under GPL v3.0 licence
     </v-container>
   </v-main>
 
-  <simple-preset v-show="false"></simple-preset>
+<!--  <simple-preset v-show="false"></simple-preset>-->
 
 </template>
 

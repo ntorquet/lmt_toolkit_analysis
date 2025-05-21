@@ -530,9 +530,13 @@ export default {
                 break
               case 8:
                 console.log("step 8")
+                this.resultsSimplePreset = {}
+                this.resultsActivityPerTimeBin = {}
                 switch(this.preset){
                   case "simplePreset":
                     this.resultsSimplePreset = this.task.result
+                    console.log("**** simplePreset ****")
+                    console.log(this.resultsSimplePreset)
                     // // animal info update
                     for(let animal in this.resultsSimplePreset){
                         console.log(this.resultsSimplePreset[animal]['rfid'])
@@ -547,6 +551,8 @@ export default {
                   // the following case is not an integer, should be why it is not possible to come back to analysis presets after activity analysis
                   case "activityPerTimeBinPreset":
                     this.resultsActivityPerTimeBin = this.task.result
+                    console.log("**** activityPerTimeBinPreset ****")
+                    console.log(this.resultsActivityPerTimeBin)
                     // // animal info update
                     for(let animal in this.resultsActivityPerTimeBin.results){
                         console.log(this.resultsActivityPerTimeBin.results[animal]['animal'])
