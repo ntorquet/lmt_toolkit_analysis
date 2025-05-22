@@ -790,8 +790,18 @@ export default {
         case 'simplePreset':
           // self.preset = 'simplePreset'
           formData.append('file_id', this.file_id)
-          formData.append('tmin', parseInt(this.minT))
-          formData.append('tmax', parseInt(this.maxT))
+          if(this.minT) {
+            formData.append('tmin', parseInt(this.minT))
+          }
+          else {
+            formData.append('tmin', 0)
+          }
+          if(this.maxT){
+            formData.append('tmax', parseInt(this.maxT))
+          }
+          else {
+            formData.append('tmax', -1)
+          }
           formData.append('unitMinT', this.unitMinT)
           formData.append('unitMaxT', this.unitMaxT)
           axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData)
