@@ -12,7 +12,6 @@ Code under GPL v3.0 licence
 // IMPORT
 ////////////////////////////////
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import linePlotActivityPerTimeBin from "~/components/linePlotActivityPerTimeBin.vue";
 
 ////////////////////////////////
