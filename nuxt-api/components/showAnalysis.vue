@@ -38,14 +38,14 @@ const analysisPeriod = ref('');
 const dataToCSV = ref([]);
 const name_csv = ref('LMT_v1_0_7-toolkit_v2_simple-preset_');
 const colorList = ref(['#8B0000', '#006400', '#9400D3', '#FFD700'  ,'#1E90FF', '#FF8C00']);
-const analysis_parameters_variable = ref(['Start frame', 'End frame', 'Period of analysis']);
+// const analysis_parameters_variable = ref(['Start frame', 'End frame', 'Period of analysis']);
 const analysis_parameters_data = ref([]);
 const activity_variable = ref(['Total distance (m)', 'Single move Nb', 'Single move TotalLen', 'Single move MeanDur', 'Move in contact Nb', 'Move in contact TotalLen',
 'Move in contact MeanDur', 'Stop isolated Nb', 'Stop isolated TotalLen', 'Stop isolated MeanDur']);
-const activity_variable_distance = ref(['Total distance (m)']);
-const activity_variable_nb = ref(['Single move Nb', 'Move in contact Nb', 'Stop isolated Nb']);
-const activity_variable_total_length = ref(['Single move TotalLen', 'Move in contact TotalLen', 'Stop isolated TotalLen']);
-const activity_variable_meandur = ref(['Single move MeanDur', 'Move in contact MeanDur', 'Stop isolated MeanDur']);
+// const activity_variable_distance = ref(['Total distance (m)']);
+// const activity_variable_nb = ref(['Single move Nb', 'Move in contact Nb', 'Stop isolated Nb']);
+// const activity_variable_total_length = ref(['Single move TotalLen', 'Move in contact TotalLen', 'Stop isolated TotalLen']);
+// const activity_variable_meandur = ref(['Single move MeanDur', 'Move in contact MeanDur', 'Stop isolated MeanDur']);
 const activity_data = ref([]);
 const activity_data_distance = ref([]);
 const activity_data_nb = ref([]);
@@ -53,9 +53,9 @@ const activity_data_total_length = ref([]);
 const activity_data_meandur = ref([]);
 const exploration_variable = ref(['Rear isolated Nb', 'Rear isolated TotalLen', 'Rear isolated MeanDur',
   'Rear in contact Nb', 'Rear in contact TotalLen', 'Rear in contact MeanDur']);
-const exploration_variable_nb = ref(['Rear isolated Nb', 'Rear in contact Nb']);
-const exploration_variable_total_length = ref(['Rear isolated TotalLen', 'Rear in contact TotalLen']);
-const exploration_variable_meandur = ref(['Rear isolated MeanDur', 'Rear in contact MeanDur']);
+// const exploration_variable_nb = ref(['Rear isolated Nb', 'Rear in contact Nb']);
+// const exploration_variable_total_length = ref(['Rear isolated TotalLen', 'Rear in contact TotalLen']);
+// const exploration_variable_meandur = ref(['Rear isolated MeanDur', 'Rear in contact MeanDur']);
 const exploration_data = ref([]);
 const exploration_data_nb = ref([]);
 const exploration_data_total_length = ref([]);
@@ -65,27 +65,27 @@ const contacts_variable = ref(['Contact Nb', 'Contact TotalLen', 'Contact MeanDu
   'Nose-nose Nb', 'Nose-nose TotalLen', 'Nose-nose MeanDur', 'Nose-anogenital Nb', 'Nose-anogenital TotalLen', 'Nose-anogenital MeanDur',
   'Side-side Nb', 'Side-side TotalLen', 'Side-side MeanDur', 'Side-side Head to tail Nb', 'Side-side Head to tail TotalLen', 'Side-side Head to tail MeanDur'
 ]);
-const contacts_variable_nb = ref(['Contact Nb',
-  'Group of 2 Nb', 'Group of 3 Nb',
-  'Nose-nose Nb', 'Nose-anogenital Nb',
-  'Side-side Nb', 'Side-side Head to tail Nb'
-]);
-const contacts_variable_total_length = ref(['Contact TotalLen', 'Group of 2 TotalLen', 'Group of 3 TotalLen',
-  'Nose-nose TotalLen', 'Nose-anogenital TotalLen',
-  'Side-side TotalLen', 'Side-side Head to tail TotalLen'
-]);
-const contacts_variable_meandur = ref(['Contact MeanDur', 'Group of 2 MeanDur', 'Group of 3 MeanDur',
-  'Nose-nose MeanDur', 'Nose-anogenital MeanDur',
-  'Side-side MeanDur', 'Side-side Head to tail MeanDur'
-]);
+// const contacts_variable_nb = ref(['Contact Nb',
+//   'Group of 2 Nb', 'Group of 3 Nb',
+//   'Nose-nose Nb', 'Nose-anogenital Nb',
+//   'Side-side Nb', 'Side-side Head to tail Nb'
+// ]);
+// const contacts_variable_total_length = ref(['Contact TotalLen', 'Group of 2 TotalLen', 'Group of 3 TotalLen',
+//   'Nose-nose TotalLen', 'Nose-anogenital TotalLen',
+//   'Side-side TotalLen', 'Side-side Head to tail TotalLen'
+// ]);
+// const contacts_variable_meandur = ref(['Contact MeanDur', 'Group of 2 MeanDur', 'Group of 3 MeanDur',
+//   'Nose-nose MeanDur', 'Nose-anogenital MeanDur',
+//   'Side-side MeanDur', 'Side-side Head to tail MeanDur'
+// ]);
 const contacts_data = ref([]);
 const contacts_data_nb = ref([]);
 const contacts_data_total_length = ref([]);
 const contacts_data_meandur = ref([]);
 const follows_variable = ref(['Train 2 Nb', 'Train 2 TotalLen', 'Train 2 MeanDur', 'Follow Nb', 'Follow TotalLen', 'Follow MeanDur']);
-const follows_variable_nb = ref(['Train 2 Nb', 'Follow Nb']);
-const follows_variable_total_length = ref(['Train 2 TotalLen', 'Follow TotalLen']);
-const follows_variable_meandur = ref(['Train 2 MeanDur', 'Follow MeanDur']);
+// const follows_variable_nb = ref(['Train 2 Nb', 'Follow Nb']);
+// const follows_variable_total_length = ref(['Train 2 TotalLen', 'Follow TotalLen']);
+// const follows_variable_meandur = ref(['Train 2 MeanDur', 'Follow MeanDur']);
 const follows_data = ref([]);
 const follows_data_nb = ref([]);
 const follows_data_total_length = ref([]);
@@ -93,9 +93,9 @@ const follows_data_meandur = ref([]);
 const approaches_variable = ref(['Social approach Nb', 'Social approach TotalLen', 'Social approach MeanDur',
   'Approach contact Nb', 'Approach contact TotalLen', 'Approach contact MeanDur', 'Group 3 make Nb', 'Group 4 make Nb'
 ]);
-const approaches_variable_nb = ref(['Social approach Nb', 'Approach contact Nb', 'Group 3 make Nb', 'Group 4 make Nb']);
-const approaches_variable_total_length = ref(['Social approach TotalLen', 'Approach contact TotalLen']);
-const approaches_variable_meandur = ref(['Social approach MeanDur', 'Approach contact MeanDur']);
+// const approaches_variable_nb = ref(['Social approach Nb', 'Approach contact Nb', 'Group 3 make Nb', 'Group 4 make Nb']);
+// const approaches_variable_total_length = ref(['Social approach TotalLen', 'Approach contact TotalLen']);
+// const approaches_variable_meandur = ref(['Social approach MeanDur', 'Approach contact MeanDur']);
 const approaches_data = ref([]);
 const approaches_data_nb = ref([]);
 const approaches_data_total_length = ref([]);
@@ -107,17 +107,17 @@ const escapes_variable = ref([
   'Group 3 break Nb',
   'Group 4 break Nb',
 ]);
-const escapes_variable_nb = ref([
-  'Break contact Nb',
-  'Group 3 break Nb',
-  'Group 4 break Nb',
-]);
-const escapes_variable_total_length = ref([
-  'Break contact TotalLen',
-]);
-const escapes_variable_meandur = ref([
-  'Break contact MeanDur',
-]);
+// const escapes_variable_nb = ref([
+//   'Break contact Nb',
+//   'Group 3 break Nb',
+//   'Group 4 break Nb',
+// ]);
+// const escapes_variable_total_length = ref([
+//   'Break contact TotalLen',
+// ]);
+// const escapes_variable_meandur = ref([
+//   'Break contact MeanDur',
+// ]);
 const escapes_data = ref([]);
 const escapes_data_nb = ref([]);
 const escapes_data_total_length = ref([]);

@@ -263,9 +263,9 @@ Code under GPL v3.0 licence
         <v-window-item :value="9">
           <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
           <v-card-text>
-            <show-analysis v-if="preset=='simplePreset'" :data="resultsSimplePreset" :filename="filename"></show-analysis>
+            <show-analysis v-if="showSimplePreset" :data="resultsSimplePreset" :filename="filename"></show-analysis>
 
-            <showActivityPerTimeBin v-if="preset=='activityPerTimeBinPreset'" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
+            <showActivityPerTimeBin v-if="showActivityPerTimeBinPreset" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
           </v-card-text>
         </v-window-item>
 
@@ -385,6 +385,8 @@ export default {
       resultsSimplePreset: {},
       resultsActivityPerTimeBin: {},
       preset: null,
+      showSimplePreset: false,
+      showActivityPerTimeBinPreset: false,
       timeBin: 10,
       analysisToShow: null,
       openfieldDuration: 15,
@@ -529,17 +531,19 @@ export default {
                 this.stepUp()
                 break
               case 8:
-                console.log("step 8")
+                // console.log("step 8")
+                // console.log(this.preset)
+                // console.log("----")
                 this.resultsSimplePreset = {}
                 this.resultsActivityPerTimeBin = {}
                 switch(this.preset){
                   case "simplePreset":
                     this.resultsSimplePreset = this.task.result
-                    console.log("**** simplePreset ****")
-                    console.log(this.resultsSimplePreset)
+                    // console.log("**** simplePreset ****")
+                    // console.log(this.resultsSimplePreset)
                     // // animal info update
                     for(let animal in this.resultsSimplePreset){
-                        console.log(this.resultsSimplePreset[animal]['rfid'])
+                        // console.log(this.resultsSimplePreset[animal]['rfid'])
                         for(let infoAnimal in this.animalsInfo){
                             console.log(infoAnimal)
                             if(this.animalsInfo[infoAnimal]['RFID']==animal){
@@ -548,14 +552,17 @@ export default {
                             }
                         }
                     }
+                    this.stepUp()
+                    this.showSimplePreset = true
+                    break
                   // the following case is not an integer, should be why it is not possible to come back to analysis presets after activity analysis
                   case "activityPerTimeBinPreset":
                     this.resultsActivityPerTimeBin = this.task.result
-                    console.log("**** activityPerTimeBinPreset ****")
-                    console.log(this.resultsActivityPerTimeBin)
+                    // console.log("**** activityPerTimeBinPreset ****")
+                    // console.log(this.resultsActivityPerTimeBin)
                     // // animal info update
                     for(let animal in this.resultsActivityPerTimeBin.results){
-                        console.log(this.resultsActivityPerTimeBin.results[animal]['animal'])
+                        // console.log(this.resultsActivityPerTimeBin.results[animal]['animal'])
                         for(let infoAnimal in this.animalsInfo){
                             console.log(infoAnimal)
                             if(this.animalsInfo[infoAnimal]['RFID']==this.resultsActivityPerTimeBin.results[animal]['animal']){
@@ -569,6 +576,9 @@ export default {
                             }
                         }
                     }
+                    this.stepUp()
+                      this.showActivityPerTimeBinPreset = true
+                    break
                 }
 
                 // this.results.forEach((animal, index) => {
@@ -576,8 +586,7 @@ export default {
                 //   // this.results[animal]['setup'] = this.animalsInfo[index]['SETUP']
                 //   // this.results[animal]['treatment'] = this.animalsInfo[index]['TREATMENT']
                 // })
-                this.stepUp()
-                break
+
 
             // this.processing = false
             this.checked = true
@@ -599,7 +608,7 @@ export default {
           }
           // console.log(response.data.state)
           this.tasksProgression = response.data.progress.current
-          console.log("task progression: "+response.data.result.message)
+          // console.log("task progression: "+response.data.result.message)
         })
         .catch(error => {
           console.log(JSON.stringify(error))
@@ -732,6 +741,10 @@ export default {
       else{
         this.step--
       }
+      this.preset = null
+      this.showSimplePreset = false
+      this.showActivityPerTimeBinPreset = false
+      console.log("stepDown")
       this.stepToTimeLine()
     },
     saveAnimalInfo(rebuild=true) {
@@ -768,7 +781,7 @@ export default {
       })
     },
     doAnalysis(preset){
-      console.log(preset)
+      // console.log("Do analyis preset:", preset)
       this.preset = preset
       // this.resultsSimplePreset = {}
       // this.resultsActivityPerTimeBin = {}
@@ -783,7 +796,7 @@ export default {
           formData.append('unitMaxT', this.unitMaxT)
           axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData)
           .then(response => {
-            console.log('Do analysis')
+            console.log('Do analysis simplePreset')
             // this.data = response.data.reliabilityContext
             this.task_id = response.data.task_id
             this.stepUp()
@@ -801,7 +814,7 @@ export default {
           formData.append('timeBin', parseInt(this.timeBin))
           axios.post(`http://127.0.0.1:8000/api/activityPerTimeBin/`, formData)
           .then(response => {
-            console.log('Do analysis')
+            console.log('Do analysis activityPerTimeBinPreset')
             // this.data = response.data.reliabilityContext
             this.task_id = response.data.task_id
             this.stepUp()
