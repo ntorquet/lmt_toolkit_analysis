@@ -6,6 +6,43 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import axios from "axios";
+import {ref, onMounted} from "vue";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const versions = ref([]);
+const lastVersion = ref("");
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const getVersions = () => {
+  console.log("getVersion")
+  axios.get(`http://127.0.0.1:8000/api/versions/`)
+      .then(response => {
+        versions.value = response.data;
+        lastVersion.value = versions.value[versions.value.length-1]["lmt_toolkit_version"];
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error));
+      })
+}
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => getVersions());
+
+</script>
+
 <template>
   <v-footer color="black">
     <div class="px-4 py-2 bg-black text-center w-100">
@@ -21,36 +58,6 @@ Code under GPL v3.0 licence
   </v-footer>
 </template>
 
-<script>
-import axios from "axios";
-export default {
-  name: "TheFooter",
-  data:function (){
-		return{
-      versions: [],
-      lastVersion: ""
-    }
-  },
-  methods: {
-    getVersions() {
-      this.files = []
-      this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/versions/`)
-          .then(response => {
-            this.versions = response.data
-            this.lastVersion = this.versions[this.versions.length-1]["lmt_toolkit_version"]
-            this.organizeFiles()
-          })
-          .catch(error => {
-            console.log(JSON.stringify(error))
-          })
-    },
-  },
-  mounted() {
-    this.getVersions()
-  }
-}
-</script>
 
 <style scoped>
 .nuxt-link{
