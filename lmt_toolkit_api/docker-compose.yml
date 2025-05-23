@@ -1,0 +1,31 @@
+services:
+  web:
+    build:
+      context: .
+    command: /entrypoint.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      FIXTURE_FILE: /app/exported_data.json
+      DJANGO_RUNNING_IN_DOCKER: "true"
+    user: "${UID:-1000}:${GID:-1000}"
+
+  frontend:
+    build: ../nuxt-api
+    command: /entrypoint.sh
+    volumes:
+      - ../nuxt-api:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+    env_file:
+      - ../nuxt-api/.env
+    user: "${UID:-1000}:${GID:-1000}"
