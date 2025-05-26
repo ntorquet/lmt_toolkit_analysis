@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent
 # Initialise environment variables
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False),
+    DEBUG=(bool, True),
 )
 
 env_paths = [
@@ -190,3 +190,4 @@ CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 MEDIA_URL = '/media/uploaded/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/uploaded/')
 # PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media/temp/')
+STATICFILES_DIRS = [MEDIA_URL]

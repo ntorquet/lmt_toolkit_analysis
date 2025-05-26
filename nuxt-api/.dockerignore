@@ -1,0 +1,7 @@
+node_modules
+.nuxt
+.git
+.gitignore
+#Dockerfile
+docker-compose.yml
+*.log
