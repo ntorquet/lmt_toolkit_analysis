@@ -1,15 +1,27 @@
 #!/bin/bash
 
 echo "🛠️ Running makemigrations..."
-python3 manage.py makemigrations mousetube_api --noinput
+python3 manage.py makemigrations lmt_toolkit_analysis --noinput
 
 echo "📦 Applying migrations..."
 python3 manage.py migrate --noinput
 
 # 🚨 Explicit check of critical tables before loading data
+DB_NAME=".db.sqlite3"
 echo "🔍 Verifying that all required tables exist before loading fixtures..."
-REQUIRED_TABLE="mousetube_api_protocol"
-TABLE_EXISTS=$(echo "SHOW TABLES LIKE '$REQUIRED_TABLE';" | mariadb -h db -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME")
+REQUIRED_TABLE="lmt_toolkit_analysis_version"
+TABLE_EXISTS=$(sqlite3 "$DB_NAME" "SELECT name FROM sqlite_master WHERE type='table' AND name='$REQUIRED_TABLE';")
+
+
+if echo "$TABLE_EXISTS" | grep -q "$REQUIRED_TABLE"; then
+    echo "✅ Table $REQUIRED_TABLE found, safe to load fixture."
+else
+    echo "❌ Required table $REQUIRED_TABLE does not exist. Migration may have failed. Aborting fixture load."
+    exit 1
+fi
+
+REQUIRED_TABLE="lmt_toolkit_analysis_eventdocumentation"
+TABLE_EXISTS=$(sqlite3 "$DB_NAME" "SELECT name FROM sqlite_master WHERE type='table' AND name='$REQUIRED_TABLE';")
 
 if echo "$TABLE_EXISTS" | grep -q "$REQUIRED_TABLE"; then
     echo "✅ Table $REQUIRED_TABLE found, safe to load fixture."
@@ -22,15 +34,17 @@ fi
 if [ -n "$FIXTURE_FILE" ] && [ -f "$FIXTURE_FILE" ]; then
     echo "🔍 Checking if the corresponding table is empty before loading fixture..."
 
-    TABLE_NAME="mousetube_api_protocol"
+    TABLE_NAME="lmt_toolkit_analysis_version"
+    ROW_COUNT1=$(sqlite3 "$DB_NAME" "SELECT COUNT(*) FROM $TABLE_NAME;")
 
-    ROW_COUNT=$(echo "SELECT COUNT(*) FROM $TABLE_NAME;" | mariadb -h db -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -N)
+    TABLE_NAME="lmt_toolkit_analysis_eventdocumentation"
+    ROW_COUNT2=$(sqlite3 "$DB_NAME" "SELECT COUNT(*) FROM $TABLE_NAME;")
 
-    if [ "$ROW_COUNT" -eq 0 ]; then
+    if [ "$ROW_COUNT1+$ROW_COUNT2" -eq 0 ]; then
         echo "📥 Table $TABLE_NAME is empty. Loading fixture from $FIXTURE_FILE..."
         python3 manage.py loaddata "$FIXTURE_FILE"
     else
-        echo "✅ Table $TABLE_NAME already contains data ($ROW_COUNT rows). Skipping fixture loading."
+        echo "✅ Table $TABLE_NAME already contains data ($ROW_COUNT1+$ROW_COUNT2 rows). Skipping fixture loading."
     fi
 else
     echo "⚠️ Fixture file not found or not defined. Skipping fixture loading."
@@ -42,7 +56,7 @@ if [ "$(echo "$DEBUG" | tr '[:upper:]' '[:lower:]')" = "false" ]; then
     python3 manage.py collectstatic --noinput
 
     echo "🚀 Starting Gunicorn server..."
-    exec gunicorn mousetube_api.asgi:application --bind 0.0.0.0:8000 --timeout 420 -k uvicorn.workers.UvicornWorker
+    exec gunicorn lmt_toolkit_analysis.asgi:application --bind 0.0.0.0:8000 --timeout 420 -k uvicorn.workers.UvicornWorker
 else
     echo "⚙️ Starting development server..."
     exec python3 manage.py runserver 0.0.0.0:8000

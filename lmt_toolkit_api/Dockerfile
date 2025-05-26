@@ -6,10 +6,14 @@ ENV PYTHONUNBUFFERED=1
 RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
-    libffi-dev \
-    build-base \
-    pkgconfig \
-    bash \
+    python3-dev \
+    linux-headers \
+    sqlite \
+    tk \
+#    libffi-dev \
+#    build-base \
+#    pkgconfig \
+    bash
 
 WORKDIR /app
 

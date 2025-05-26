@@ -7,15 +7,13 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     env_file:
       - .env
     environment:
       DB_HOST: db
-      FIXTURE_FILE: /app/exported_data.json
+      FIXTURE_FILE: /app/fixtures/exported_data_v1_2.json
       DJANGO_RUNNING_IN_DOCKER: "true"
-    user: "${UID:-1000}:${GID:-1000}"
+#    user: "${UID:-1000}:${GID:-1000}"
 
   frontend:
     build: ../nuxt-api
@@ -26,6 +24,4 @@ services:
       - "3000:3000"
     depends_on:
       - web
-    env_file:
-      - ../nuxt-api/.env
-    user: "${UID:-1000}:${GID:-1000}"
+#    user: "${UID:-1000}:${GID:-1000}"
