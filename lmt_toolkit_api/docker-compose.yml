@@ -14,7 +14,9 @@ services:
       DB_HOST: db
       FIXTURE_FILE: /app/fixtures/export_data_v1_2.json
       DJANGO_RUNNING_IN_DOCKER: "true"
+#      RABBITMQ_SERVER: rabbit
 #    user: "${UID:-1000}:${GID:-1000}"
+
 
   frontend:
     build: ../nuxt-api
@@ -27,3 +29,31 @@ services:
     depends_on:
       - web
 #    user: "${UID:-1000}:${GID:-1000}"
+
+  # RabbitMQ - queue
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # Celery worker
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "wait-for backend:8000 &&
+        celery -A lmt_toolkit_analysis worker -l info -P solo"
+    volumes:
+      - .:/app
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+      - web
+
