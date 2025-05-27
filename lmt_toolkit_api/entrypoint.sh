@@ -76,5 +76,4 @@ elif [ "$SERVICE_ROLE" = "worker" ]; then
     echo "✅ RabbitMQ is up. Starting Celery..."
     exec celery -A lmt_toolkit_analysis worker -l info -P solo
 fi
-fi
 exec "$@"
