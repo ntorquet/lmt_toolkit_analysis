@@ -1,31 +1,70 @@
+x-image: &lmt_image
+  build:
+    context: .
+  image: lmt_toolkit_analysis_web
+  
 services:
   web:
-    build:
-      context: .
-    command: /entrypoint.sh
+    <<: *lmt_image
     volumes:
       - .:/app
+      - ./media:/app/media
     ports:
       - "8000:8000"
-    depends_on:
-      - db
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       DB_HOST: db
-      FIXTURE_FILE: /app/exported_data.json
+      FIXTURE_FILE: /app/fixtures/export_data_v1_2.json
       DJANGO_RUNNING_IN_DOCKER: "true"
-    user: "${UID:-1000}:${GID:-1000}"
+      CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
+      SERVICE_ROLE: web
+      API_BASE_URL: http://web:8000
+#      RABBITMQ_SERVER: rabbit
+#    user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      - rabbit
 
+  # RabbitMQ - queue
+  rabbit:
+    restart: always
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - "5672"
   frontend:
     build: ../nuxt-api
-    command: /entrypoint.sh
     volumes:
       - ../nuxt-api:/app
+      - frontend_node_modules:/app/node_modules
+#      - frontend_node_modules:/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - web
-    env_file:
-      - ../nuxt-api/.env
-    user: "${UID:-1000}:${GID:-1000}"
+#    user: "${UID:-1000}:${GID:-1000}"
+
+  # Celery worker
+  worker:
+    <<: *lmt_image
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbit
+      - web
+    environment:
+      CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
+      SERVICE_ROLE: worker
+      API_BASE_URL: http://web:8000
+
+networks:
+  default:
+    name: lmt_toolkit_analysis_network
+
+volumes:
+  frontend_node_modules:

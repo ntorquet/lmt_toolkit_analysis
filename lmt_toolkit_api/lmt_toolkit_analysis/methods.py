@@ -13,6 +13,8 @@ import datetime
 from math import *
 from sqlite3 import Error
 import requests
+from django.urls import reverse
+from django.conf import settings
 
 from .LMT_v1_0_7.experimental.Animal_LMTtoolkit import *
 from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
@@ -79,7 +81,9 @@ def getLogInfo(connection, file_id):
         print(str(list_log))
         version = dicoTemp['version']
         # update file in database: rebuild field with version number
-        api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+        # api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        api_url = f"{settings.API_BASE_URL}{relative_url}"
         print("*********************")
         print(file_id)
         todo = {"rebuild": version}

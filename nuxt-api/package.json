@@ -25,7 +25,6 @@
     "pinia": "^2.1.4",
     "sass": "^1.66.1",
     "vue-chartjs": "^5.2.0",
-    "vue-json-csv": "^1.2.10",
     "vuetify": "^3.3.7"
   },
   "overrides": {

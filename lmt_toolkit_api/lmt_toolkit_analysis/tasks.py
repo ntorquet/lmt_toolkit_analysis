@@ -41,6 +41,8 @@ import requests
 import json
 from .methods import *
 from .settings import MEDIA_ROOT, MEDIA_URL
+from django.urls import reverse
+from django.conf import settings
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
@@ -471,7 +473,10 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}
@@ -660,7 +665,9 @@ def rebuildSQLite(self, file, file_id, version):
     connection.close()
 
     # update file in database: rebuild field with version number
-    api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+    # api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+    relative_url = reverse('files-detail', kwargs={'pk': file_id})
+    api_url = f"{settings.API_BASE_URL}{relative_url}"
     print("*********************")
     print(file_id)
     todo = {"rebuild": version}
@@ -990,7 +997,10 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}
