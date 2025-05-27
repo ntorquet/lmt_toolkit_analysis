@@ -20,8 +20,6 @@ services:
 #    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - rabbitmq
-    networks:
-      - main
 
 
   # RabbitMQ - queue
