@@ -473,7 +473,10 @@ def getAnalysis(self, file, deleteFile = False, file_id = "", tmin = 0, tmax = -
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}
@@ -994,7 +997,10 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
-        url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+
+        # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
         file_url = {'file_url': ''}
