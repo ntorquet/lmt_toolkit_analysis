@@ -41,6 +41,8 @@ import requests
 import json
 from .methods import *
 from .settings import MEDIA_ROOT, MEDIA_URL
+from django.urls import reverse
+from django.conf import settings
 
 # import to analyse LMT_v1_0_3 data
 import sqlite3
@@ -660,7 +662,9 @@ def rebuildSQLite(self, file, file_id, version):
     connection.close()
 
     # update file in database: rebuild field with version number
-    api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+    # api_url = f"http://127.0.0.1:8000/api/files/{file_id}/"
+    relative_url = reverse('files-detail', kwargs={'pk': file_id})
+    api_url = f"{settings.API_BASE_URL}{relative_url}"
     print("*********************")
     print(file_id)
     todo = {"rebuild": version}

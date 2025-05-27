@@ -1,8 +1,11 @@
+x-image: &lmt_image
+  build:
+    context: .
+  image: lmt_toolkit_analysis_web
+  
 services:
   web:
-    build:
-      context: .
-    image: lmt_toolkit_analysis_web
+    <<: *lmt_image
     volumes:
       - .:/app
       - ./media:/app/media
@@ -16,14 +19,14 @@ services:
       DJANGO_RUNNING_IN_DOCKER: "true"
       CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
       SERVICE_ROLE: web
+      API_BASE_URL: http://web:8000
 #      RABBITMQ_SERVER: rabbit
 #    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
-      - rabbitmq
-
+      - rabbit
 
   # RabbitMQ - queue
-  rabbitmq:
+  rabbit:
     restart: always
     image: rabbitmq:3-management
     environment:
@@ -34,9 +37,6 @@ services:
       - "15672:15672"
     expose:
       - "5672"
-
-
-
   frontend:
     build: ../nuxt-api
     volumes:
@@ -49,20 +49,9 @@ services:
       - web
 #    user: "${UID:-1000}:${GID:-1000}"
 
-  # RabbitMQ - queue
-  rabbit:
-    hostname: rabbit
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
   # Celery worker
   worker:
-    image: lmt_toolkit_analysis_web
+    <<: *lmt_image
     volumes:
       - .:/app
     depends_on:
@@ -71,6 +60,7 @@ services:
     environment:
       CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
       SERVICE_ROLE: worker
+      API_BASE_URL: http://web:8000
 
 networks:
   default:
