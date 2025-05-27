@@ -18,7 +18,24 @@ services:
       SERVICE_ROLE: web
 #      RABBITMQ_SERVER: rabbit
 #    user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      - rabbitmq
+    networks:
+      - main
 
+
+  # RabbitMQ - queue
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - "5672"
 
   frontend:
     build: ../nuxt-api
