@@ -16,6 +16,40 @@ services:
       DJANGO_RUNNING_IN_DOCKER: "true"
 #      RABBITMQ_SERVER: rabbit
 #    user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      - rabbitmq
+    networks:
+      - main
+
+
+  # RabbitMQ - queue
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - "5672"
+
+
+
+  # Celery worker
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A lmt_toolkit_analysis worker -l info -P solo
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+      - web
+    networks:
+      - main
 
 
   frontend:
@@ -30,30 +64,5 @@ services:
       - web
 #    user: "${UID:-1000}:${GID:-1000}"
 
-  # RabbitMQ - queue
-  rabbit:
-    hostname: rabbit
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-  # Celery worker
-  worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: >
-      sh -c "wait-for backend:8000 &&
-        celery -A lmt_toolkit_analysis worker -l info -P solo"
-    volumes:
-      - .:/app
-    links:
-      - rabbit
-    depends_on:
-      - rabbit
-      - web
-
+networks:
+  main:
