@@ -2,27 +2,29 @@ services:
   web:
     build:
       context: .
-    command: /entrypoint.sh
+    image: lmt_toolkit_analysis_web
     volumes:
       - .:/app
       - ./media:/app/media
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       DB_HOST: db
       FIXTURE_FILE: /app/fixtures/export_data_v1_2.json
       DJANGO_RUNNING_IN_DOCKER: "true"
+      CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
+      SERVICE_ROLE: web
 #      RABBITMQ_SERVER: rabbit
 #    user: "${UID:-1000}:${GID:-1000}"
 
 
   frontend:
     build: ../nuxt-api
-    command: /entrypoint.sh
     volumes:
       - ../nuxt-api:/app
+      - frontend_node_modules:/app/node_modules
 #      - frontend_node_modules:/app/node_modules
     ports:
       - "3000:3000"
@@ -43,17 +45,19 @@ services:
 
   # Celery worker
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: >
-      sh -c "wait-for backend:8000 &&
-        celery -A lmt_toolkit_analysis worker -l info -P solo"
+    image: lmt_toolkit_analysis_web
     volumes:
       - .:/app
-    links:
-      - rabbit
     depends_on:
       - rabbit
       - web
+    environment:
+      CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
+      SERVICE_ROLE: worker
 
+networks:
+  default:
+    name: lmt_toolkit_analysis_network
+
+volumes:
+  frontend_node_modules:

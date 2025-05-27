@@ -10,9 +10,10 @@ RUN apk update && apk add --no-cache \
     linux-headers \
     sqlite \
     tk \
-#    libffi-dev \
-#    build-base \
-#    pkgconfig \
+    netcat-openbsd \
+    #    libffi-dev \
+    #    build-base \
+    #    pkgconfig \
     bash
 
 WORKDIR /app
