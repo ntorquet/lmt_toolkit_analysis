@@ -295,6 +295,8 @@ Docker Desktop has to be launched with administrator rights.
    ```bash
     docker compose up --build
    ```
+   
+   Use [http://localhost:3000/](http://localhost:3000/) in your internet browser to use LMT-toolkit.
 
 ### Docker Stop and Clean Up
 
