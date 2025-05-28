@@ -160,8 +160,8 @@
     {
       "lmt_toolkit_version": "v1.2",
       "lmt_toolkit_version_link": "https://github.com/ntorquet/lmt_toolkit_analysis/releases/tag/v1.2",
-      "lmt_toolkit_version_date": "2025-05-23",
-      "lmt_toolkit_version_changes": "All packages updated. Several bugs corrected: problem with reliability display, possibility to do several analysis on a same file and simple preset analysis works even start time and / or end time fields are empty. Installation with Docker. Enhancements: progression feedback during rebuild, possibility to skip rebuild process if the file is already rebuild (save the version of the rebuild script).",
+      "lmt_toolkit_version_date": "2025-05-28",
+      "lmt_toolkit_version_changes": "LMT-toolkit could be installed and launched via Docker. All packages updated. Several bugs corrected: problem with reliability display, possibility to do several analysis on a same file and simple preset analysis works even start time and / or end time fields are empty. Enhancements: progression feedback during rebuild, possibility to skip rebuild process if the file is already rebuild (save the version of the rebuild script).",
       "lmt_analysis_version": "v1.0.7",
       "lmt_analysis_version_link": "https://github.com/fdechaumont/lmt-analysis/releases/tag/v1.0.7",
       "lmt_analysis_version_changes": "New function added to analyse openfield and dyadic experiments. Several bugs corrections.",
