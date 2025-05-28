@@ -1,3 +1,4 @@
+[![python](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Made with Django](https://img.shields.io/badge/Made%20with-Django-blue)](https://www.djangoproject.com/)
 [![Made with Django REST framework](https://img.shields.io/badge/Made%20with-Django%20REST%20framework-blue)](https://www.django-rest-framework.org/)
 [![Made with Vuetify](https://img.shields.io/badge/Made%20with-Vuetify-1976D2)](https://vuetifyjs.com/)
