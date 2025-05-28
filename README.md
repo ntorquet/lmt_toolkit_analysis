@@ -128,7 +128,7 @@ source .venv/bin/activate
 
 
 
-[To run the 3 servers, we need 3 command prompts.](How-to-launch-the-application-on-a-Windows-computer)
+[To run the 3 servers, we need 3 command prompts.](#How-to-launch-the-application-on-a-Windows-computer)
 
 ### Python Requirements (See [requirements.txt](requirements.txt))
 
