@@ -149,7 +149,6 @@ pip install -e .
 ### Database migration
 
 ```
-cd lmt_toolkit_api
 python manage.py makemigrations
 python manage.py migrate
 ```
