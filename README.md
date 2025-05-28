@@ -98,7 +98,8 @@ You can see the total distance travelled by each animal and a plot of the distan
 This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
 
 ## Installation
-[See installion via Docker](#docker-alternative-fullstack-installation)
+[Installation via Docker](#docker-alternative-fullstack-installation)
+
 LMT-toolkit needs Python 3.13.
 
 LMT-toolkit works thanks to 3 different servers:
