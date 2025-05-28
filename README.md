@@ -1,6 +1,5 @@
 [![Made with Django](https://img.shields.io/badge/Made%20with-Django-blue)](https://www.djangoproject.com/)
 [![Made with Django REST framework](https://img.shields.io/badge/Made%20with-Django%20REST%20framework-blue)](https://www.django-rest-framework.org/)
-[![Made with Nuxt](https://img.shields.io/badge/Made%20with-Nuxt-green)](https://nuxt.com/)
 [![Made with Vuetify](https://img.shields.io/badge/Made%20with-Vuetify-1976D2)](https://vuetifyjs.com/)
 [![Made with VueJS](https://img.shields.io/badge/Made%20with-VueJS-blue)](https://vuejs.org/)
 [![Made with Nuxt](https://img.shields.io/badge/Made%20with-Nuxt-blue)](https://nuxt.com/)
@@ -99,7 +98,7 @@ You can see the total distance travelled by each animal and a plot of the distan
 This table will be completed with each new behavior extraction possibility. This information is provided into LMT-toolkit (Documentation tab).
 
 ## Installation
-
+[See installion via Docker](#docker-alternative-fullstack-installation)
 LMT-toolkit needs Python 3.13.
 
 LMT-toolkit works thanks to 3 different servers:
