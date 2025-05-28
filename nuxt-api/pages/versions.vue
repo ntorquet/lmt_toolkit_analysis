@@ -6,6 +6,43 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import axios from "axios";
+import {ref, onMounted} from "vue";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const versions = ref([]);
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const getVersions = () => {
+  versions.value = []
+  axios.get(`http://127.0.0.1:8000/api/versions`)
+      .then(response => {
+        versions.value = response.data.reverse();
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error));
+      })
+}
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => getVersions());
+
+</script>
+
+
 <template>
   <v-main>
     <v-container>
@@ -18,7 +55,7 @@ Code under GPL v3.0 licence
           Some important changes will impact the results. This page gives you an history of all changes so that you know if a new analysis is needed.
         </v-card-text>
       </v-card>
-      <v-table class="mt-10 mb-10">
+      <v-table v-if="versions.length>0" class="mt-10 mb-10">
         <thead>
           <tr>
             <th>Version</th>
@@ -29,7 +66,7 @@ Code under GPL v3.0 licence
           </tr>
         </thead>
         <tbody>
-          <tr v-for="version in versions.reverse()">
+          <tr v-for="version in versions">
             <td>
               <a :href="version.lmt_toolkit_version_link" target="_blank">
                 <v-chip color="black"><v-icon icon="mdi-github" class="mr-1"></v-icon> <strong>{{ version.lmt_toolkit_version }}</strong></v-chip></a>
@@ -45,38 +82,11 @@ Code under GPL v3.0 licence
           </tr>
         </tbody>
       </v-table>
+      <v-skeleton-loader v-else type="card" class="mt-10 mb-10"></v-skeleton-loader>
     </v-container>
   </v-main>
 </template>
 
-<script>
-import axios from "axios";
-export default {
-  name: "versions",
-  data:function (){
-		return{
-      versions: [],
-    }
-  },
-  methods: {
-    getVersions() {
-      this.files = []
-      this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/v1/versions`)
-          .then(response => {
-            this.versions = response.data
-            this.organizeFiles()
-          })
-          .catch(error => {
-            console.log(JSON.stringify(error))
-          })
-    },
-  },
-  mounted() {
-    this.getVersions()
-  }
-}
-</script>
 
 <style scoped>
 

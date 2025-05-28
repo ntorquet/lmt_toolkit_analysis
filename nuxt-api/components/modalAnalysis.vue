@@ -14,10 +14,6 @@ Code under GPL v3.0 licence
   </v-sheet>
 </template>
 
-<script>
-
-</script>
-
 <style scoped>
 
 </style>

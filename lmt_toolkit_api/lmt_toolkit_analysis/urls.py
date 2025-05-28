@@ -12,13 +12,34 @@ from django.urls import include, path, re_path
 from django.views.static import serve
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework.routers import DefaultRouter
+from .views import *
+
+router = DefaultRouter()
+router.register('api/analyse', AnalyseLMTFile, basename="analyse")
+router.register('api/reliability', ReliabilityLMTFile, basename="reliability")
+router.register('api/files', FileViewSet, basename='files')
+router.register('api/versions', VersionViewSet, basename='versions')
+router.register('api/eventDocumentation', EventDocumentationViewSet, basename='eventDocumentation')
 
 urlpatterns = [
+    path('', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # path('analyse_reliability/', views.analyse_reliability.as_view(), name="analyse_reliability"),
+    path(r'api/read_file/', ReadFileAPIView.as_view(), name="read_file"),
+    path(r'api/checkReliability/', CheckReliabilityAPIView.as_view(), name="checkReliability"),
+    path(r'api/rebuild/', RebuildSqliteAPIView.as_view(), name="rebuild"),
+    path(r'api/saveAnimalInfo/', SaveAnimalInfoAPIView.as_view(), name="saveAnimalInfo"),
+    path(r'api/extractAnalysis/', ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
+    path(r'api/activityPerTimeBin/', ActivityPerTimeBinAPIView.as_view(), name="activityPerTimeBin"),
+    path(r'api/logInfo/', LogInfoAPIView.as_view(), name="logInfo"),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('lmttoolkitanalysis.urls')),
-    # path('api/v1/', include('djoser.urls.authtoken')),
+    path('api/', include('djoser.urls')),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('api/', include('djoser.urls.authtoken')),
     re_path(r'^celery-progress/', include('celery_progress.urls')),
     # to download files:
     re_path(r'^media/uploaded/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

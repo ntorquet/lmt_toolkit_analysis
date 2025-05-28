@@ -64,7 +64,7 @@ Code under GPL v3.0 licence
     </v-container>
   </v-main>
 
-  <simple-preset v-show="false"></simple-preset>
+<!--  <simple-preset v-show="false"></simple-preset>-->
 
 </template>
 
@@ -85,7 +85,7 @@ export default {
     getFiles() {
       this.files = []
       this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/v1/files`)
+      axios.get(`http://127.0.0.1:8000/api/files`)
       .then(response => {
         this.files = response.data
         this.organizeFiles()
@@ -106,7 +106,7 @@ export default {
     },
     deleteFile(fileId){
       console.log(`delete file ${fileId}`)
-      axios.delete(`http://127.0.0.1:8000/api/v1/files/${fileId}/`)
+      axios.delete(`http://127.0.0.1:8000/api/files/${fileId}/`)
       .then(response => {
         this.getFiles()
         this.$refs.fileTable.refresh()
@@ -118,7 +118,7 @@ export default {
     checkReliability(fileId){
       let formData = new FormData();
       formData.append('file_id', fileId)
-      axios.post(`http://127.0.0.1:8000/api/v1/checkReliability/`, formData)
+      axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData)
       .then(response => {
         this.taskId = response.data.taskId
       })

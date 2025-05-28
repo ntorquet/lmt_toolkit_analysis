@@ -12,11 +12,30 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+# import environ
 from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialise environment variables
+# env = environ.Env(
+#     # set casting, default value
+#     DEBUG=(bool, True),
+# )
+
+# env_paths = [
+#     environ.Path(Path.joinpath(BASE_DIR, ".env")),
+#     environ.Path("/etc/lmt-toolkit/lmt-toolkit.env"),
+# ]
+
+# Read all environment files
+# for e in env_paths:
+#     try:
+#         e.file("")
+#         env.read_env(e())
+#     except FileNotFoundError:
+#         pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -40,6 +59,7 @@ CORS_ALLOWED_ORIGIN = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
 # Application definition
 
@@ -50,13 +70,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lmttoolkitanalysis',
+    'lmt_toolkit_analysis',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
     'django_celery_results',
     'celery_progress',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -155,17 +176,22 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 broker_url = 'amqp://guest:guest@localhost:5672//'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Europe/Paris"
-CELERY_IMPORTS = 'lmttoolkitanalysis.tasks'
+CELERY_IMPORTS = 'lmt_toolkit_analysis.tasks'
 CELERY_RESULT_BACKEND = 'django-db'
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+# CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@rabbit:5672//')
 
 # To upload
 MEDIA_URL = '/media/uploaded/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/uploaded/')
 # PRIVATE_STORAGE_ROOT = os.path.join(BASE_DIR, 'media/temp/')
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]

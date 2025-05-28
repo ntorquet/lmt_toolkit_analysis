@@ -6,16 +6,11 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
-<template>
-  <v-card color="white">
-    <v-card-title>{{ title }}</v-card-title>
-    <v-card-text>
-      <canvas id="plot" style="height:40vh; width:80vw"></canvas>
-    </v-card-text>
-  </v-card>
-</template>
-
-<script>
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import { ref, onMounted, watch } from 'vue';
 import {Chart,
   ArcElement,
   LineElement,
@@ -42,7 +37,7 @@ import {Chart,
   Tooltip,
   SubTitle,
   Colors
-} from 'chart.js'
+} from 'chart.js';
 
 Chart.register(
   ArcElement,
@@ -70,64 +65,115 @@ Chart.register(
   Tooltip,
   SubTitle,
   Colors
-)
-export default {
-  name: "linePlot",
-  props: {
-    title: String,
-    timeline: Array,
-    activity: Object,
+);
 
+////////////////////////////////
+// PROPS
+////////////////////////////////
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
   },
-  data() {
-    return {
-      datasets: Object,
-      myChart: Object,
-      colors: ["rgba(246, 71, 71, 1)" ]
-    }
+  timeline: {
+    type: Array,
+    required: true,
   },
-  methods: {
-    renderChart() {
-      const elem = document.getElementById('plot')
-      if(typeof elem != 'undefined' && elem != null){
-        const ctx = elem.getContext("2d")
-        window.myChart = new Chart(ctx, {
-          type: "line",
-            data: {
-              labels: this.timeline,
-              datasets: this.datasets['activity']
-            },
-            options: {
-              elements: {
-                point:{
-                  radius: 0
-                }
-              }
+  activity: {
+    type: Object,
+    required: true,
+  }
+});
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const datasets = ref(Object);
+const myChart = ref(Object);
+const colors = ref(["rgba(246, 71, 71, 1)"]);
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const renderChart = () => {
+  if (window.myChart) {
+    window.myChart.destroy()
+  }
+  const elem = document.getElementById('plot')
+  if(typeof elem != 'undefined' && elem != null){
+    const ctx = elem.getContext("2d")
+    window.myChart = new Chart(ctx, {
+      type: "line",
+        data: {
+          labels: props.timeline,
+          datasets: datasets['activity']
+        },
+        options: {
+          responsive: false,
+          elements: {
+            point:{
+              radius: 0
             }
-        })
-      }
-      else{
-        console.log("plot not define")
-      }
-    }
-  },
-  mounted() {
-    this.datasets['activity'] = []
-    for(let animal in this.activity){
-      console.log(animal)
-      this.datasets['activity'].push(
-        {
-          label: animal,
-          data: this.activity[animal],
-          fill: false,
-          tension: 0.1
+          }
         }
-      )
-    }
-    this.renderChart()
-  },
-}
+    })
+  }
+  else{
+    console.log("plot not define")
+  }
+};
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => {
+  datasets['activity'] = []
+  for(let animal in props.activity){
+    console.log(animal)
+    datasets['activity'].push(
+      {
+        label: animal,
+        data: props.activity[animal],
+        fill: false,
+        tension: 0.1
+      }
+    )
+  }
+})
+onMounted(() => renderChart());
+
+////////////////////////////////
+// WATCHER
+////////////////////////////////
+watch(() => props.activity, (newValue, oldValue) => {
+  console.log('timebin changed: ', newValue)
+  datasets['activity'] = []
+  for(let animal in props.activity){
+    console.log(animal)
+    datasets['activity'].push(
+      {
+        label: animal,
+        data: props.activity[animal],
+        fill: false,
+        tension: 0.1
+      }
+    )
+  }
+  renderChart();
+});
+
 </script>
+
+<template>
+  <v-card color="white">
+    <v-card-title>{{ title }}</v-card-title>
+    <v-card-text>
+      <canvas id="plot" height="500" width="1500"></canvas>
+    </v-card-text>
+  </v-card>
+</template>
+
 
 <style scoped>
 

@@ -10,18 +10,21 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^18",
+    "@types/node": "^18.19.83",
     "nuxt": "^3.6.2"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
-    "chart.js": "^4.3.0",
+    "chart.js": "^4.4.9",
+    "json-csv": "^4.0.18",
+    "lodash": "^4.17.21",
+    "node": "^22.14.0",
+    "npm": "^11.2.0",
     "pinia": "^2.1.4",
     "sass": "^1.66.1",
     "vue-chartjs": "^5.2.0",
-    "vue-json-csv": "^2.1.0",
     "vuetify": "^3.3.7"
   },
   "overrides": {

@@ -20,12 +20,6 @@ Code under GPL v3.0 licence
   </v-app-bar>
 </template>
 
-<script>
-export default {
-  name: "TheHeader",
-}
-</script>
-
 <style scoped>
 .nuxt-link{
   color: white;

@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lmt_toolkit_analysis"
+version = "1.2"
+description = "LMT-toolkit is an open source web application created to analyse Live Mouse Tracker (LMT) data easily and intuitively."
+authors = [
+    { name = "Nicolas Torquet", email = "nicolas.torquet@igbmc.com" },
+]
+requires-python = ">=3.13"
+readme = "README.md"
+
+
+dependencies = [
+    "affine==2.4.0",
+    "amqp==5.3.1",
+    "asgiref==3.8.1",
+    "attrs==25.3.0",
+    "billiard==4.2.1",
+    "celery==5.5.2",
+    "celery-progress==0.5",
+    "certifi==2025.4.26",
+    "cffi==1.17.1",
+    "charset-normalizer==3.4.2",
+    "click==8.2.1",
+    "click-didyoumean==0.3.1",
+    "click-plugins==1.1.1",
+    "click-repl==0.3.0",
+    "colorama==0.4.6",
+    "contourpy==1.3.2",
+    "cryptography==45.0.2",
+    "cycler==0.12.1",
+    "defusedxml==0.7.1",
+    "Django==5.2.1",
+    "django_celery_results==2.6.0",
+    "django-cors-headers==4.7.0",
+    "django-environ==0.12.0",
+    "django-filter==25.1",
+    "djangorestframework==3.16.0",
+    "djoser==2.3.1",
+    "drf-spectacular==0.28.0",
+    "fonttools==4.58.0",
+    "idna==3.10",
+    "inflection==0.5.1",
+    "jsonschema==4.23.0",
+    "jsonschema-specifications==2025.4.1",
+    "kiwisolver==1.4.8",
+    "kombu==5.5.3",
+    "lxml==5.4.0",
+    "matplotlib==3.10.3",
+    "networkx==3.4.2",
+    "numpy==2.2.6",
+    "oauthlib==3.2.2",
+    "packaging==25.0",
+    "pandas==2.2.3",
+    "patsy==1.0.1",
+    "pillow==11.2.1",
+    "prompt_toolkit==3.0.51",
+    "psutil==7.0.0",
+    "psycopg2-binary==2.9.10",
+    "pycparser==2.22",
+    "pyparsing==3.2.3",
+    "python-dateutil==2.9.0.post0",
+    "python3-openid==3.2.0",
+    "pytz==2025.2",
+    "PyYAML==6.0.2",
+    "referencing==0.36.2",
+    "requests==2.32.3",
+    "requests-oauthlib==2.0.0",
+    "rpds-py==0.25.1",
+    "scipy==1.15.3",
+    "seaborn==0.13.2",
+    "six==1.17.0",
+    "social-auth-app-django==5.4.3",
+    "social-auth-core==4.6.1",
+    "sqlparse==0.5.3",
+    "statsmodels==0.14.4",
+    "tabulate==0.9.0",
+    "tzdata==2025.2",
+    "uritemplate==4.1.1",
+    "urllib3==2.4.0",
+    "vine==5.1.0",
+    "wcwidth==0.2.13",
+]
+
+license = { text = "GPL-3.0" }
+
+[project.scripts]
+lmt_toolkit_analysis = "lmt_toolkit_analysis:manage"
+
+[tool.setuptools.packages.find]
+include = ["lmt_toolkit_analysis*"]
