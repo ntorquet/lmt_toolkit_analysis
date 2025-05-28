@@ -167,14 +167,14 @@ To run LMT-toolkit client locally, a working LMT-toolkit API is required and the
 
 #### Nuxt minimal starter
 
-
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 #### Setup
 
-Make sure to install dependencies:
+Make sure to install dependencies in the nuxt-api folder:
 
 ```bash
+cd pathToTheLMTtoolkitFolder\nuxt-api
 # npm
 npm install
 # or yarn

@@ -993,13 +993,13 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
 
 
     instance = File.objects.get(id=file_id)
-    file_id = {'file_id': file_id}
+    # file_id = {'file_id': file_id}
     if deleteFile:
         print("Delete SQLite file")
         print('file id: ' + str(file_id))
 
         # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
-        relative_url = reverse('files-detail', kwargs={'pk': file_id})
+        relative_url = reverse('files-detail', kwargs={'pk': str(file_id)})
         url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
         print(url_deleteFile)
         response = requests.delete(url_deleteFile)
@@ -1010,7 +1010,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
         print(MEDIA_URL)
         print('file_url: '+file_url['file_url'])
 
-
+    file_id = {'file_id': file_id}
     reliabilityContext.update(file_id)
     reliabilityContext.update(file_url)
 
