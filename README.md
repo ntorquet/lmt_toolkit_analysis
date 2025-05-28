@@ -1,5 +1,9 @@
 [![Made with Django](https://img.shields.io/badge/Made%20with-Django-blue)](https://www.djangoproject.com/)
 [![Made with Django REST framework](https://img.shields.io/badge/Made%20with-Django%20REST%20framework-blue)](https://www.django-rest-framework.org/)
+[![Made with Nuxt](https://img.shields.io/badge/Made%20with-Nuxt-green)](https://nuxt.com/)
+[![Made with Vuetify](https://img.shields.io/badge/Made%20with-Vuetify-1976D2)](https://vuetifyjs.com/)
+[![Made with VueJS](https://img.shields.io/badge/Made%20with-VueJS-blue)](https://vuejs.org/)
+[![Made with Nuxt](https://img.shields.io/badge/Made%20with-Nuxt-blue)](https://nuxt.com/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # lmt-toolkit
@@ -130,33 +134,12 @@ source .venv/bin/activate
 
 [To run the 3 servers, we need 3 command prompts.](#How-to-launch-the-application-on-a-Windows-computer)
 
-### Python Requirements (See [requirements.txt](requirements.txt))
+### Install the backend (Django with REST API)
 
-* Django==5.0.6
-* djangorestframework==3.15.1
-* django-filter==24.2
-* djoser==2.2.2
-* django-cors-headers==4.3.1
-* Celery==5.4.0
-* django-celery-results==2.5.1
-* celery-progress==0.3
-* psycopg2-binary==2.9.9
-* affine==2.4.0
-* numpy==1.26.4
-* tabulate==0.9.0
-* pandas==2.2.2
-* matplotlib==3.9.0
-* lxml==5.2.2
-* psutil==5.9.8
-* scipy==1.13.0
-* seaborn==0.13.2
-* statsmodels==0.14.2
-* networkx==3.3
-
-Install this list with the command:
+Install LMT-toolkit_api and its dependencies:
 
 ```
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Database migration
@@ -170,58 +153,31 @@ python manage.py migrate
 ### Load data for documentation and versions
 
 ```
-python manage.py loaddata fixtures/datatostart.json
+python manage.py loaddata fixtures/export_data_v1_2.json
 ```
 
-### Javascript Requirements and installations
+### Install the frontend (client)
 
-To install the frontend part of LMT-toolkit, you should first install and configure a nuxt environment and then copy / paste the code in the environment's folder.
+To run LMT-toolkit client locally, a working LMT-toolkit API is required and the following tools have to be installed:
+- [npm](https://www.npmjs.com/) (or [yarn](https://yarnpkg.com/))
+- [nodejs](https://nodejs.org/)
 
-First, you need to install a JavaScript runtime environment like [Node.js](https://nodejs.org/en). 
-Then you will have to install these packages using npm or yarn package managers:
+#### Nuxt minimal starter
 
-- @mdi/font@7.4.47                                                  
-- @nuxt/devtools@1.3.1
-- @pinia/nuxt@0.4.11                                                
-- @types/node@18.19.33
-- axios@1.6.8
-- chart.js@4.4.2
-- nuxt@3.11.2
-- pinia@2.1.7
-- sass@1.77.1
-- vue-chartjs@5.3.1
-- vue-json-csv@2.1.0
-- vuetify@3.6.6
 
-#### Step-by-step installation procedure:
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-```
-npx nuxi@3.6.2 init nuxt-frontend
+#### Setup
+
+Make sure to install dependencies:
+
+```bash
+# npm
+npm install
+# or yarn
+yarn install
 ```
 
-Nuxt configuration:
-
-```
-cd nuxt-frontend
-npm i
-```
-
-Nuxt is now installed.
-
-Then install the packages (example with npm):
-
-```
-npm i vuetify@3.6.6 sass
-npm i @mdi/font@7.4.47
-npm install axios@1.6.8
-npm install vue-chartjs@5.3.1 chart.js@4.4.2
-npm install vue-json-csv@2.1.0
-npm install pinia@2.1.7
-npm install @pinia/nuxt@0.4.11
-```
-
-The nuxt environment is ready.
-You can then copy / paste all the folders and files from the nuxt-api folder into the nuxt-frontend one.
 
 ### Celery
 
@@ -282,9 +238,6 @@ Launch the Django server:
 If this works, the lines below should appear:
 
 ```
-System check identified no issues (0 silenced).
-August 24, 2022 - 10:14:31
-Django version 4.0.2, using settings 'lmt_toolkit_analysis.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 ```
@@ -313,7 +266,7 @@ Launch the Celery server:
 
 In the 3rd terminal, go to the right folder (adapt the path according to the location of the application folder on your computer):
 
-```cd pathToTheLMTtoolkitFolder\nuxt-frontend```
+```cd pathToTheLMTtoolkitFolder\nuxt-api```
 
 Launch the server:
 
@@ -324,6 +277,9 @@ Use [http://localhost:3000/](http://localhost:3000/) in your internet browser to
 
 
 ## Docker alternative fullstack installation
+
+To install and launch LMT-toolkit via Docker, you have to install the [Docker environment or the Docker Desktop application](https://www.docker.com/) first.
+Docker Desktop has to be launched with administrator rights.
 
 1. Clone the repository:
    
