@@ -49,6 +49,8 @@ You can add information about the animal (genotype, name, treatment, sex...). Th
 Before being extracted, behaviors must be fine-tuned. These rebuilt events are stored into the SQLite file.
 ![alt rebuild](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_api/media/uploaded/img/screenshot_4_rebuild.PNG?raw=true)
 
+If the SQLite file is already rebuilt, you can skip this step.
+
 ### Configure the analysis
 
 You can choose between two types of analysis: a global analysis (Simple preset) or a report of the activity per time bin (Activity preset).
@@ -116,7 +118,7 @@ install the python required packages.
 
 ```
 pip install virtualenv 
-virtualenv venv
+py -m venv venv
 ```
 
 Launch the virtual environment to install requirements:
@@ -140,6 +142,7 @@ source .venv/bin/activate
 Install LMT-toolkit_api and its dependencies:
 
 ```
+cd lmt_toolkit_api
 pip install -e .
 ```
 
