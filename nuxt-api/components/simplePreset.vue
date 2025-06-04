@@ -7,6 +7,10 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 
+<script setup>
+
+</script>
+
 <template>
   <v-card>
       <v-card-title> Simple preset</v-card-title>
@@ -42,13 +46,6 @@ Code under GPL v3.0 licence
   </v-card>
 </template>
 
-<script>
-export default {
-  name: "SimplePreset",
-  props: {
-  }
-}
-</script>
 
 <style scoped>
 
