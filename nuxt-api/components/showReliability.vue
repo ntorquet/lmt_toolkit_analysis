@@ -120,7 +120,7 @@ const prepareData = () => {
   // animal detections
   let loopNumber = 0
   if(props.data.aboutDetections['null']){
-    loopNumber = Object.keys(this.data.aboutDetections).length -1
+    loopNumber = Object.keys(props.data.aboutDetections).length - 1
     props.data.aboutDetections['null'].animalId = 'None'
     if(props.data.aboutDetections['null'].detectionPercentTheoricalFramesColor == "red") {
       props.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'error'
@@ -187,7 +187,10 @@ const showLight = () => {
 ////////////////////////////////
 // ONMOUNTED
 ////////////////////////////////
-onMounted(() => prepareData());
+onMounted(async () => {
+  await nextTick();
+  prepareData();
+});
 
 </script>
 

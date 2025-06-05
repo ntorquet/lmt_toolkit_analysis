@@ -22,7 +22,6 @@ const file = ref('');
 const uploading = ref(false);
 const checked = ref(false);
 const processing = ref(false);
-const showReliability = ref(false);
 const data = ref({});
 const task = ref({});
 const filename = ref('');
@@ -42,7 +41,7 @@ const onFilePicked = (event) => {
   const files = event.target.files;
   filename.value = files[0].name;
 
-  if(filename.includes(".sqlite"))
+  if(filename.value.includes(".sqlite"))
   {
     file.value = files[0];
     error.value = false;
@@ -183,10 +182,6 @@ const getProgression = () => {
           </div>
         </v-window-item>
       </v-window>
-
-
-
-
     </v-container>
   </v-main>
 </template>
