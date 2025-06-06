@@ -50,7 +50,7 @@ Code under GPL v3.0 licence
           <v-card-text>
             To check the experiment, you have to select a LMT SQLite file:
             <v-file-input
-                accept="sqlite"
+                accept=".sqlite"
                 label="Select a file"
                 @change="onFilePicked($event)"
             ></v-file-input>
@@ -281,8 +281,8 @@ Code under GPL v3.0 licence
 
 <script>
 import axios from "axios";
-import {th} from "vuetify/locale";
-import OpenFieldPreset from "~/components/openFieldPreset.vue";
+// import {th} from "vuetify/locale";
+// import OpenFieldPreset from "~/components/openFieldPreset.vue";
 export default {
   name: "analysis",
   data:function (){
