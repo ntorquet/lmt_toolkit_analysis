@@ -80,10 +80,8 @@ const  upload = async () => {
     console.log('success!!');
     uploading.value = false;
     processing.value = true;
-    console.log("avant data updated");
     task_id.value = response.data.task_id;
     filename.value = response.data.filename;
-    console.log("avant getProgression");
     getProgression();
   } catch (errorResp) {
     console.log('FAILURE!!');
@@ -107,12 +105,11 @@ const getProgression = () => {
         errorMessage.value = task.value.result;
         console.log(errorMessage.value);
       } else if (task.value.state == "SUCCESS") {
-        console.log("ok!");
-        console.log(task.value.result);
-        step.value = 3;
         data.value = task.value.result;
+        console.log(task.value.result);
         processing.value = false;
         checked.value = true;
+        step.value = 3;
       } else {
         // tasksProgression.value = task.value.progress?.percent ?? 0;
         if (task.value.complete == true && task.value.success == false) {
@@ -176,7 +173,7 @@ const getProgression = () => {
           </v-card-text>
         </v-window-item>
 
-        <v-window-item :value="3">
+        <v-window-item class="d-flex justify-center align-center" :value="3">
           <div class="pa-4 text-center">
             <show-reliability v-bind:data="data" v-bind:filename="file.name"></show-reliability>
           </div>
