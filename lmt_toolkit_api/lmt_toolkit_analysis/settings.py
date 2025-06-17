@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'djoser',
     'django_celery_results',
     'celery_progress',
     'drf_spectacular',
