@@ -55,7 +55,7 @@ const onFilePicked = (event) => {
     errorMessage.value = 'Wrong file: we must select a SQLite file';
   }
 }
-const  upload = async () => {
+const upload = async () => {
   step.value = 2;
   uploading.value = true;
   console.log(file.value);
