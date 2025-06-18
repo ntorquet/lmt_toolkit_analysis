@@ -6,6 +6,42 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import axios from "axios";
+import {ref, onMounted} from "vue";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const documentation = ref([]);
+
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const getEventDocumentation = () => {
+  axios.get(`http://127.0.0.1:8000/api/eventDocumentation`)
+      .then(response => {
+        documentation.value = response.data;
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error));
+      })
+}
+
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => getEventDocumentation());
+
+</script>
+
 <template>
   <v-main>
     <v-container>
@@ -52,31 +88,6 @@ Code under GPL v3.0 licence
   </v-main>
 </template>
 
-<script>
-import axios from "axios";
-export default {
-  name: "documentation",
-  data:function (){
-		return{
-      documentation: [],
-    }
-  },
-  methods: {
-    getEventDocumentation() {
-      axios.get(`http://127.0.0.1:8000/api/eventDocumentation`)
-          .then(response => {
-            this.documentation = response.data
-          })
-          .catch(error => {
-            console.log(JSON.stringify(error))
-          })
-    },
-  },
-  mounted() {
-    this.getEventDocumentation()
-  }
-}
-</script>
 
 <style scoped>
 .nuxt-link{

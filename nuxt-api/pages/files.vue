@@ -6,6 +6,84 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import axios from "axios";
+import {ref, onMounted} from "vue";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const files = ref([]);
+const fields = ref(['File name', 'Rebuild', 'Upload date', 'Download', 'Analyse', 'Delete']);
+const filesItems = ref([]);
+const downloadableLinks = ref([]);
+const showSimplePreset = ref(false);
+
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const getFiles = () => {
+  files.value = [];
+  filesItems.value = [];
+  axios.get(`http://127.0.0.1:8000/api/files`)
+  .then(response => {
+    files.value = response.data;
+    organizeFiles();
+  })
+  .catch(error => {
+      console.log(JSON.stringify(error))
+  })
+}
+
+const organizeFiles = () => {
+  filesItems.value = []
+  for(let i=0; i<files.value.length;i++){
+    filesItems.value.push({
+      'File name': files.value[i]['file_name'],
+      'Rebuild': files.value[i]['rebuild'],
+      'Upload date': files.value[i]['created_at'],
+      'Link': "http://127.0.0.1:8000/media"+files.value[i]['sqlite'].split('/media')[1],
+    })
+  }
+}
+
+const deleteFile = (fileId) => {
+  console.log(`delete file ${fileId}`)
+  axios.delete(`http://127.0.0.1:8000/api/files/${fileId}/`)
+  .then(response => {
+    getFiles();
+    // $refs.fileTable.refresh();
+  })
+  .catch(error => {
+      console.log(JSON.stringify(error))
+    })
+}
+
+const checkReliability = (fileId) => {
+  let formData = new FormData();
+  formData.append('file_id', fileId)
+  axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData)
+  .then(response => {
+    taskId.value = response.data.taskId;
+  })
+  .catch(error => {
+    console.log(JSON.stringify(error))
+  })
+}
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => getFiles());
+
+</script>
+
 <template>
   <v-main>
     <v-container>
@@ -67,71 +145,6 @@ Code under GPL v3.0 licence
 <!--  <simple-preset v-show="false"></simple-preset>-->
 
 </template>
-
-<script>
-import axios from "axios";
-export default {
-  name: "files",
-  data:function (){
-		return{
-      files: [],
-      fields: ['File name', 'Rebuild', 'Upload date', 'Download', 'Analyse', 'Delete'],
-      filesItems: [],
-      downloadableLinks: [],
-      showSimplePreset: false,
-    }
-  },
-  methods: {
-    getFiles() {
-      this.files = []
-      this.filesItems = []
-      axios.get(`http://127.0.0.1:8000/api/files`)
-      .then(response => {
-        this.files = response.data
-        this.organizeFiles()
-      })
-      .catch(error => {
-          console.log(JSON.stringify(error))
-      })
-    },
-    organizeFiles(){
-      for(let i=0; i<this.files.length;i++){
-        this.filesItems.push({
-          'File name': this.files[i]['file_name'],
-          'Rebuild': this.files[i]['rebuild'],
-          'Upload date': this.files[i]['created_at'],
-          'Link': "http://127.0.0.1:8000/media"+this.files[i]['sqlite'].split('/media')[1],
-        })
-      }
-    },
-    deleteFile(fileId){
-      console.log(`delete file ${fileId}`)
-      axios.delete(`http://127.0.0.1:8000/api/files/${fileId}/`)
-      .then(response => {
-        this.getFiles()
-        this.$refs.fileTable.refresh()
-      })
-      .catch(error => {
-          console.log(JSON.stringify(error))
-        })
-    },
-    checkReliability(fileId){
-      let formData = new FormData();
-      formData.append('file_id', fileId)
-      axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData)
-      .then(response => {
-        this.taskId = response.data.taskId
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error))
-      })
-    }
-  },
-  mounted() {
-    this.getFiles()
-  }
-}
-</script>
 
 <style scoped>
 
