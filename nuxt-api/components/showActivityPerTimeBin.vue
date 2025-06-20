@@ -113,7 +113,7 @@ watch(() => props.dataActivity, (newValue, oldValue) => {
         <h3>Total distance travelled during the experiment:</h3>
         <v-list>
           <v-list-item v-for="animal in Object.keys(dataActivity.totalDistance)">
-            <strong>{{ animal }}</strong>: {{ Math.ceil(dataActivity.totalDistance[animal]) }} cm
+            <strong>{{ animal }}</strong>: {{ Math.ceil(dataActivity.totalDistance[animal]/100) }} m
           </v-list-item>
         </v-list>
         <linePlotActivityPerTimeBin :title='"Activity per time bin (distance travelled every "+timeBin.toString()+" minutes) in centimeters"' :timeline="dataActivity.timeLine" :activity="dataActivity.activity"></linePlotActivityPerTimeBin>
