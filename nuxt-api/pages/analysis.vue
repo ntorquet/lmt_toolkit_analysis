@@ -110,7 +110,19 @@ const logInfo = ref({});
 const logChecked = ref(false);
 const logOnChecking = ref(false);
 const rebuildVersion = ref({});
-
+const presetInfoToSend = ref({
+  simplePreset: {
+    presetName: "Simple preset",
+    presetDescription: "Number of occurrences, total time and mean time per occurrence of every behaviors that are listed in the document section for each individual and for the whole experiment.",
+    show: false
+  },
+  activityPerTimeBinPreset: {
+    presetName: "Activity per timebin preset",
+    presetDescription: "Total distance and distance travelled per time bin selected for each individual.",
+    show: false
+  }
+});
+const currentPresetInfo = ref("simplePreset");
 
 ////////////////////////////////
 // METHODS
@@ -501,6 +513,12 @@ const doAnalysis = async (presetTemp) => {
   }
 }
 
+const showPresetInfo = (preset) => {
+  console.log(preset);
+  currentPresetInfo.value = preset;
+  presetInfoToSend.value[preset]["show"] = true;
+}
+
 ////////////////////////////////
 // ONMOUNTED
 ////////////////////////////////
@@ -713,7 +731,7 @@ watch(() => unitMaxT.value, () => {
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information" @click="showPresetInfo('simplePreset')"></v-btn>
                 </v-card-actions>
               </v-card>
 
@@ -733,9 +751,11 @@ watch(() => unitMaxT.value, () => {
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information" @click="showPresetInfo('activityPerTimeBinPreset')"></v-btn>
                 </v-card-actions>
               </v-card>
+
+              <preset-information v-if="presetInfoToSend[currentPresetInfo]['show']" :presetInfo="presetInfoToSend[currentPresetInfo]"></preset-information>
 
 <!--              <OpenFieldPreset :duration="openfieldDuration"></OpenFieldPreset>-->
 
