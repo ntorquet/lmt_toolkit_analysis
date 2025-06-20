@@ -11,15 +11,9 @@ Code under GPL v3.0 licence
 ////////////////////////////////
 // PROPS
 ////////////////////////////////
-import {text} from "node:stream/consumers";
-
 const props = defineProps({
-  presetName: {
-    type: String,
-    required: true
-  },
-  presetDescription: {
-    type: text,
+  presetInfo: {
+    type: Object,
     required: true
   }
 });
@@ -27,10 +21,14 @@ const props = defineProps({
 
 
 <template>
-  <v-card>
-    <v-card-title>{{ props.presetName }}</v-card-title>
-    <v-card-text>{{ props.presetDescription }}</v-card-text>
-  </v-card>
+  <v-dialog v-model="props.presetInfo.show" width="800">
+    <v-card width="auto" prepend-icon="mdi-information" :title="props.presetInfo.presetName">
+      <v-card-text>{{ props.presetInfo.presetDescription }}</v-card-text>
+      <v-card-actions>
+        <v-btn class="ms-auto" text="Ok" @click="props.presetInfo.show=false"></v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 
