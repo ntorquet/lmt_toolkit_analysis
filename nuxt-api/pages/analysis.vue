@@ -19,43 +19,50 @@ import axios from "axios";
 ////////////////////////////////
 const timelineItems = ref({
   selectSqlite: {
-    title: 'Select a SQLite file',
+    title: 'File Selection',
     icon: 'mdi-download',
     color: 'pink',
-    text: 'This file will be downloaded into the server to be process.'
+    text: 'The chosen SQLite file will be downloaded into the server to be process.'
   },
   reliability: {
-    title: 'Check the reliability',
+    title: 'Quality control',
     icon: 'mdi-database-check',
     color: 'grey',
     text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
   },
   animalInfo: {
-    title: 'Add animal information',
+    title: 'Animal info',
     icon: 'mdi-database-edit',
     color: 'grey',
     text: 'Add sex, treatment columns. Modify the name of each animal.'
   },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'grey',
+    text: 'Create night events in the database to be able to extract results from these periods.'
+  },
   rebuild: {
-    title: 'Rebuild the database',
+    title: 'Rebuild events',
     icon: 'mdi-database-cog',
     color: 'grey',
-    text: 'This will create behavioral events into the event table of the SQLite file.'
+    text: 'This will create behavioral events into the event table of the SQLite file. ' +
+        'If the file was rebuilt, it is possible to skip this step.'
   },
   configAnalysis: {
-    title: 'Configure the analysis',
+    title: 'Analysis setup',
     icon: 'mdi-cogs',
     color: 'grey',
-    text: 'Delimit a period to analyse, and more.'
+    text: 'Choose a preset, delimit a period to analyse, and more.'
   },
   analysis: {
-    title: 'Analyse your data',
+    title: 'Compute',
     icon: 'mdi-chart-line',
     color: 'grey',
     text: 'LMT-toolkit processes LMT experiments automatically for you!'
   },
   save: {
-    title: 'Save your results',
+    title: 'Results export',
     icon: 'mdi-content-save',
     color: 'grey',
     text: 'Download your result into a CSV file.'
@@ -629,6 +636,7 @@ watch(() => unitMaxT.value, () => {
         <v-window-item :value="4">
           <div class="pa-4 text-center">
             <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
+            <v-btn class="mr-4"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
             <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="850">
               <show-reliability v-bind:data="dataReliability" v-bind:filename="file.name"></show-reliability>

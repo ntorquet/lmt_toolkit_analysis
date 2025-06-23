@@ -19,44 +19,50 @@ import {ref} from "vue";
 ////////////////////////////////
 const timelineItems = ref({
   selectSqlite: {
-    title: 'Select a SQLite file',
+    title: 'File Selection',
     icon: 'mdi-download',
     color: 'pink',
-    text: 'This file will be downloaded into the server to be process.'
+    text: 'The chosen SQLite file will be downloaded into the server to be process.'
   },
   reliability: {
-    title: 'Check the reliability',
+    title: 'Quality control',
     icon: 'mdi-database-check',
     color: 'green',
     text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
   },
   animalInfo: {
-    title: 'Add animal information',
+    title: 'Animal info',
     icon: 'mdi-database-edit',
     color: 'purple',
     text: 'Add sex, treatment columns. Modify the name of each animal.'
   },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'amber-lighten-1',
+    text: 'Create night events in the database to be able to extract results from these periods.'
+  },
   rebuild: {
-    title: 'Rebuild the database',
+    title: 'Rebuild events',
     icon: 'mdi-database-cog',
     color: 'red-lighten-1',
     text: 'This will create behavioral events into the event table of the SQLite file. ' +
         'If the file was rebuilt, it is possible to skip this step.'
   },
   configAnalysis: {
-    title: 'Configure the analysis',
+    title: 'Analysis setup',
     icon: 'mdi-cogs',
-    color: 'amber-lighten-1',
+    color: 'light-green',
     text: 'Choose a preset, delimit a period to analyse, and more.'
   },
   analysis: {
-    title: 'Analyse your data',
+    title: 'Compute',
     icon: 'mdi-chart-line',
     color: 'cyan-lighten-1',
     text: 'LMT-toolkit processes LMT experiments automatically for you!'
   },
   save: {
-    title: 'Save your results',
+    title: 'Results export',
     icon: 'mdi-content-save',
     color: 'indigo-lighten-2',
     text: 'Download your result into a CSV file.'
@@ -103,10 +109,11 @@ const showDetailsfunction = (toShow) => {
 
       <v-row>
         <v-col>
-          <v-timeline direction="horizontal"  class="mt-10 mb-10">
+          <v-timeline direction="horizontal"  class="mt-10 mb-10 justify-center">
             <v-timeline-item v-for="(item, key) in timelineItems"
               :dot-color="item.color"
               :icon="item.icon"
+              max-width="200"
             >
               <v-card>
                 <v-card-title>{{ item.title }}</v-card-title>

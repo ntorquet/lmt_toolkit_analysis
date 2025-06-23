@@ -7,11 +7,27 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 <template>
-  <div>
+  <div class="page-wrapper">
     <TheHeader />
-    <slot />
+    <div  class="content">
+      <slot />
+    </div>
     <TheFooter />
   </div>
 </template>
 <script setup lang="ts">
 </script>
+
+<style scoped>
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+</style>
