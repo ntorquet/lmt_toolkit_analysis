@@ -828,3 +828,10 @@ def saveAnimalInfo(file, animalsInfo, version):
     return "Done"
 
 
+def rebuildNightEvent(file, version):
+    '''
+    Rebuild night event
+    '''
+    print("in rebuildNightEvent method")
+
+

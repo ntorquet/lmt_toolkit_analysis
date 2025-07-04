@@ -36,18 +36,18 @@ const timelineItems = ref({
     color: 'grey',
     text: 'Add sex, treatment columns. Modify the name of each animal.'
   },
-  nightEvent: {
-    title: 'Rebuild nights',
-    icon: 'mdi-weather-night',
-    color: 'grey',
-    text: 'Create night events in the database to be able to extract results from these periods.'
-  },
   rebuild: {
     title: 'Rebuild events',
     icon: 'mdi-database-cog',
     color: 'grey',
     text: 'This will create behavioral events into the event table of the SQLite file. ' +
         'If the file was rebuilt, it is possible to skip this step.'
+  },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'grey',
+    text: 'Create night events in the database to be able to extract results from these periods.'
   },
   configAnalysis: {
     title: 'Analysis setup',
@@ -218,6 +218,7 @@ const getProgression = async () => {
           console.log("step 4");
 
           if(!logChecked.value && !logOnChecking.value){
+            console.log("step 4-1");
             dataReliability.value = task.value.result;
             animalsInfo.value = dataReliability.value.mouse;
             for(let animal in animalsInfo.value) {
@@ -242,6 +243,7 @@ const getProgression = async () => {
             break;
           }
           else if(!logChecked.value && logOnChecking.value){
+            console.log("step 4-2");
             logInfo.value = task.value.result;
             logOnChecking.value = false;
             logChecked.value = true;
@@ -251,16 +253,22 @@ const getProgression = async () => {
 
         case 5:
           // processing rebuild
+          console.log("step 5");
           stepUp();
           tasksProgression.value = 0;
           rebuildSQLiteFile();
           break;
         case 6:
+          // rebuild night event
           console.log("step 6");
+          // stepUp();
+          break;
+        case 7:
+          console.log("step 7");
           messageStep6.value = task.value.result;
           stepUp();
           break;
-        case 8:
+        case 9:
           resultsSimplePreset.value = {};
           resultsActivityPerTimeBin.value = {};
           switch(preset.value){
@@ -397,12 +405,15 @@ const stepToTimeLine = () => {
       timelineItems.value["rebuild"]["color"] = "red-lighten-1";
       break
     case 7:
-      timelineItems.value["configAnalysis"]["color"] = "amber-lighten-1";
+      timelineItems.value["nightEvent"]["color"] = "amber-lighten-1";
       break
     case 8:
-      timelineItems.value["analysis"]["color"] = "cyan-lighten-1";
+      timelineItems.value["configAnalysis"]["color"] = "light-green";
       break
     case 9:
+      timelineItems.value["analysis"]["color"] = "cyan-lighten-1";
+      break
+    case 10:
       timelineItems.value["save"]["color"] = "indigo-lighten-2";
       break
   }
@@ -415,7 +426,7 @@ const stepUp = () => {
   stepToTimeLine();
 }
 const stepDown = () => {
-  if(step.value==9){;
+  if(step.value==10){;
     step.value=step.value-2;
     // reinitialize some variables here to avoid nuxt/vue problems
   }
@@ -636,7 +647,6 @@ watch(() => unitMaxT.value, () => {
         <v-window-item :value="4">
           <div class="pa-4 text-center">
             <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
-            <v-btn class="mr-4"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
             <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="850">
               <show-reliability v-bind:data="dataReliability" v-bind:filename="file.name"></show-reliability>
@@ -681,26 +691,37 @@ watch(() => unitMaxT.value, () => {
         </v-window-item>
 
         <v-window-item :value="6">
-          <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
-          <v-card-text>
-            <v-col
-              class="text-subtitle-1 text-center"
-              cols="12"
-            >
-            </v-col>
-            <v-progress-linear
-                v-model="tasksProgression"
-                color="blue-grey"
-                height="25"
+          <v-card>
+            <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
+            <v-card-text>
+              <v-col
+                class="text-subtitle-1 text-center"
+                cols="12"
               >
-                <template v-slot:default="{ value }">
-                  <strong>{{ Math.ceil(value) }}%</strong>
-                </template>
-              </v-progress-linear>
-          </v-card-text>
+              </v-col>
+              <v-progress-linear
+                  v-model="tasksProgression"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}%</strong>
+                  </template>
+                </v-progress-linear>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
         <v-window-item :value="7">
+          <v-card>
+            <v-card-title><v-icon icon="mdi-weather-night"></v-icon> Rebuild night events</v-card-title>
+            <v-card-text>
+              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <v-window-item :value="8">
           <v-card>
             <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
             <v-card-text class="align-center">
@@ -793,32 +814,36 @@ watch(() => unitMaxT.value, () => {
           </v-card>
         </v-window-item>
 
-        <v-window-item :value="8">
-          <v-card-title><v-icon icon="mdi-chart-line"></v-icon> Results extraction</v-card-title>
-          <v-card-text>
-            <v-progress-linear
-                v-model="tasksProgression"
-                color="blue-grey"
-                height="25"
-              >
-                <template v-slot:default="{ value }">
-                  <strong>{{ Math.ceil(value) }}%</strong>
-                </template>
-              </v-progress-linear>
-          </v-card-text>
+        <v-window-item :value="9">
+          <v-card>
+            <v-card-title><v-icon icon="mdi-chart-line"></v-icon> Results extraction</v-card-title>
+            <v-card-text>
+              <v-progress-linear
+                  v-model="tasksProgression"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}%</strong>
+                  </template>
+                </v-progress-linear>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
-        <v-window-item :value="9">
-          <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
-          <v-card-text>
-            <show-analysis v-if="showSimplePreset" :data="resultsSimplePreset" :filename="filename"></show-analysis>
+        <v-window-item :value="10">
+          <v-card>
+            <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
+            <v-card-text>
+              <show-analysis v-if="showSimplePreset" :data="resultsSimplePreset" :filename="filename"></show-analysis>
 
-            <showActivityPerTimeBin v-if="showActivityPerTimeBinPreset" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
-          </v-card-text>
+              <showActivityPerTimeBin v-if="showActivityPerTimeBinPreset" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
       </v-window>
-      <v-btn v-if="step==9" class="mr-4" @click="stepDown">
+      <v-btn v-if="step==10" class="mr-4" @click="stepDown">
         <v-icon icon="mdi-arrow-left-bold"></v-icon>
         Come back to the previous step
       </v-btn>

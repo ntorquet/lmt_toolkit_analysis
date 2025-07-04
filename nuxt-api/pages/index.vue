@@ -36,18 +36,18 @@ const timelineItems = ref({
     color: 'purple',
     text: 'Add sex, treatment columns. Modify the name of each animal.'
   },
-  nightEvent: {
-    title: 'Rebuild nights',
-    icon: 'mdi-weather-night',
-    color: 'amber-lighten-1',
-    text: 'Create night events in the database to be able to extract results from these periods.'
-  },
   rebuild: {
     title: 'Rebuild events',
     icon: 'mdi-database-cog',
     color: 'red-lighten-1',
     text: 'This will create behavioral events into the event table of the SQLite file. ' +
         'If the file was rebuilt, it is possible to skip this step.'
+  },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'amber-lighten-1',
+    text: 'Create night events in the database to be able to extract results from these periods.'
   },
   configAnalysis: {
     title: 'Analysis setup',
