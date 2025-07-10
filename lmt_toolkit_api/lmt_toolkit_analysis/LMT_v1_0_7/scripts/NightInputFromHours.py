@@ -9,11 +9,11 @@ Code under GPL v3.0 licence
 
 import sys
 
-from lmtanalysis.Util import getStartInDatetime, getEndInDatetime, getNumberOfFrames
-from lmtanalysis.Event import *
-from lmtanalysis.FileUtil import getFilesToProcess
+from ..lmtanalysis.Util import getStartInDatetime, getEndInDatetime, getNumberOfFrames
+from ..lmtanalysis.Event import *
+from ..lmtanalysis.FileUtil import getFilesToProcess
 import datetime
-from lmtanalysis.TaskLogger import TaskLogger
+from ..lmtanalysis.TaskLogger import TaskLogger
 
 
 timeUnit = {
@@ -77,7 +77,7 @@ def findFrameFromDatetime(file, theDatetime: datetime.datetime):
 
 
 
-def buildNightEvent(file, nightStartHour, nightEndHour):
+def buildNightEvent(file, nightStartHour, nightEndHour, version=None):
     '''
     Rebuild night events from start time and end time (datete.time format)
     '''
@@ -153,7 +153,10 @@ def buildNightEvent(file, nightStartHour, nightEndHour):
     nightTimeLine.endRebuildEventTimeLine(connection)
     print(nightTimeLine.getNumberOfEvent())
     t = TaskLogger(connection)
-    t.addLog("Build Event Night", tmin=0, tmax=experimentTotalNumberOfFrame)
+    if version:
+        t.addLog("Build Event Night", version=version, tmin=0, tmax=experimentTotalNumberOfFrame)
+    else:
+        t.addLog("Build Event Night", tmin=0, tmax=experimentTotalNumberOfFrame)
 
     connection.close()
     print(f"{file}: night events built")

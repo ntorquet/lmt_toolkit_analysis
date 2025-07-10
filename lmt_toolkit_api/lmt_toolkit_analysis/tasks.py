@@ -9,6 +9,7 @@ Code under GPL v3.0 licence
 import math
 import os
 
+
 from .celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -32,6 +33,7 @@ from .LMT_v1_0_7.lmtanalysis.Util import getAllEvents
 
 from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_7.lmtanalysis.AnimalType import AnimalType
+from .LMT_v1_0_7.scripts.NightInputFromHours import buildNightEvent
 
 
 from .methods import *
@@ -1033,3 +1035,29 @@ def activityPerTimeBin(self, file, timeBin=10):
     progress_recorder.set_progress(2, 2, f'Job done: activity extracted')
 
     return activityPerTimeBin
+
+
+@shared_task(bind=True)
+def buildNightEventTask(self, file, startHour, endHour, version):
+    '''
+    :param file: the SQLite LMT_v1_0_3 file
+    :param startHour: the start time of the night period in string like "19:00"
+    :param endHour: the end time of the night period in string like "07:00"
+    '''
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(0, 1, f'Starting')
+
+    startTimeNight = datetime.time(hour=int(startHour.split(':')[0]), minute=int(startHour.split(':')[1]))
+    endTimeNight = datetime.time(hour=int(endHour.split(':')[0]), minute=int(endHour.split(':')[1]))
+
+    try:
+        buildNightEvent(file, startTimeNight, endTimeNight, version)
+        result = "success: night events rebuilt"
+    except:
+        result = "error during night rebuild"
+
+    progress_recorder.set_progress(1, 1, f'Job done: nights rebuilt')
+
+    return result
+
+

@@ -122,7 +122,7 @@ onMounted(() => getFiles());
         </v-table>
 
 
-        <v-table ref="fileTable" striped hover :items="filesItems" :fields="fields">
+        <v-table ref="fileTable" striped="even" :items="filesItems" :fields="fields">
           <template #cell(Download)="row">
             <v-btn size="sm" :href="filesItems[row.index]['Link']">
               <v-icon icon="mdi-download"></v-icon>

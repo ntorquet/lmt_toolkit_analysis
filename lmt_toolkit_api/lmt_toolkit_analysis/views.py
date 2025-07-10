@@ -203,9 +203,25 @@ class RebuildSqliteAPIView(APIView):
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            rebuildContext = tasks.rebuildSQLite.delay(path_file, file_id, version= "LMT-toolkit "+version.lmt_toolkit_version)
+            rebuildContext = tasks.rebuildSQLite.delay(path_file, file_id, version="LMT-toolkit "+version.lmt_toolkit_version)
             # #
             task_id = rebuildContext.task_id
+            print(task_id)
+            return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
+        except:
+            return JsonResponse({'Error': 'An error occurs during the rebuild'})
+
+
+class RebuildNightEventAPIView(APIView):
+    def post(self, request):
+        version = Version.objects.latest('id')
+        file_id = int(request.data['file_id'])
+        sqliteFile = File.objects.get(id=file_id)
+        path_file = sqliteFile.sqlite.path
+        try:
+            rebuildNightContext = tasks.buildNightEventTask.delay(file=path_file, startHour=request.data['startHour'], endHour=request.data['endHour'], version="LMT-toolkit "+version.lmt_toolkit_version)
+            # #
+            task_id = rebuildNightContext.task_id
             print(task_id)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:

@@ -256,14 +256,15 @@ const getProgression = async () => {
         case 6:
           // processing rebuild
           console.log("step 6");
+          // stepUp();
+          // tasksProgression.value = 0;
+          // rebuildSQLiteFile();
           stepUp();
-          tasksProgression.value = 0;
-          rebuildSQLiteFile();
           break;
         case 7:
           // rebuild night event
           console.log("step 7");
-          // stepUp();
+          stepUp();
           break;
         case 8:
           // TODO: check if this step is still relevant
@@ -456,9 +457,13 @@ const saveAnimalInfo = async (rebuild=true) => {
   try {
     const response = await axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData);
     task_id.value = response.data.task_id;
-    if(!rebuild){
-      stepUp();
+    if(rebuild){
+      rebuildSQLiteFile();
     }
+    // else {
+    //   rebuildSQLiteFile();
+    // }
+    stepUp();
     getProgression();
   }
   catch (error) {
@@ -468,10 +473,29 @@ const saveAnimalInfo = async (rebuild=true) => {
 
 const rebuildSQLiteFile = async () => {
   let formData = new FormData();
-  formData.append('file_id', file_id.value)
+  formData.append('file_id', file_id.value);
   try {
     const response = await axios.post(
         `http://127.0.0.1:8000/api/rebuild/`,
+        formData
+    );
+    task_id.value = response.data.task_id;
+    getProgression();
+
+  }
+  catch (errorResp) {
+    console.log(JSON.stringify(errorResp));
+  }
+}
+
+const rebuildNightEventFromHour = async () => {
+  let formData = new FormData();
+  formData.append('file_id', file_id.value);
+  formData.append('startHour', startTimeNight.value);
+  formData.append('endHour', endTimeNight.value);
+    try {
+    const response = await axios.post(
+        `http://127.0.0.1:8000/api/rebuildNight/`,
         formData
     );
     task_id.value = response.data.task_id;
@@ -717,34 +741,57 @@ watch(() => unitMaxT.value, () => {
         </v-window-item>
 
         <v-window-item :value="7">
-          <v-card>
-            <v-card-title><v-icon icon="mdi-weather-night"></v-icon> Rebuild night events</v-card-title>
-            <v-card-text v-if="dataReliability.sensors">
-              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"
-        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>
-
-
-
-            </v-card-text>
+          <h1><v-icon icon="mdi-weather-night"></v-icon> Rebuild night events</h1>
+          <v-card class="mt-2">
+            <v-card-title><v-icon icon="mdi-information"></v-icon> Information about the experiment</v-card-title>
             <v-card-text>
-<!--              <v-text-field label="Night start time (ex: 07:00)" v-model="startTimeNight"></v-text-field>-->
-<!--              <v-text-field label="End of night time" v-model="endTimeNight"></v-text-field>-->
+              <v-list>
+                <v-list-item><strong>Start time:</strong> {{ dataReliability.startXp }}</v-list-item>
+                <v-list-item><strong>End time:</strong> {{ dataReliability.endXp }}</v-list-item>
+                <v-list-item><strong>Duration:</strong> {{ dataReliability.realDurationInHours }} hours</v-list-item>
+              </v-list>
+              <v-alert v-if="dataReliability.realDurationInHours<10" type="warning">
+                From the duration of this experiment, there should be no night-time period and you should skip this step.<br />
+                <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+              </v-alert>
+            </v-card-text>
+          </v-card>
+
+          <v-card v-if="dataReliability.sensors" class="mt-2">
+            <v-card-title><v-icon icon="mdi-chip"></v-icon> From sensors</v-card-title>
+            <v-card-text>
+<!--              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"-->
+<!--        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>-->
+            </v-card-text>
+          </v-card>
+
+          <v-card>
+            <v-card-title><v-icon icon="mdi-clock-time-eight-outline"></v-icon> Manual definition of the night period</v-card-title>
+            <v-card-text class="mt-2 pb-2">
               <v-row justify="space-around">
-                <v-time-picker
-                  v-model="startTimeNight"
-                  format="24hr"
-                ></v-time-picker>
-                <v-time-picker
-                  v-model="endTimeNight"
-                  format="24hr"
-                ></v-time-picker>
+                <v-col>
+                  <h2 class="text-center">Night start time</h2>
+                  <v-time-picker
+                    v-model="startTimeNight"
+                    format="24hr"
+                    class="text-center"
+                  ></v-time-picker>
+                  {{ startTimeNight }}
+                </v-col>
+                <v-col>
+                  <h2 class="text-center">Night end time</h2>
+                  <v-time-picker
+                    v-model="endTimeNight"
+                    format="24hr"
+                    class="text-center"
+                  ></v-time-picker>
+                  {{ endTimeNight }}
+                </v-col>
               </v-row>
             </v-card-text>
-            <v-card-actions>
-              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
-              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
-            </v-card-actions>
           </v-card>
+          <v-btn class="mr-4 mt-2 mb-2" @click="rebuildNightEventFromHour"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
+          <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
         </v-window-item>
 
         <v-window-item :value="8">

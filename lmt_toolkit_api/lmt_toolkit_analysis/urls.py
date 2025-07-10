@@ -30,6 +30,7 @@ urlpatterns = [
     path(r'api/read_file/', ReadFileAPIView.as_view(), name="read_file"),
     path(r'api/checkReliability/', CheckReliabilityAPIView.as_view(), name="checkReliability"),
     path(r'api/rebuild/', RebuildSqliteAPIView.as_view(), name="rebuild"),
+    path(r'api/rebuildNight/', RebuildNightEventAPIView.as_view(), name="rebuildNight"),
     path(r'api/saveAnimalInfo/', SaveAnimalInfoAPIView.as_view(), name="saveAnimalInfo"),
     path(r'api/extractAnalysis/', ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
     path(r'api/activityPerTimeBin/', ActivityPerTimeBinAPIView.as_view(), name="activityPerTimeBin"),
