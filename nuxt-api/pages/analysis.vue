@@ -130,6 +130,8 @@ const presetInfoToSend = ref({
   }
 });
 const currentPresetInfo = ref("simplePreset");
+const startTimeNight = ref("");
+const endTimeNight = ref("");
 
 ////////////////////////////////
 // METHODS
@@ -251,24 +253,26 @@ const getProgression = async () => {
             break;
           }
 
-        case 5:
+        case 6:
           // processing rebuild
-          console.log("step 5");
+          console.log("step 6");
           stepUp();
           tasksProgression.value = 0;
           rebuildSQLiteFile();
           break;
-        case 6:
+        case 7:
           // rebuild night event
-          console.log("step 6");
+          console.log("step 7");
           // stepUp();
           break;
-        case 7:
-          console.log("step 7");
+        case 8:
+          // TODO: check if this step is still relevant
+          console.log("step 8");
           messageStep6.value = task.value.result;
           stepUp();
           break;
         case 9:
+          // display results
           resultsSimplePreset.value = {};
           resultsActivityPerTimeBin.value = {};
           switch(preset.value){
@@ -715,9 +719,31 @@ watch(() => unitMaxT.value, () => {
         <v-window-item :value="7">
           <v-card>
             <v-card-title><v-icon icon="mdi-weather-night"></v-icon> Rebuild night events</v-card-title>
-            <v-card-text>
-              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
+            <v-card-text v-if="dataReliability.sensors">
+              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"
+        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>
+
+
+
             </v-card-text>
+            <v-card-text>
+<!--              <v-text-field label="Night start time (ex: 07:00)" v-model="startTimeNight"></v-text-field>-->
+<!--              <v-text-field label="End of night time" v-model="endTimeNight"></v-text-field>-->
+              <v-row justify="space-around">
+                <v-time-picker
+                  v-model="startTimeNight"
+                  format="24hr"
+                ></v-time-picker>
+                <v-time-picker
+                  v-model="endTimeNight"
+                  format="24hr"
+                ></v-time-picker>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
+              <v-btn class="mr-4" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+            </v-card-actions>
           </v-card>
         </v-window-item>
 
