@@ -130,8 +130,11 @@ const presetInfoToSend = ref({
   }
 });
 const currentPresetInfo = ref("simplePreset");
+const nightAlreadyInLog = ref({});
 const startTimeNight = ref("");
 const endTimeNight = ref("");
+const errorNight = ref(false);
+const validationNightRebuild = ref(false);
 
 ////////////////////////////////
 // METHODS
@@ -249,6 +252,7 @@ const getProgression = async () => {
             logInfo.value = task.value.result;
             logOnChecking.value = false;
             logChecked.value = true;
+            checkNightEventInLog();
             checkRebuildLMTToolkitVersion();
             break;
           }
@@ -264,7 +268,11 @@ const getProgression = async () => {
         case 7:
           // rebuild night event
           console.log("step 7");
-          stepUp();
+          if(!errorNight.value){
+            validationNightRebuild.value = true;
+            console.log("validated!")
+            stepUp();
+          }
           break;
         case 8:
           // TODO: check if this step is still relevant
@@ -488,6 +496,22 @@ const rebuildSQLiteFile = async () => {
   }
 }
 
+const getNightEventInSqlite = () => {
+  console.log("getNightEventInSqlite");
+}
+
+const checkNightEventInLog = () => {
+  console.log("checkNightEventInLog");
+  nightAlreadyInLog.value = {};
+  let nightCounter = 0;
+  for(let log in logInfo.value){
+    if(logInfo.value[log]['process'] == "Build Event Night"){
+      nightCounter += 1;
+      nightAlreadyInLog.value = {'start': logInfo.value[log]['tmin'], 'end': logInfo.value[log]['tmax'], 'version': logInfo.value[log]['version'], 'date': logInfo.value[log]['date']};
+    }
+  }
+}
+
 const rebuildNightEventFromHour = async () => {
   let formData = new FormData();
   formData.append('file_id', file_id.value);
@@ -504,6 +528,7 @@ const rebuildNightEventFromHour = async () => {
   }
   catch (errorResp) {
     console.log(JSON.stringify(errorResp));
+    errorNight.value = true;
   }
 }
 
@@ -750,7 +775,16 @@ watch(() => unitMaxT.value, () => {
                 <v-list-item><strong>End time:</strong> {{ dataReliability.endXp }}</v-list-item>
                 <v-list-item><strong>Duration:</strong> {{ dataReliability.realDurationInHours }} hours</v-list-item>
               </v-list>
-              <v-alert v-if="dataReliability.realDurationInHours<10" type="warning">
+              <v-alert class="mt-2" v-if="Object.keys(nightAlreadyInLog).length>0" type="info">
+                Night(s) already rebuilt<br />
+<!--                <v-list>-->
+<!--                  <v-list-item v-for="(night, index) in nightAlreadyInLog">-->
+                    {{ nightAlreadyInLog }}
+<!--                  </v-list-item>-->
+<!--                </v-list>-->
+<!--                {{ nightAlreadyInLog }}-->
+              </v-alert>
+              <v-alert class="mt-2" v-if="dataReliability.realDurationInHours<10" type="warning">
                 From the duration of this experiment, there should be no night-time period and you should skip this step.<br />
                 <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
               </v-alert>
@@ -790,11 +824,23 @@ watch(() => unitMaxT.value, () => {
               </v-row>
             </v-card-text>
           </v-card>
+
+          <v-alert v-if="errorNight" type="error">
+            Something wrong happen during the night rebuild. You can try again.
+          </v-alert>
+
+          <v-alert v-if="validationNightRebuild" type="success">
+            Night(s) rebuilt!
+          </v-alert>
+
+
+
           <v-btn class="mr-4 mt-2 mb-2" @click="rebuildNightEventFromHour"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
           <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
         </v-window-item>
 
         <v-window-item :value="8">
+          <v-snackbar color="green" v-model="validationNightRebuild"><v-icon icon="mdi-check-circle" class="mr-2" /> Night(s) rebuilt!</v-snackbar>
           <v-card>
             <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
             <v-card-text class="align-center">
@@ -885,6 +931,10 @@ watch(() => unitMaxT.value, () => {
               </v-col>
             </v-card-text>
           </v-card>
+            <v-btn  class="mr-4 mt-2 mb-2" @click="stepDown">
+              <v-icon icon="mdi-arrow-left-bold"></v-icon>
+              Come back to the previous step (night rebuild)
+          </v-btn>
         </v-window-item>
 
         <v-window-item :value="9">
