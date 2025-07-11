@@ -33,8 +33,7 @@ from .LMT_v1_0_7.lmtanalysis.Util import getAllEvents
 
 from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_7.lmtanalysis.AnimalType import AnimalType
-from .LMT_v1_0_7.scripts.NightInputFromHours import buildNightEvent
-
+from .LMT_v1_0_7.experimental.NightRebuilder import buildNightEvent
 
 from .methods import *
 from .models import File

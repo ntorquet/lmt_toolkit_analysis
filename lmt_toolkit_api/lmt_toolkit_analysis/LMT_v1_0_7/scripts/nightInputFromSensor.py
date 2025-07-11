@@ -1,12 +1,12 @@
 
 
 import sqlite3
-from lmtanalysis.Animal import *
-from lmtanalysis.Event import *
-from lmtanalysis.Measure import *
+from ..lmtanalysis.Animal import *
+from ..lmtanalysis.Event import *
+from ..lmtanalysis.Measure import *
 from tkinter.filedialog import askopenfilename
 import sys
-from lmtanalysis.FileUtil import getFilesToProcess
+from ..lmtanalysis.FileUtil import getFilesToProcess
 
 
 class FileProcessException(Exception):
