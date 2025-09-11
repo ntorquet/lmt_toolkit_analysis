@@ -178,7 +178,9 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-broker_url = 'amqp://guest:guest@localhost:5672//'
+broker_url = 'amqp://guest:guest@localhost:5672//?heartbeat=120'
+
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Europe/Paris"

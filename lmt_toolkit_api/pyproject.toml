@@ -33,7 +33,7 @@ dependencies = [
     "cryptography==45.0.2",
     "cycler==0.12.1",
     "defusedxml==0.7.1",
-    "Django==5.2.1",
+    "Django==5.2.6",
     "django_celery_results==2.6.0",
     "django-cors-headers==4.7.0",
     "django-environ==0.12.0",
