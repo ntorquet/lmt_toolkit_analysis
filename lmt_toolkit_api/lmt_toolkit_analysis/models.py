@@ -8,6 +8,7 @@ Code under GPL v3.0 licence
 '''
 
 from django.db import models
+from django_celery_results import models as celery_models
 import os
 
 
@@ -19,6 +20,8 @@ class File(models.Model):
     tmax = models.IntegerField(null=True, blank=True)
     unitMinT = models.CharField(max_length=255, null=True, blank=True)
     unitMaxT = models.CharField(max_length=255, null=True, blank=True)
+    tasks = models.ManyToManyField(celery_models.TaskResult, related_name="file_to_celery_tasks", blank=True)
+
     deleteFile = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
