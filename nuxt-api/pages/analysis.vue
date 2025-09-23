@@ -466,13 +466,14 @@ const saveAnimalInfo = async (rebuild=true) => {
     const response = await axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData);
     task_id.value = response.data.task_id;
     if(rebuild){
+      tasksProgression.value = 0;
       rebuildSQLiteFile();
+      stepUp();
     }
-    // else {
-    //   rebuildSQLiteFile();
-    // }
-    stepUp();
-    getProgression();
+    else {
+      stepUp();
+      getProgression();
+    }
   }
   catch (error) {
     console.log(JSON.stringify(error));
@@ -488,6 +489,8 @@ const rebuildSQLiteFile = async () => {
         formData
     );
     task_id.value = response.data.task_id;
+    console.log("rebuildSQLiteFile")
+    console.log("step: "+step.value);
     getProgression();
 
   }
@@ -699,7 +702,7 @@ watch(() => unitMaxT.value, () => {
 
         <v-window-item :value="4">
           <div class="pa-4 text-center">
-            <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
+            <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> Quality control</v-btn>
             <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
             <v-dialog v-model="reliabilityModalOpen" scrollable width="850">
               <show-reliability v-bind:data="dataReliability" v-bind:filename="file.name"></show-reliability>
@@ -786,7 +789,7 @@ watch(() => unitMaxT.value, () => {
               </v-alert>
               <v-alert class="mt-2" v-if="dataReliability.realDurationInHours<10" type="warning">
                 From the duration of this experiment, there should be no night-time period and you should skip this step.<br />
-                <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+                <v-btn class="mr-4 mt-2 mb-2" @click="rebuildNightEventFromHour"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
               </v-alert>
             </v-card-text>
           </v-card>
