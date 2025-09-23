@@ -10,8 +10,15 @@ Code under GPL v3.0 licence
 from rest_framework import serializers
 from rest_framework.serializers import Serializer, FileField
 from .models import *
+from django_celery_results import models as celery_models
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = celery_models.TaskResult
+        fields = '__all__'
 
 class FileSerializer(serializers.ModelSerializer):
+    tasks = TaskSerializer(many=True, read_only=True)
     class Meta:
         model = File
         fields = '__all__'

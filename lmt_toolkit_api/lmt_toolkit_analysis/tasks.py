@@ -128,11 +128,11 @@ def getLogInfoTask(self, file, file_id):
     '''
     print("task getLogInfoTask")
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 2, f'Starting')
+    progress_recorder.set_progress(0, 2, f'[Get log info] Starting')
     connection = create_connection(file)
-    progress_recorder.set_progress(1, 2, f'File connected')
+    progress_recorder.set_progress(1, 2, f'[Get log info] File connected')
     logInfo = getLogInfo(connection, file_id)
-    progress_recorder.set_progress(2, 2, f'Log info extracted')
+    progress_recorder.set_progress(2, 2, f'[Get log info] Log info extracted')
     connection.close()
 
     return logInfo
@@ -537,12 +537,12 @@ def rebuildSQLite(self, file, file_id, version):
 
     progress_recorder = ProgressRecorder(self)
     # number of step for progress is evaluated from number of events to rebuild, it will be calculated a bit later
-    progress_recorder.set_progress(0, len(eventClassList)+3, f'Starting')
+    progress_recorder.set_progress(0, len(eventClassList)+3, f'[Rebuild] Starting')
 
     connection = create_connection(file)
     print('File: '+file)
     print(connection)
-    progress_recorder.set_progress(1, len(eventClassList)+3, f'File loaded')
+    progress_recorder.set_progress(1, len(eventClassList)+3, f'[Rebuild] File loaded')
     StartEndFrames = getStartEndExperiment(connection)
     minT = StartEndFrames[0]
     maxT = StartEndFrames[1]
@@ -553,7 +553,7 @@ def rebuildSQLite(self, file, file_id, version):
     print(f"LengthProcess: {lengthProcess}")
 
     # Rebuild_all_event from minT to maxT
-    progress_recorder.set_progress(3, lengthProcess, f'first analysis done - start Rebuild_all_event')
+    progress_recorder.set_progress(3, lengthProcess, f'[Rebuild] first analysis done - start Rebuild_all_event')
     currentLenghtProcess = 4
 
     # process event rebuild one by one
@@ -676,7 +676,7 @@ def rebuildSQLite(self, file, file_id, version):
     # print(response.json())
     print("*********************")
     print(response.status_code)
-    progress_recorder.set_progress(currentLenghtProcess, lengthProcess, f'Rebuild done - compute analysis')
+    progress_recorder.set_progress(currentLenghtProcess, lengthProcess, f'[Rebuild] Rebuild done - compute analysis')
 
     return {"message": "Rebuild done"}
 
@@ -689,7 +689,7 @@ def saveAnimalInfoTask(self, data):
     '''
     print("in saveAnimalInfoTask")
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 4, f'Starting')
+    progress_recorder.set_progress(0, 4, f'[Animal info] Starting')
     file = data['file']
     animalsInfo = data ['animalsInfo']
     version = data['version']
@@ -697,15 +697,15 @@ def saveAnimalInfoTask(self, data):
 
 
     print('File: '+file)
-    progress_recorder.set_progress(1, 4, f'File loaded')
+    progress_recorder.set_progress(1, 4, f'[Animal info] File loaded')
 
     saveAnimalInfo(file, animalsInfo, version)
 
-    progress_recorder.set_progress(3, 4, f'writing into the database')
+    progress_recorder.set_progress(3, 4, f'[Animal info] writing into the database')
 
 
 
-    progress_recorder.set_progress(4, 4, f'Saving done')
+    progress_recorder.set_progress(4, 4, f'[Animal info] Saving done')
 
     return {"message": "Saving done"}
 
@@ -718,7 +718,7 @@ def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitM
     '''
 
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 2, f'Starting')
+    progress_recorder.set_progress(0, 2, f'[Profile analysis] Starting')
 
     connection = create_connection(file)
 
@@ -732,7 +732,7 @@ def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitM
     else:
         maxT = int(tmax)*int(timeUnit[unitMaxT])
 
-    progress_recorder.set_progress(1, 2, f'Start and end frames found')
+    progress_recorder.set_progress(1, 2, f'[Profile analysis] Start and end frames found')
 
     profileData = getDataProfile(connection, minT, maxT, file)
     # print("tmin: " + str(tmin))
@@ -742,12 +742,17 @@ def analyseProfileFromStartTimeToEndTime(self, file,  tmin = 0, tmax = -1, unitM
     # print("minT: "+str(minT))
     # print("maxT: "+str(maxT))
 
-    progress_recorder.set_progress(2, 2, f'Analysis done')
+    progress_recorder.set_progress(2, 2, f'[Profile analysis] Analysis done')
 
     connection.close()
 
     return profileData
 
+
+@shared_task(bind=True)
+def getTest(self):
+    print("coucou")
+    return "coucou"
 
 @shared_task(bind=True)
 def getReliability(self, file, deleteFile = True, file_id = ""):
@@ -756,41 +761,41 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     :return: reliability
     '''
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 10, f'Starting')
+    progress_recorder.set_progress(0, 10, f'[Quality control] Starting')
 
     connection = create_connection(file)
     print('File: '+file)
-    progress_recorder.set_progress(1, 10, f'File loaded')
+    progress_recorder.set_progress(1, 10, f'[Quality control] File loaded')
     print(connection)
     # from .methods import findMiceInSQLiteFile
 
     mice = findMiceInSQLiteFile(connection)
-    progress_recorder.set_progress(2, 10, f'Mice identified')
+    progress_recorder.set_progress(2, 10, f'[Quality control] Mice identified')
     # from .methods import findStartandEndInSQLiteFile
     startAndEnd = findStartandEndInSQLiteFile(connection)
 
-    progress_recorder.set_progress(3, 10, f'Time information found')
+    progress_recorder.set_progress(3, 10, f'[Quality control] Time information found')
     # from .methods import getSensorInSQLiteFile
     sensors = getSensorInSQLiteFile(connection)
-    progress_recorder.set_progress(4, 10, f'Sensors information done')
+    progress_recorder.set_progress(4, 10, f'[Quality control] Sensors information done')
     # from .methods import checkOmittedFrames
     omissions = checkOmittedFrames(connection)
-    progress_recorder.set_progress(5, 10, f'Omissions calculated')
+    progress_recorder.set_progress(5, 10, f'[Quality control] Omissions calculated')
     # from .methods import getAnimalDetection
     list_detection_animals = getAnimalDetection(connection)
-    progress_recorder.set_progress(6, 10, f'Animal detection done')
+    progress_recorder.set_progress(6, 10, f'[Quality control] Animal detection done')
     # from .methods import checkAnimalDetectionOmissions
     percentageOfDetection = checkAnimalDetectionOmissions(omissions['theoricalNumberOfFrame'],
                                                           omissions['nbFramesRecorded'], list_detection_animals)
     # from .methods import getRFIDdetections
     rfid_detection_animals = getRFIDdetections(connection)
-    progress_recorder.set_progress(7, 10, f'RFID detection loaded')
+    progress_recorder.set_progress(7, 10, f'[Quality control] RFID detection loaded')
     # from .methods import getRFIDmatchDetections
     rfidmatch_detection_animals = getRFIDmatchDetections(connection)
-    progress_recorder.set_progress(8, 10, f'RFID match done')
+    progress_recorder.set_progress(8, 10, f'[Quality control] RFID match done')
     # from .methods import getRFIDmismatchDetections
     rfidmismatch_detection_animals = getRFIDmismatchDetections(connection)
-    progress_recorder.set_progress(9, 10, f'RFID mismatch done')
+    progress_recorder.set_progress(9, 10, f'[Quality control] RFID mismatch done')
 
     infoFromFile = {'mice': mice, 'startAndEnd': startAndEnd, 'sensors': sensors, 'omissions': omissions, 'list_detection_animals': list_detection_animals,
                 'rfid_detection_animals': rfid_detection_animals, 'rfidmatch_detection_animals': rfidmatch_detection_animals,
@@ -986,7 +991,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
         sensors = {'sensors': "no sensors"}
 
     reliabilityContext.update(sensors)
-    progress_recorder.set_progress(10, 10, f'Reliability done')
+    progress_recorder.set_progress(10, 10, f'[Quality control] Reliability done')
 
     connection.close()
     print(file)
@@ -1014,7 +1019,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     file_id = {'file_id': file_id}
     reliabilityContext.update(file_id)
     reliabilityContext.update(file_url)
-
+    print("gna")
     return reliabilityContext
 
 
@@ -1025,13 +1030,13 @@ def activityPerTimeBin(self, file, timeBin=10):
     :return: activity per timeBin during the whole experiment
     '''
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 2, f'Starting')
+    progress_recorder.set_progress(0, 2, f'[Activity per timebin] Starting')
 
     # Extract activity
-    progress_recorder.set_progress(1, 2, f'Extracting activity for each animal')
+    progress_recorder.set_progress(1, 2, f'[Activity per timebin] Extracting activity for each animal')
     activityPerTimeBin = extractActivityPerAnimalWholeExperiment(file, timeBin)
 
-    progress_recorder.set_progress(2, 2, f'Job done: activity extracted')
+    progress_recorder.set_progress(2, 2, f'[Activity per timebin] Job done: activity extracted')
 
     return activityPerTimeBin
 
@@ -1044,7 +1049,7 @@ def buildNightEventTask(self, file, startHour, endHour, version):
     :param endHour: the end time of the night period in string like "07:00"
     '''
     progress_recorder = ProgressRecorder(self)
-    progress_recorder.set_progress(0, 1, f'Starting')
+    progress_recorder.set_progress(0, 1, f'[Nights rebuild] Starting')
 
     startTimeNight = datetime.time(hour=int(startHour.split(':')[0]), minute=int(startHour.split(':')[1]))
     endTimeNight = datetime.time(hour=int(endHour.split(':')[0]), minute=int(endHour.split(':')[1]))
@@ -1055,7 +1060,7 @@ def buildNightEventTask(self, file, startHour, endHour, version):
     except:
         result = "error during night rebuild"
 
-    progress_recorder.set_progress(1, 1, f'Job done: nights rebuilt')
+    progress_recorder.set_progress(1, 1, f'[Nights rebuild] Job done: nights rebuilt')
 
     return result
 

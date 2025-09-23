@@ -10,6 +10,7 @@ Code under GPL v3.0 licence
 import json
 import os
 from pathlib import Path
+from time import sleep
 
 from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
@@ -18,9 +19,13 @@ from rest_framework import viewsets, status, generics, parsers, permissions
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from . import tasks
 from celery.result import AsyncResult
+from celery.worker.control import revoke
 from django.core.files.base import ContentFile
 from .settings import MEDIA_ROOT
 from .serializers import *
+from .models import File
+from django_celery_results import models as celery_models
+from celery.worker import control
 
 
 from .methods import getReliability
@@ -90,6 +95,9 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             #
             task_id = analysisContext.task_id
 
+            # add the task to the file object
+            new_file.tasks.add(analysisContext)
+
             serializer.data['filename']: file_name
             serializer.data['task_id']: task_id
             print(task_id)
@@ -137,20 +145,32 @@ class FileViewSet(viewsets.ModelViewSet):
 class CheckReliabilityAPIView(APIView):
     @extend_schema(request=FileIdSerializer)
     def post(self, request):
+        print("check reliability")
         serializer = FileIdSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         file_id = serializer.validated_data['file_id']
         sqliteFile = File.objects.get(id=file_id)
+        print(sqliteFile)
         path_file = sqliteFile.sqlite.path
+        # path_file = sqliteFile.path
         print(path_file)
         try:
+            print("into try")
             reliabilityContext = tasks.getReliability.delay(path_file, deleteFile=False, file_id=file_id)
-            # #
-            task_id = reliabilityContext.task_id
-            print(task_id)
+            # reliabilityContext = tasks.getTest.delay()
+            print("after")
+            sleep(1)
+
+            task_id = str(reliabilityContext.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
+            print(f"task id {task_id}")
+
+            # return JsonResponse({'filename': reliabilityContext})
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
-        except:
-            return JsonResponse({'Error': 'An error occurs during the reliability check'})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'An error occurs during the reliability check'})
 
 
 class LogInfoAPIView(APIView):
@@ -164,11 +184,13 @@ class LogInfoAPIView(APIView):
         path_file = sqliteFile.sqlite.path
         try:
             logInfo = tasks.getLogInfoTask.delay(file=path_file, file_id=file_id)
-            task_id = logInfo.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(logInfo.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
             return JsonResponse({'task_id': task_id})
-        except:
-            return JsonResponse({'Error': 'An error occurs during the log export'})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'An error occurs during the log export'})
 
 
 class SaveAnimalInfoAPIView(APIView):
@@ -188,9 +210,11 @@ class SaveAnimalInfoAPIView(APIView):
         animalDict =  {'file': path_file,  'animalsInfo': json.loads(request.data['animalsInfo']), 'version': "LMT-toolkit "+version.lmt_toolkit_version}
         try:
             animalInfoContext = tasks.saveAnimalInfoTask.delay(animalDict)
-            # #
-            task_id = animalInfoContext.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(animalInfoContext.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
+
             return JsonResponse({'task_id': task_id})
         except:
             return JsonResponse({'Error': 'An error occurs during the saving process'})
@@ -204,9 +228,10 @@ class RebuildSqliteAPIView(APIView):
         path_file = sqliteFile.sqlite.path
         try:
             rebuildContext = tasks.rebuildSQLite.delay(path_file, file_id, version="LMT-toolkit "+version.lmt_toolkit_version)
-            # #
-            task_id = rebuildContext.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(rebuildContext.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the rebuild'})
@@ -220,9 +245,10 @@ class RebuildNightEventAPIView(APIView):
         path_file = sqliteFile.sqlite.path
         try:
             rebuildNightContext = tasks.buildNightEventTask.delay(file=path_file, startHour=request.data['startHour'], endHour=request.data['endHour'], version="LMT-toolkit "+version.lmt_toolkit_version)
-            # #
-            task_id = rebuildNightContext.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(rebuildNightContext.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the rebuild'})
@@ -240,9 +266,10 @@ class ExtractAnalysisAPIView(APIView):
         unitMaxT = request.data['unitMaxT']
         try:
             analysisContext = tasks.analyseProfileFromStartTimeToEndTime.delay(path_file,  tmin =tmin , tmax = tmax, unitMinT = unitMinT, unitMaxT = unitMaxT)
-            # #
-            task_id = analysisContext.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(analysisContext.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the rebuild'})
@@ -305,9 +332,24 @@ class ActivityPerTimeBinAPIView(APIView):
         timeBin = int(request.data['timeBin'])
         try:
             activityPerTimeBin = tasks.activityPerTimeBin.delay(path_file, timeBin=timeBin)
-            # #
-            task_id = activityPerTimeBin.task_id
-            print(task_id)
+            sleep(1)
+            task_id = str(activityPerTimeBin.task_id)
+            myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the activity analysis'})
+
+
+class StopCeleryTask(APIView):
+    def post(self, request):
+        task_id = request.data['task_id']
+        try:
+            print(f"revoke tasks {task_id}")
+            # control.revoke(task_id, terminate=True)
+            AsyncResult(task_id).revoke(terminate=True)
+            # AsyncResult.purge()
+            # revoke(task_id, terminate=True)
+            return JsonResponse({'task_id': task_id, 'result': "task revoked"})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'An error occurs during the task revocation'})
