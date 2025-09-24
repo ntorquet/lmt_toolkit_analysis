@@ -21,6 +21,7 @@ router.register('api/analyse', AnalyseLMTFile, basename="analyse")
 router.register('api/reliability', ReliabilityLMTFile, basename="reliability")
 router.register('api/files', FileViewSet, basename='files')
 router.register('api/versions', VersionViewSet, basename='versions')
+router.register('api/presets', PresetViewSet, basename='presets')
 router.register('api/eventDocumentation', EventDocumentationViewSet, basename='eventDocumentation')
 
 urlpatterns = [

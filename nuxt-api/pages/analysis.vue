@@ -717,7 +717,7 @@ watch(() => unitMaxT.value, () => {
               <v-table>
                 <thead>
                   <tr>
-                    <th v-for="(value, name) in animalsInfo[0]" or>{{ name }}</th>
+                    <th v-for="(value, name) in animalsInfo[0]">{{ name }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -850,7 +850,7 @@ watch(() => unitMaxT.value, () => {
               <v-col>
               <v-row>
               <v-card class="mt-4 mr-4" width="400">
-                <v-card-title> Simple preset</v-card-title>
+                <v-card-title> General preset</v-card-title>
                 <v-card-text>
                   <v-alert class="mb-2">
                       By default, the analysis will be done on the total duration of the experiment.<br />
@@ -887,10 +887,10 @@ watch(() => unitMaxT.value, () => {
               </v-card>
 
               <v-card class="mt-4 mr-4" width="400">
-                <v-card-title> Activity preset</v-card-title>
+                <v-card-title> Distance preset</v-card-title>
                 <v-card-text>
                   <v-alert class="mb-2">
-                      The activity preset will give you the activity (distance travelled in meters) by each animal. <br />
+                      The distance preset will give you the activity (distance travelled in meters) by each animal. <br />
                       By default, the analysis will be done on the total duration of the experiment.<br />
                       You have to select a time bin to proceed.
                     </v-alert>

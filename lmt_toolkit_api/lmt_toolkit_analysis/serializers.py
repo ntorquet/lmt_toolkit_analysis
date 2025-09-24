@@ -12,21 +12,26 @@ from rest_framework.serializers import Serializer, FileField
 from .models import *
 from django_celery_results import models as celery_models
 
+
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = celery_models.TaskResult
         fields = '__all__'
 
+
 class FileSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True, read_only=True)
+
     class Meta:
         model = File
         fields = '__all__'
+
 
 class VersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
         fields = '__all__'
+
 
 class EventDocumentationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +41,32 @@ class EventDocumentationSerializer(serializers.ModelSerializer):
 
 class FileIdSerializer(serializers.Serializer):
     file_id = serializers.IntegerField()
+
+
+class MetadataFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metadata
+        fields = '__all__'
+
+
+class MetadataSerializer(serializers.ModelSerializer):
+    metadata_fields = MetadataFieldSerializer(many=True)
+
+    class Meta:
+        model = Metadata
+        fields = '__all__'
+
+
+class PresetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Preset
+        fields = '__all__'
+
+
+class AnalysisPresetSerializer(serializers.ModelSerializer):
+    metadata_fields = MetadataFieldSerializer(many=True)
+
+    class Meta:
+        model = AnalysisPreset
+        fields = '__all__'
+

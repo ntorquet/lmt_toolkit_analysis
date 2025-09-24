@@ -353,3 +353,9 @@ class StopCeleryTask(APIView):
             return JsonResponse({'task_id': task_id, 'result': "task revoked"})
         except Exception as e:
             return JsonResponse({f'{e} Error': 'An error occurs during the task revocation'})
+
+
+class PresetViewSet(viewsets.ModelViewSet):
+    queryset = Preset.objects.all()
+    serializer_class = PresetSerializer
+

@@ -60,7 +60,69 @@ class Version(models.Model):
         verbose_name = 'Version'
         verbose_name_plural = 'Versions'
 
+
 class EventDocumentation(models.Model):
     name = models.CharField(max_length=255)
     representation = models.ImageField(upload_to='./img/', height_field=None, width_field=None, null=True,)
     description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Event Documentation'
+        verbose_name_plural = 'Event Documentations'
+
+
+class MetadataField(models.Model):
+    name = models.CharField(max_length=255)
+    type = models.CharField(max_length=255, null=True, blank=True)
+    unit = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'MetadataField'
+        verbose_name_plural = 'MetadataFields'
+
+
+class Metadata(models.Model):
+    metadata_field = models.ForeignKey(MetadataField, on_delete=models.CASCADE)
+    value = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Metadata'
+        verbose_name_plural = 'Metadata'
+    
+
+class Preset(models.Model):
+    preset_name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.preset_name
+
+    class Meta:
+        verbose_name = 'Preset'
+        verbose_name_plural = 'Presets'
+
+
+class AnalysisPreset(models.Model):
+    preset = models.ForeignKey(Preset, on_delete=models.SET_NULL, blank=True, null=True)
+    file = models.ForeignKey(File, on_delete=models.CASCADE)
+    version = models.ForeignKey(Version, on_delete=models.SET_NULL, blank=True, null=True)
+    metadata = models.ManyToManyField(Metadata, related_name="analysis_presets_to_metadata", blank=True)
+
+    class Meta:
+        verbose_name = 'Analysis preset'
+        verbose_name_plural = 'Analysis presets'
+
+
+class Results(models.Model):
+    analysis_preset = models.ForeignKey(AnalysisPreset, on_delete=models.CASCADE)
+    results = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Results'
+        verbose_name_plural = 'Results'

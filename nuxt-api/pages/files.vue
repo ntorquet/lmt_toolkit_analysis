@@ -194,16 +194,15 @@ onMounted(() => getFiles());
               </td>
               <td>
                 <v-list v-if="file.tasks.length>0">
-                  <v-list-item v-for="task in file.tasks" density="compact">
+                  <v-list-item v-for="task in file.tasks">
                     <div class="d-flex ga-2 align-center" v-if="task.status=='PENDING'">
                       <v-chip class="ma-2" color="primary"><v-icon :icon=dictTasks[task.task_name][0] class="mr-2"></v-icon>{{ dictTasks[task.task_name][1] }}<v-icon icon="mdi-clock-outline" class="ml-2"></v-icon></v-chip>
                     </div>
                     <div class="d-flex ga-2 align-center" v-if="task.status=='PROGRESS'">
                       <v-chip class="ma-2" color="purple"><v-icon :icon=dictTasks[task.task_name][0] class="mr-2"></v-icon>{{ dictTasks[task.task_name][1] }}</v-chip>
                       <v-progress-linear
-                        color="light-green-darken-4"
+                        color="purple"
                         height="10"
-                        width="20"
                         :model-value="task.result.percent"
                         striped
                       ></v-progress-linear>
@@ -261,5 +260,9 @@ onMounted(() => getFiles());
     min-height: 20px !important;
     padding-top: 4px;
     padding-bottom: 0;
+}
+
+.v-progress-linear {
+  max-width: 50%;
 }
 </style>
