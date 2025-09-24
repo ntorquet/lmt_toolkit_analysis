@@ -429,7 +429,7 @@ class Animal():
             distanceBin = self.getDistance( t , t+binFrameSize )
             print( "Distance bin n:{} value:{}".format ( t , distanceBin ) )
             distanceList.append( distanceBin )
-            t=t+binFrameSize
+            t=t+binFrameSize+1
 
         return distanceList
 

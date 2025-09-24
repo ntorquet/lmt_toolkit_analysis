@@ -103,16 +103,16 @@ def processTimeWindow( connection, file, currentMinT, currentMaxT, eventClassLis
 
     if ( USE_CACHE_LOAD_DETECTION_CACHE ):
         print("Caching load of animal detection...")
-        animalPool = AnimalPoolToolkit( )
-        animalPool.loadAnimals( connection )
-        animalPool.loadDetection( start = currentMinT, end = currentMaxT )
+        animalPool = AnimalPoolToolkit()
+        animalPool.loadAnimals(connection)
+        animalPool.loadDetection(start=currentMinT, end=currentMaxT)
         print("Caching load of animal detection done.")
 
     for ev in eventClassList:
         progress_recorder.set_progress(currentProcessLenght, lengthProcess, f'{ev}')
-        chrono = Chronometer( str( ev ) )
+        chrono = Chronometer(str(ev))
         print(f"------------- {ev} ANIMALTYPE: {animalType} ------------")
-        ev.reBuildEvent( connection, file, tmin=currentMinT, tmax=currentMaxT, pool = animalPool, animalType = animalType )
+        ev.reBuildEvent(connection, file, tmin=currentMinT, tmax=currentMaxT, pool=animalPool, animalType=animalType )
         chrono.printTimeInS()
         currentProcessLenght += 1
 
@@ -695,15 +695,12 @@ def saveAnimalInfoTask(self, data):
     version = data['version']
     print(version)
 
-
     print('File: '+file)
     progress_recorder.set_progress(1, 4, f'[Animal info] File loaded')
 
     saveAnimalInfo(file, animalsInfo, version)
 
     progress_recorder.set_progress(3, 4, f'[Animal info] writing into the database')
-
-
 
     progress_recorder.set_progress(4, 4, f'[Animal info] Saving done')
 
@@ -1019,26 +1016,29 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
     file_id = {'file_id': file_id}
     reliabilityContext.update(file_id)
     reliabilityContext.update(file_url)
-    print("gna")
     return reliabilityContext
 
 
 @shared_task(bind=True)
-def activityPerTimeBin(self, file, timeBin=10):
+def activityPerTimeBin(self, file, time_bin=10):
     '''
     :param file: the SQLite LMT_v1_0_3 file
-    :return: activity per timeBin during the whole experiment
+    :param time_bin: the time bin in minutes
+    :return: activity per time_bin during the whole experiment
     '''
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(0, 2, f'[Activity per timebin] Starting')
 
     # Extract activity
     progress_recorder.set_progress(1, 2, f'[Activity per timebin] Extracting activity for each animal')
-    activityPerTimeBin = extractActivityPerAnimalWholeExperiment(file, timeBin)
+    activity_per_time_bin = extractActivityPerAnimalWholeExperiment(file, time_bin)
+
+    # save results in the LMT-toolkit database
+
 
     progress_recorder.set_progress(2, 2, f'[Activity per timebin] Job done: activity extracted')
 
-    return activityPerTimeBin
+    return activity_per_time_bin
 
 
 @shared_task(bind=True)
