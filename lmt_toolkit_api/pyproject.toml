@@ -82,6 +82,7 @@ dependencies = [
     "urllib3==2.5.0",
     "vine==5.1.0",
     "wcwidth==0.2.13",
+    "gevent==25.9.1"
 ]
 
 license = { text = "GPL-3.0" }
