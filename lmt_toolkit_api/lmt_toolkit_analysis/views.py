@@ -323,7 +323,7 @@ class EventDocumentationViewSet(viewsets.ModelViewSet):
     serializer_class = EventDocumentationSerializer
 
 
-class ActivityPerTimeBinAPIView(APIView):
+class DistancePerTimeBinAPIView(APIView):
     def post(self, request):
         version = Version.objects.latest('id')
         file_id = int(request.data['file_id'])

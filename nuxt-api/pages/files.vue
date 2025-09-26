@@ -13,6 +13,7 @@ Code under GPL v3.0 licence
 ////////////////////////////////
 import axios from "axios";
 import {ref, onMounted} from "vue";
+import {getPresets} from '@/composables/usePreset';
 
 
 ////////////////////////////////
@@ -32,6 +33,10 @@ const dictTasks = ref({
   'lmt_toolkit_analysis.tasks.analyseProfileFromStartTimeToEndTime': ['mdi-database-export', "General preset"],
   'lmt_toolkit_analysis.tasks.activityPerTimeBin': ['mdi-database-export', 'Activity preset']
 });
+const presets = getPresets();
+console.log("ici");
+console.log(presets.value);
+console.log("là");
 
 
 ////////////////////////////////
@@ -218,8 +223,11 @@ onMounted(() => getFiles());
                 </v-list>
               </td>
               <td>
-<!--                <v-chip class="mr-1" color="primary">Simple preset</v-chip>-->
-<!--                <v-chip class="mr-1" color="secondary">Activity per time bin preset</v-chip>-->
+                <v-chip-group v-if="presets.length>0">
+                  <div v-for="preset in presets">
+                    <v-chip>{{ preset.preset_name }}</v-chip>
+                  </div>
+                </v-chip-group>
               </td>
               <td>
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">

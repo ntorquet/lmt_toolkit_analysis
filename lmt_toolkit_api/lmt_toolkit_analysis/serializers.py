@@ -45,7 +45,7 @@ class FileIdSerializer(serializers.Serializer):
 
 class MetadataFieldSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Metadata
+        model = MetadataField
         fields = '__all__'
 
 
@@ -58,13 +58,15 @@ class MetadataSerializer(serializers.ModelSerializer):
 
 
 class PresetSerializer(serializers.ModelSerializer):
+    metadata_fields = MetadataFieldSerializer(many=True)
+
     class Meta:
         model = Preset
         fields = '__all__'
 
 
 class AnalysisPresetSerializer(serializers.ModelSerializer):
-    metadata_fields = MetadataFieldSerializer(many=True)
+    metadata = MetadataSerializer(many=True)
 
     class Meta:
         model = AnalysisPreset

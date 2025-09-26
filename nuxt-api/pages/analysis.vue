@@ -10,7 +10,7 @@ Code under GPL v3.0 licence
 ////////////////////////////////
 // IMPORT
 ////////////////////////////////
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 
 
@@ -124,11 +124,12 @@ const presetInfoToSend = ref({
     show: false
   },
   activityPerTimeBinPreset: {
-    presetName: "Activity per timebin preset",
+    presetName: "Distance per timebin preset",
     presetDescription: "Total distance and distance travelled per time bin selected for each individual.",
     show: false
   }
 });
+const presets = ref([]);
 const currentPresetInfo = ref("simplePreset");
 const nightAlreadyInLog = ref({});
 const startTimeNight = ref("");
@@ -439,7 +440,7 @@ const stepUp = () => {
   stepToTimeLine();
 }
 const stepDown = () => {
-  if(step.value==10){;
+  if(step.value==10){
     step.value=step.value-2;
     // reinitialize some variables here to avoid nuxt/vue problems
   }
@@ -535,6 +536,20 @@ const rebuildNightEventFromHour = async () => {
   }
 }
 
+
+const getPresets = () => {
+  presets.value = [];
+  axios.get(`http://127.0.0.1:8000/api/presets/`)
+  .then(response => {
+    presets.value = response.data;
+    console.log(presets.value);
+  })
+  .catch(error => {
+    console.log(JSON.stringify(error));
+  })
+}
+
+
 const doAnalysis = async (presetTemp) => {
   preset.value = presetTemp;
   let formData = new FormData();
@@ -572,7 +587,7 @@ const doAnalysis = async (presetTemp) => {
       formData.append('file_id', file_id.value);
       formData.append('timeBin', parseInt(timeBin.value));
       try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/activityPerTimeBin/`, formData);
+        const response = await axios.post(`http://127.0.0.1:8000/api/distancePerTimeBin/`, formData);
         console.log('Do analysis activityPerTimeBinPreset');
         task_id.value = response.data.task_id;
         stepUp();
@@ -596,6 +611,7 @@ const showPresetInfo = (preset) => {
 ////////////////////////////////
 // ONMOUNTED
 ////////////////////////////////
+onMounted(() => getPresets());
 
 
 ////////////////////////////////

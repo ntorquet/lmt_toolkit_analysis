@@ -99,6 +99,7 @@ class Metadata(models.Model):
 class Preset(models.Model):
     preset_name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    metadata_fields = models.ManyToManyField(MetadataField, related_name="preset_metadata_fields", blank=True)
 
     def __str__(self):
         return self.preset_name
