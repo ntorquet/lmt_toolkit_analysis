@@ -20,12 +20,12 @@ import {getPresets} from '@/composables/usePreset';
 // DATA
 ////////////////////////////////
 const files = ref([]);
-const fields = ref(['File name', 'Rebuild', 'Upload date', 'Download', 'Tasks', 'Analyse', 'Delete']);
+const fields = ref(['File name', 'Rebuild', 'Upload date', 'Download', 'Tasks', 'Analyse', 'Results', 'Delete']);
 const filesItems = ref([]);
 const downloadableLinks = ref([]);
 const showSimplePreset = ref(false);
 const dictTasks = ref({
-  'lmt_toolkit_analysis.tasks.getReliability': ['mdi-database-check', "Control & Quality"],
+  'lmt_toolkit_analysis.tasks.getReliability': ['mdi-database-check', "Quality control"],
   'lmt_toolkit_analysis.tasks.getLogInfoTask': ['mdi-database-search', "Get info from database"],
   'lmt_toolkit_analysis.tasks.saveAnimalInfoTask': ['mdi-database-edit', "Animal info saved"],
   'lmt_toolkit_analysis.tasks.rebuildSQLite': ['mdi-database-cog', "Rebuild database"],
@@ -228,6 +228,9 @@ onMounted(() => getFiles());
                     <v-chip>{{ preset.preset_name }}</v-chip>
                   </div>
                 </v-chip-group>
+              </td>
+              <td>
+
               </td>
               <td>
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">

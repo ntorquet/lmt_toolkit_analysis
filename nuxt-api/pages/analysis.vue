@@ -537,19 +537,6 @@ const rebuildNightEventFromHour = async () => {
 }
 
 
-const getPresets = () => {
-  presets.value = [];
-  axios.get(`http://127.0.0.1:8000/api/presets/`)
-  .then(response => {
-    presets.value = response.data;
-    console.log(presets.value);
-  })
-  .catch(error => {
-    console.log(JSON.stringify(error));
-  })
-}
-
-
 const doAnalysis = async (presetTemp) => {
   preset.value = presetTemp;
   let formData = new FormData();

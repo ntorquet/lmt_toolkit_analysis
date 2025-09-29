@@ -43,6 +43,12 @@ class FileIdSerializer(serializers.Serializer):
     file_id = serializers.IntegerField()
 
 
+class QualityControlSerializer(serializers.Serializer):
+    class Meta:
+        model = QualityControl
+        fields = '__all__'
+
+
 class MetadataFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetadataField

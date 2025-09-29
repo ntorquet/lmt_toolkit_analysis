@@ -74,6 +74,16 @@ class EventDocumentation(models.Model):
         verbose_name_plural = 'Event Documentations'
 
 
+class QualityControl(models.Model):
+    file = models.ForeignKey(File, on_delete=models.CASCADE)
+    version = models.ForeignKey(Version, on_delete=models.SET_NULL, blank=True, null=True)
+    quality_control = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Quality control'
+        verbose_name_plural = 'Quality control'
+
+
 class MetadataField(models.Model):
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255, null=True, blank=True)

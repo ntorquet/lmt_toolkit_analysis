@@ -359,3 +359,21 @@ class PresetViewSet(viewsets.ModelViewSet):
     queryset = Preset.objects.all()
     serializer_class = PresetSerializer
 
+
+class QualityControlResult(viewsets.ModelViewSet):
+    '''
+    To get the quality control of a sqlite file
+    '''
+    @extend_schema(request=FileIdSerializer)
+    def get(self, request):
+        print("QualityControlResult")
+        try:
+            serializer = FileIdSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            file_id = serializer.validated_data['file_id']
+            file = File.objects.get(id=file_id)
+            quality_control_results = QualityControl.objects.get(file=file)
+            return JsonResponse({'file_id': file_id, 'version': quality_control_results.version, 'quality control': quality_control_results.quality_control})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'Cannot get the quality control results'})
+
