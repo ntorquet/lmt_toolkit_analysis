@@ -1002,6 +1002,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
         print('file id: ' + str(file_id))
 
         # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+        # delete the file
         relative_url = reverse('files-detail', kwargs={'pk': str(file_id)})
         url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
         print(url_deleteFile)
@@ -1009,13 +1010,29 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
         file_url = {'file_url': ''}
 
     else:
-        file_url = {'file_url': MEDIA_URL+str(instance.sqlite)}
-        print(MEDIA_URL)
-        print('file_url: '+file_url['file_url'])
+        try:
+            # save the quality control into the database
+            print('file id: ' + str(file_id))
+            # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+            relative_url = reverse('qualityControl')
+            url_save_quality_control = f"{settings.API_BASE_URL}{relative_url}"
+            # url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
+            # # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+            # print(url_deleteFile)
+            response = requests.post(url_save_quality_control, {'file_id': file_id,
+                                                                'quality_control': json.dumps(reliabilityContext)})
+            print(response)
+            print("[Task] Quality control saved")
+            # file_url = {'file_url': ''}
+            # file_url = {'file_url': MEDIA_URL+str(instance.sqlite)}
+            # print(MEDIA_URL)
+            # print('file_url: '+file_url['file_url'])
+        except Exception as e:
+            print(e)
 
     file_id = {'file_id': file_id}
     reliabilityContext.update(file_id)
-    reliabilityContext.update(file_url)
+    # reliabilityContext.update(file_url)
     return reliabilityContext
 
 

@@ -43,7 +43,9 @@ class FileIdSerializer(serializers.Serializer):
     file_id = serializers.IntegerField()
 
 
-class QualityControlSerializer(serializers.Serializer):
+class QualityControlSerializer(serializers.ModelSerializer):
+    version = VersionSerializer(read_only=True)
+
     class Meta:
         model = QualityControl
         fields = '__all__'

@@ -12,6 +12,7 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(File)
+admin.site.register(QualityControl)
 admin.site.register(Metadata)
 admin.site.register(MetadataField)
 admin.site.register(Preset)

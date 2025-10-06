@@ -13,7 +13,11 @@ from pathlib import Path
 from time import sleep
 
 from django.http import JsonResponse
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_serializer,
+)
 from rest_framework.views import APIView
 from rest_framework import viewsets, status, generics, parsers, permissions
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
@@ -26,7 +30,6 @@ from .serializers import *
 from .models import File
 from django_celery_results import models as celery_models
 from celery.worker import control
-
 
 from .methods import getReliability
 
@@ -159,11 +162,15 @@ class CheckReliabilityAPIView(APIView):
             print("into try")
             reliabilityContext = tasks.getReliability.delay(path_file, deleteFile=False, file_id=file_id)
             # reliabilityContext = tasks.getTest.delay()
-            print("after")
+
             sleep(1)
+
+            print("after")
+
 
             task_id = str(reliabilityContext.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
+            print("task get")
             sqliteFile.tasks.add(myTask)
             print(f"task id {task_id}")
 
@@ -360,20 +367,50 @@ class PresetViewSet(viewsets.ModelViewSet):
     serializer_class = PresetSerializer
 
 
-class QualityControlResult(viewsets.ModelViewSet):
-    '''
+class QualityControlAPIView(APIView):
+    """
     To get the quality control of a sqlite file
-    '''
-    @extend_schema(request=FileIdSerializer)
+    """
+    serializer_class = FileIdSerializer
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="file_id", description="file id", required=True, type=int
+            ),
+        ]
+    )
     def get(self, request):
-        print("QualityControlResult")
+        print("get QualityControlResults")
+        print(request.GET.get('file_id'))
         try:
-            serializer = FileIdSerializer(data=request.data)
+            serializer = FileIdSerializer(data = {'file_id': request.GET.get('file_id')})
             serializer.is_valid(raise_exception=True)
             file_id = serializer.validated_data['file_id']
             file = File.objects.get(id=file_id)
             quality_control_results = QualityControl.objects.get(file=file)
-            return JsonResponse({'file_id': file_id, 'version': quality_control_results.version, 'quality control': quality_control_results.quality_control})
+            print(quality_control_results.version)
+            return JsonResponse({'file_id': file_id, 'version': str(quality_control_results.version),
+                                 'quality control': quality_control_results.quality_control})
         except Exception as e:
-            return JsonResponse({f'{e} Error': 'Cannot get the quality control results'})
+            return JsonResponse({f'{e} Error': 'Cannot get the quality control results', 'quality control': 'No data'})
 
+    def post(self, request):
+        """
+        request must have a file_id and a results in a json type
+        """
+        print("post QualityControlResult")
+        try:
+            serializer_file_id = FileIdSerializer(data={'file_id': request.data['file_id']})
+            serializer_file_id.is_valid(raise_exception=True)
+            file_id = serializer_file_id.validated_data['file_id']
+            # file = File.objects.get(id=file_id)
+            version = Version.objects.latest('id').id
+
+            serializer = QualityControlSerializer(data={'file': file_id, 'version': version,
+                                                  'quality_control': request.data['quality_control']})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return JsonResponse({'response': '[View] Quality control saved'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({f'{e} Error': 'Cannot post the quality control results'})

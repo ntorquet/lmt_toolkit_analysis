@@ -20,7 +20,7 @@ import {getPresets} from '@/composables/usePreset';
 // DATA
 ////////////////////////////////
 const files = ref([]);
-const fields = ref(['File name', 'Rebuild', 'Upload date', 'Download', 'Tasks', 'Analyse', 'Results', 'Delete']);
+const fields = ref(['File name', 'Quality control', 'Rebuild', 'Upload date', 'Download', 'Tasks', 'Analyse', 'Results', 'Delete']);
 const filesItems = ref([]);
 const downloadableLinks = ref([]);
 const showSimplePreset = ref(false);
@@ -49,6 +49,7 @@ const getFiles = () => {
   .then(response => {
     files.value = response.data;
     // console.log(files.value);
+    getQualityControl();
     organizeFiles();
     getTasks();
   })
@@ -136,6 +137,19 @@ const getProgression = async (taskToCheck) => {
   }
 }
 
+const getQualityControl = () => {
+  for(let file in files.value){
+    axios.get(`http://127.0.0.1:8000/api/qualityControl/?file_id=`+files.value[file]['id'])
+     .then(response => {
+       files.value[file]['quality_control'] = response.data;
+       console.log(files.value[file]['quality_control']);
+    })
+    .catch(error => {
+      console.log(JSON.stringify(error));
+    })
+  }
+}
+
 const checkReliability = (fileId) => {
   let formData = new FormData();
   formData.append('file_id', fileId);
@@ -189,6 +203,13 @@ onMounted(() => getFiles());
           <tbody>
             <tr v-for="file, index in files">
               <td>{{ file.file_name }}</td>
+              <td>
+                <span v-if="file['quality_control']">{{ file['quality_control']['quality control'] }}</span>
+
+<!--                <v-list>-->
+<!--                  <v-list-item v-for="qc in file['quality_control']">{{ qc['file_id'] }}</v-list-item>-->
+<!--                </v-list>-->
+              </td>
               <td>{{ file.rebuild }}</td>
               <td>{{ file.created_at.split("T")[0] }}</td>
               <td>

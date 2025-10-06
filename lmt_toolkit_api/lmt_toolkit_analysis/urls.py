@@ -30,6 +30,7 @@ urlpatterns = [
     # path('analyse_reliability/', views.analyse_reliability.as_view(), name="analyse_reliability"),
     path(r'api/read_file/', ReadFileAPIView.as_view(), name="read_file"),
     path(r'api/checkReliability/', CheckReliabilityAPIView.as_view(), name="checkReliability"),
+    path(r'api/qualityControl/', QualityControlAPIView.as_view(), name="qualityControl"),
     path(r'api/rebuild/', RebuildSqliteAPIView.as_view(), name="rebuild"),
     path(r'api/rebuildNight/', RebuildNightEventAPIView.as_view(), name="rebuildNight"),
     path(r'api/saveAnimalInfo/', SaveAnimalInfoAPIView.as_view(), name="saveAnimalInfo"),
