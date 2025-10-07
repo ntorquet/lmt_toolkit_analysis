@@ -149,21 +149,27 @@ def buildNightEvent(file, nightStartHour, nightEndHour, version=None):
 
     # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
     tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
-
-    while tempStartNightFrame < experimentTotalNumberOfFrame:
-        if tempEndNightFrame > experimentTotalNumberOfFrame:
-            tempEndNightFrame = experimentTotalNumberOfFrame
+    if tempEndNightFrame == 'outOfExperiment':
+        tempEndNightFrame = experimentTotalNumberOfFrame
         nightTimeLine.addEvent(Event(tempStartNightFrame, tempEndNightFrame))
-        # tempStartNightFrame = tempStartNightFrame + nightDurationInFrame + timeBetweenTwoNightInFrame
-        # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
-        tempTimeStartNight = tempTimeStartNight + + datetime.timedelta(days=1)
-        tempTimeEndNight = tempTimeEndNight + datetime.timedelta(days=1)
-        tempStartNightFrame = findFrameFromDatetime(file, tempTimeStartNight)
-        tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
-        if tempEndNightFrame == 'outOfExperiment':
-            tempEndNightFrame = experimentTotalNumberOfFrame
-        if tempStartNightFrame == 'outOfExperiment':
-            break
+    else:
+        while tempStartNightFrame < experimentTotalNumberOfFrame:
+            if tempEndNightFrame > experimentTotalNumberOfFrame:
+                print("here")
+                print(tempEndNightFrame)
+                tempEndNightFrame = experimentTotalNumberOfFrame
+                print(tempEndNightFrame)
+            nightTimeLine.addEvent(Event(tempStartNightFrame, tempEndNightFrame))
+            # tempStartNightFrame = tempStartNightFrame + nightDurationInFrame + timeBetweenTwoNightInFrame
+            # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
+            tempTimeStartNight = tempTimeStartNight + datetime.timedelta(days=1)
+            tempTimeEndNight = tempTimeEndNight + datetime.timedelta(days=1)
+            tempStartNightFrame = findFrameFromDatetime(file, tempTimeStartNight)
+            tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
+            if tempEndNightFrame == 'outOfExperiment':
+                tempEndNightFrame = experimentTotalNumberOfFrame
+            if tempStartNightFrame == 'outOfExperiment':
+                break
 
 
     nightTimeLine.endRebuildEventTimeLine(connection)
