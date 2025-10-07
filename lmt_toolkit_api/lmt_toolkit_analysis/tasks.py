@@ -1054,6 +1054,8 @@ def distancePerTimeBin(self, file, time_bin=10):
 
     print("job done")
     # save results in the LMT-toolkit database
+    # Create Analysis preset from Distance per time bin preset
+
 
 
     progress_recorder.set_progress(2, 2, f'[Activity per timebin] Job done: activity extracted')

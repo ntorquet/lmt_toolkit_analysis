@@ -34,7 +34,6 @@ from celery.worker import control
 from .methods import getReliability
 
 
-
 class ReadFileAPIView(APIView):
     def post(self, request):
         file = request.FILES['file'].temporary_file_path()
@@ -48,7 +47,6 @@ class ReadFileAPIView(APIView):
         #     for chunk in file.chunks():
         #         destination.write(chunk)
 
-
         # print(destination)
         file_name = request.FILES['file'].name
         print(file_name)
@@ -58,8 +56,6 @@ class ReadFileAPIView(APIView):
 
         # return JsonResponse({'response': "All good", 'filename': file_name, 'reliabilityContext': reliabilityContext})
         return JsonResponse({'task_id': task_id, 'file_name': file_name})
-
-
 
 
 class AnalyseLMTFile(viewsets.ModelViewSet):
@@ -92,9 +88,10 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             # path_to_file = os.path(serializer.data['sqlite'])
             # print("*******" + file.path + "*******")
             print(MEDIA_ROOT)
-            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("uploaded/")[1]
+            path_file = MEDIA_ROOT + serializer.data['sqlite'].split("uploaded/")[1]
             print(path_file)
-            analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=deleteFile, file_id=file_id, tmin=tmin, tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
+            analysisContext = tasks.getAnalysis.delay(path_file, deleteFile=deleteFile, file_id=file_id, tmin=tmin,
+                                                      tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
             #
             task_id = analysisContext.task_id
 
@@ -107,7 +104,6 @@ class AnalyseLMTFile(viewsets.ModelViewSet):
             return JsonResponse({'filename': file_name, 'task_id': task_id, 'path_file': path_file})
         else:
             return JsonResponse({'error': 'There was a problem with the data'})
-
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -167,7 +163,6 @@ class CheckReliabilityAPIView(APIView):
 
             print("after")
 
-
             task_id = str(reliabilityContext.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
             print("task get")
@@ -214,7 +209,8 @@ class SaveAnimalInfoAPIView(APIView):
         print(str(request.data['animalsInfo']))
         print(type(json.loads(request.data['animalsInfo'])))
         # data = {'file': path_file,  'animalsInfo': json.load(request.data['animalsInfo'].body.decode('utf-8'))}
-        animalDict =  {'file': path_file,  'animalsInfo': json.loads(request.data['animalsInfo']), 'version': "LMT-toolkit "+version.lmt_toolkit_version}
+        animalDict = {'file': path_file, 'animalsInfo': json.loads(request.data['animalsInfo']),
+                      'version': "LMT-toolkit " + version.lmt_toolkit_version}
         try:
             animalInfoContext = tasks.saveAnimalInfoTask.delay(animalDict)
             sleep(1)
@@ -234,7 +230,8 @@ class RebuildSqliteAPIView(APIView):
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            rebuildContext = tasks.rebuildSQLite.delay(path_file, file_id, version="LMT-toolkit "+version.lmt_toolkit_version)
+            rebuildContext = tasks.rebuildSQLite.delay(path_file, file_id,
+                                                       version="LMT-toolkit " + version.lmt_toolkit_version)
             sleep(1)
             task_id = str(rebuildContext.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
@@ -251,7 +248,9 @@ class RebuildNightEventAPIView(APIView):
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
         try:
-            rebuildNightContext = tasks.buildNightEventTask.delay(file=path_file, startHour=request.data['startHour'], endHour=request.data['endHour'], version="LMT-toolkit "+version.lmt_toolkit_version)
+            rebuildNightContext = tasks.buildNightEventTask.delay(file=path_file, startHour=request.data['startHour'],
+                                                                  endHour=request.data['endHour'],
+                                                                  version="LMT-toolkit " + version.lmt_toolkit_version)
             sleep(1)
             task_id = str(rebuildNightContext.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
@@ -272,7 +271,8 @@ class ExtractAnalysisAPIView(APIView):
         tmax = int(request.data['tmax'])
         unitMaxT = request.data['unitMaxT']
         try:
-            analysis_context = tasks.analyseProfileFromStartTimeToEndTime.delay(path_file, tmin=tmin, tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
+            analysis_context = tasks.analyseProfileFromStartTimeToEndTime.delay(path_file, tmin=tmin, tmax=tmax,
+                                                                                unitMinT=unitMinT, unitMaxT=unitMaxT)
             sleep(1)
             task_id = str(analysis_context.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
@@ -280,8 +280,6 @@ class ExtractAnalysisAPIView(APIView):
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
         except:
             return JsonResponse({'Error': 'An error occurs during the rebuild'})
-
-
 
 
 class ReliabilityLMTFile(viewsets.ModelViewSet):
@@ -305,7 +303,7 @@ class ReliabilityLMTFile(viewsets.ModelViewSet):
             # path_to_file = os.path(serializer.data['sqlite'])
             # print("*******" + file.path + "*******")
             print(MEDIA_ROOT)
-            path_file = MEDIA_ROOT+serializer.data['sqlite'].split("uploaded/")[1]
+            path_file = MEDIA_ROOT + serializer.data['sqlite'].split("uploaded/")[1]
             print(path_file)
             reliabilityContext = tasks.getReliability.delay(path_file, deleteFile=True, file_id=file_id)
             #
@@ -317,7 +315,6 @@ class ReliabilityLMTFile(viewsets.ModelViewSet):
             return JsonResponse({'filename': file_name, 'task_id': task_id, 'path_file': path_file})
         else:
             return JsonResponse({'error': 'There was a problem with the data'})
-
 
 
 class VersionViewSet(viewsets.ModelViewSet):
@@ -367,11 +364,36 @@ class PresetViewSet(viewsets.ModelViewSet):
     serializer_class = PresetSerializer
 
 
+class AnalysisPresetAPIView(APIView):
+    """
+    To save and gate the analysis preset for analysis results
+    """
+
+    def post(self, request):
+        print("post AnalysisPresetAPIView")
+        try:
+            serializer_file_id = FileIdSerializer(data={'file_id': request.data['file_id']})
+            serializer_file_id.is_valid(raise_exception=True)
+            file_id = serializer_file_id.validated_data['file_id']
+            version = Version.objects.latest('id').id
+            serializer_preset = PresetSerializer(data={'preset_name': request.data['preset_name']})
+            serializer_preset.is_valid(raise_exception=True)
+            preset = serializer_preset.validated_data['preset_name']
+            serializer = AnalysisPresetAPIView(data={'file': file_id, 'version': version,
+                                                     'preset': preset})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return JsonResponse({'response': '[View] Quality control saved'})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'Cannot post the analysis preset', 'analysis_preset': 'No data'})
+
+
 class QualityControlAPIView(APIView):
     """
-    To get the quality control of a sqlite file
+    To save and get the quality control of a sqlite file
     """
     serializer_class = FileIdSerializer
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -383,7 +405,7 @@ class QualityControlAPIView(APIView):
         print("get QualityControlResults")
         print(request.GET.get('file_id'))
         try:
-            serializer = FileIdSerializer(data = {'file_id': request.GET.get('file_id')})
+            serializer = FileIdSerializer(data={'file_id': request.GET.get('file_id')})
             serializer.is_valid(raise_exception=True)
             file_id = serializer.validated_data['file_id']
             file = File.objects.get(id=file_id)
@@ -407,7 +429,7 @@ class QualityControlAPIView(APIView):
             version = Version.objects.latest('id').id
 
             serializer = QualityControlSerializer(data={'file': file_id, 'version': version,
-                                                  'quality_control': request.data['quality_control']})
+                                                        'quality_control': request.data['quality_control']})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return JsonResponse({'response': '[View] Quality control saved'})

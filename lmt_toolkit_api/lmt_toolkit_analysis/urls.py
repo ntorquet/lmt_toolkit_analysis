@@ -36,6 +36,7 @@ urlpatterns = [
     path(r'api/saveAnimalInfo/', SaveAnimalInfoAPIView.as_view(), name="saveAnimalInfo"),
     path(r'api/extractAnalysis/', ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
     path(r'api/distancePerTimeBin/', DistancePerTimeBinAPIView.as_view(), name="distancePerTimeBin"),
+    path(r'api/analysisPresets/', AnalysisPresetAPIView.as_view(), name='analysisPresets'),
     path(r'api/revokeTask/', StopCeleryTask.as_view(), name="revokeTask"),
     path(r'api/logInfo/', LogInfoAPIView.as_view(), name="logInfo"),
     path('admin/', admin.site.urls),

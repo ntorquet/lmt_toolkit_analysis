@@ -109,7 +109,7 @@ class Metadata(models.Model):
 class Preset(models.Model):
     preset_name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    metadata_fields = models.ManyToManyField(MetadataField, related_name="preset_metadata_fields", blank=True)
+    metadatafield = models.ManyToManyField(Metadata, related_name="analysis_presets_to_metadatafield", blank=True)
 
     def __str__(self):
         return self.preset_name
@@ -123,7 +123,7 @@ class AnalysisPreset(models.Model):
     preset = models.ForeignKey(Preset, on_delete=models.SET_NULL, blank=True, null=True)
     file = models.ForeignKey(File, on_delete=models.CASCADE)
     version = models.ForeignKey(Version, on_delete=models.SET_NULL, blank=True, null=True)
-    metadata = models.ManyToManyField(Metadata, related_name="analysis_presets_to_metadata", blank=True)
+    metadata = models.ManyToManyField(Metadata, related_name="preset_metadata", blank=True)
 
     class Meta:
         verbose_name = 'Analysis preset'
