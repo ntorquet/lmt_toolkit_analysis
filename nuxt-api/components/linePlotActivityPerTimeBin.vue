@@ -98,11 +98,11 @@ const colors = ref(["rgba(246, 71, 71, 1)"]);
 ////////////////////////////////
 const renderChart = () => {
   if (window.myChart) {
-    window.myChart.destroy()
+    window.myChart.destroy();
   }
-  const elem = document.getElementById('plot')
+  const elem = document.getElementById('plot');
   if(typeof elem != 'undefined' && elem != null){
-    const ctx = elem.getContext("2d")
+    const ctx = elem.getContext("2d");
     window.myChart = new Chart(ctx, {
       type: "line",
         data: {
@@ -117,10 +117,10 @@ const renderChart = () => {
             }
           }
         }
-    })
+    });
   }
   else{
-    console.log("plot not define")
+    console.log("plot not define");
   }
 };
 

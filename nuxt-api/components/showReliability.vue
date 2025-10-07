@@ -6,16 +6,204 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import {ref, onMounted} from "vue";
+// import {Chart} from "chart.js";
+import {
+  Chart,
+  ArcElement,
+  PieController,
+  TimeScale,
+  TimeSeriesScale,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
+Chart.register(
+  ArcElement,
+  PieController,
+  TimeScale,
+  TimeSeriesScale,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
+
+
+////////////////////////////////
+// PROPS
+////////////////////////////////
+const props = defineProps({
+  filename: {
+    type: String,
+    required: true,
+  },
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const modalOpen = ref(false);
+const selection = ref('temperature');
+const tempColor = ref('');
+const frameColor = ref('');
+const detections = ref([]);
+
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const prepareData = () => {
+  if(props.data.rfidDetection) {
+    for (let i=1; i<=Object.keys(props.data.about_rfid_detections).length; i++) {
+      const ctx = document.getElementById('mismatchProportion_' + i).getContext("2d")
+      const myChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ['Match', 'Mismatch'],
+          datasets: [
+            {
+              backgroundColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+              data: props.data.about_rfid_detections[i].match_mismatch_proportion
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            position: 'right'
+          },
+        }
+      })
+    }
+  }
+
+
+  // temperature message
+  if(props.data.highTemp == 'veryHigh' || props.data.highTemp == 'veryLow'){
+   tempColor.value = 'error'
+  }
+  else if(props.data.highTemp == 'high' || props.data.highTemp == 'low'){
+    tempColor.value = 'warning'
+  }
+  else {
+    tempColor.value = 'success'
+  }
+
+  // frame message
+  if(props.data.percentageOfOmittedFrames < 0) {
+    frameColor.value = 'warning'
+  }
+  else if(props.data.percentageOfOmittedFrames < 0.08){
+    frameColor.value = 'success'
+  }
+  else if(props.data.percentageOfOmittedFrames < 1){
+    frameColor.value = 'warning'
+  }
+  else {
+    frameColor.value = 'error'
+  }
+
+  // animal detections
+  let loopNumber = 0
+  if(props.data.aboutDetections['null']){
+    loopNumber = Object.keys(props.data.aboutDetections).length - 1
+    props.data.aboutDetections['null'].animalId = 'None'
+    if(props.data.aboutDetections['null'].detectionPercentTheoricalFramesColor == "red") {
+      props.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'error'
+    }
+    else {
+      props.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'success'
+    }
+    if(props.data.aboutDetections['null'].detectionPercentRecordedFramesColor == 'red') {
+      props.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'error'
+    }
+    else {
+      props.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'success'
+    }
+    if (props.data.aboutDetections['null'].messageDetectionFrameColor == 'red') {
+      props.data.aboutDetections['null'].messageDetectionFrameColor = 'error'
+    }
+    else {
+      props.data.aboutDetections['null'].messageDetectionFrameColor = 'success'
+    }
+  }
+  else {
+    loopNumber = Object.keys(props.data.aboutDetections).length
+  }
+  for(let i = 1; i <= loopNumber; i++){
+
+    if(props.data.aboutDetections[i].detectionPercentTheoricalFramesColor == "red") {
+      props.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'error'
+    }
+    else {
+      props.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'success'
+    }
+    if(props.data.aboutDetections[i].detectionPercentRecordedFramesColor == 'red') {
+      props.data.aboutDetections[i].detectionPercentRecordedFramesColor = 'danger'
+    }
+    else {
+      props.data.aboutDetections[i].detectionPercentRecordedFramesColor = 'success'
+    }
+    if (props.data.aboutDetections[i].messageDetectionFrameColor == 'red') {
+      props.data.aboutDetections[i].messageDetectionFrameColor = 'danger'
+    }
+    else {
+      props.data.aboutDetections[i].messageDetectionFrameColor = 'success'
+    }
+  }
+}
+const showTemp = () => {
+  selection.value = 'temperature'
+  modalOpen.value = !modalOpen.value
+}
+const showHumidity = () => {
+  selection.value = 'humidity'
+  modalOpen.value = !modalOpen.value
+}
+const showSound = () => {
+  selection.value = 'sound'
+  modalOpen.value = !modalOpen.value
+}
+const showLight = () => {
+  selection.value = 'light'
+  modalOpen.value = !modalOpen.value
+}
+
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(async () => {
+  await nextTick();
+  prepareData();
+});
+
+</script>
+
 <template>
   <v-sheet width="850">
-    <h2>Reliability information</h2>
+    <h2 class="pt-2 pl-2">Quality control</h2>
     <v-card class="mt-8">
       <v-card-title><v-icon icon="mdi-information"></v-icon> Global information</v-card-title>
       <v-card-text>
         <v-list>
-          <v-list-item><strong>File name:</strong> {{ filename }}</v-list-item>
-          <v-list-item><strong>Start time:</strong> {{ data.startXp }}</v-list-item>
-          <v-list-item><strong>End time:</strong> {{ data.endXp }}</v-list-item>
+          <v-list-item><strong>File name:</strong> {{ props.filename }}</v-list-item>
+          <v-list-item><strong>Start time:</strong> {{ props.data.startXp }}</v-list-item>
+          <v-list-item><strong>End time:</strong> {{ props.data.endXp }}</v-list-item>
         </v-list>
       </v-card-text>
     </v-card>
@@ -26,11 +214,11 @@ Code under GPL v3.0 licence
         <v-table>
           <thead>
             <tr>
-              <th v-for="(value, name) in data.mouse[0]" or>{{ name }}</th>
+              <th v-for="(value, name) in props.data.mouse[0]" or>{{ name }}</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="mice in data.mouse">
+            <tr v-for="mice in props.data.mouse">
               <td v-for="animalInfo in mice">{{ animalInfo }}</td>
             </tr>
           </tbody>
@@ -40,7 +228,7 @@ Code under GPL v3.0 licence
 
     <v-card class="mt-8">
       <v-card-title>Sensors information</v-card-title>
-      <v-card-text v-if="data.sensors!='no sensors'">
+      <v-card-text v-if="props.data.sensors!='no sensors'">
         <v-row>
           <v-col><v-btn @click="showTemp">Temperature</v-btn></v-col>
           <v-col><v-btn @click="showHumidity">Humidity</v-btn></v-col>
@@ -51,8 +239,8 @@ Code under GPL v3.0 licence
         <br />
         <v-alert :color="tempColor">
           <h4>Temperature</h4>
-          <p>{{ data.highTempInformation }}</p>
-          <p>{{ data.lowTempInformation }}</p>
+          <p>{{ props.data.highTempInformation }}</p>
+          <p>{{ props.data.lowTempInformation }}</p>
         </v-alert>
       </v-card-text>
       <v-card-text v-else>
@@ -75,33 +263,33 @@ Code under GPL v3.0 licence
           <tbody>
           <tr>
             <td>Number of frames</td>
-            <td>{{ data.theoricalNumberOfFrame }}</td>
-            <td>{{ data.nbFramesRecorded }}</td>
-            <td>{{ data.nbOmittedFrames }} frames / {{ data.percentageOfOmittedFrames }} %</td>
+            <td>{{ props.data.theoricalNumberOfFrame }}</td>
+            <td>{{ props.data.nbFramesRecorded }}</td>
+            <td>{{ props.data.nbOmittedFrames }} frames / {{ props.data.percentageOfOmittedFrames }} %</td>
           </tr>
           <tr>
             <td>Duration in seconds</td>
-            <td>{{ data.realDurationInSeconds }}</td>
-            <td>{{ data.nbFramesRecordedInSeconds }}</td>
-            <td>{{ data.nbOmittedSeconds }}</td>
+            <td>{{ props.data.realDurationInSeconds }}</td>
+            <td>{{ props.data.nbFramesRecordedInSeconds }}</td>
+            <td>{{ props.data.nbOmittedSeconds }}</td>
           </tr>
           <tr>
             <td>Duration in minutes</td>
-            <td>{{ data.realDurationInMinutes }}</td>
-            <td>{{ data.nbFramesRecordedInMinutes }}</td>
-            <td>{{ data.nbOmittedMinutes }}</td>
+            <td>{{ props.data.realDurationInMinutes }}</td>
+            <td>{{ props.data.nbFramesRecordedInMinutes }}</td>
+            <td>{{ props.data.nbOmittedMinutes }}</td>
           </tr>
           <tr>
             <td>Duration in hours</td>
-            <td>{{ data.realDurationInHours }}</td>
-            <td>{{ data.nbFramesRecordedInHours }}</td>
-            <td>{{ data.nbOmittedHours }}</td>
+            <td>{{ props.data.realDurationInHours }}</td>
+            <td>{{ props.data.nbFramesRecordedInHours }}</td>
+            <td>{{ props.data.nbOmittedHours }}</td>
           </tr>
           <tr>
             <td>Duration in days</td>
-            <td>{{ data.realDurationInDays }}</td>
-            <td>{{ data.nbFramesRecordedInDays }}</td>
-            <td>{{ data.nbOmittedDays }}</td>
+            <td>{{ props.data.realDurationInDays }}</td>
+            <td>{{ props.data.nbFramesRecordedInDays }}</td>
+            <td>{{ props.data.nbOmittedDays }}</td>
           </tr>
           </tbody>
         </v-table>
@@ -111,7 +299,7 @@ Code under GPL v3.0 licence
             <v-icon icon="mdi-alert" v-if="frameColor=='warning'"></v-icon>
             <v-icon icon="mdi-alert-box" v-if="frameColor=='danger'"></v-icon>
             Experiment reliability based on dropped frames</h4>
-          <p>{{ data.omissionInformation }}</p>
+          <p>{{ props.data.omissionInformation }}</p>
         </v-alert>
       </v-card-text>
     </v-card>
@@ -130,7 +318,7 @@ Code under GPL v3.0 licence
           </tr>
           </thead>
           <tbody>
-          <tr v-for="detection in data.aboutDetections">
+          <tr v-for="detection in props.data.aboutDetections">
             <td>{{ detection.animalId }}</td>
             <td>{{ detection.nbDetection }}</td>
             <td :class="'table-'+detection.detectionPercentRecordedFramesColor">{{ detection.detectionPercentRecordedFrames }} %</td>
@@ -148,7 +336,7 @@ Code under GPL v3.0 licence
     <v-card class="mt-8">
       <v-card-title>About RFID detections</v-card-title>
       <v-card-text>
-        <v-table class="table" v-if="data.rfidDetection">
+        <v-table class="table" v-if="props.data.rfidDetection">
           <thead>
           <tr>
             <th>Animal ID</th>
@@ -159,7 +347,7 @@ Code under GPL v3.0 licence
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, index) in data.about_rfid_detections">
+          <tr v-for="(item, index) in props.data.about_rfid_detections">
             <td>{{ item.animalId }}</td>
             <td>{{ item.nbRFIDdetection }}</td>
             <td>{{ item.nbRFIDmatchdetection }}</td>
@@ -173,180 +361,13 @@ Code under GPL v3.0 licence
 
 
     <v-dialog v-model="modalOpen" width="800">
-      <linePlot :selection="selection" :timeline="data.timeline" :temperature="data.temperature"
-        :humidity="data.humidity" :sound="data.sound" :lightvisible="data.lightvisible" :lightvisibleandir="data.lightvisibleandir"></linePlot>
+      <linePlot :selection="selection" :timeline="props.data.timeline" :temperature="props.data.temperature"
+        :humidity="props.data.humidity" :sound="props.data.sound" :lightvisible="props.data.lightvisible" :lightvisibleandir="props.data.lightvisibleandir"></linePlot>
     </v-dialog>
   </v-sheet>
 
 </template>
 
-<script>
-import linePlot from "@/components/linePlot"
-import {
-  Chart,
-  ArcElement,
-  PieController,
-  TimeScale,
-  TimeSeriesScale,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-} from 'chart.js'
-Chart.register(
-  ArcElement,
-  PieController,
-  TimeScale,
-  TimeSeriesScale,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-)
-export default {
-  name: "showReliability",
-  components: {
-    linePlot,
-  },
-  props: {
-    filename: String,
-    data: Object,
-  },
-  data: function() {
-    return{
-      modalOpen: false,
-      selection: 'temperature',
-      tempColor: '',
-      frameColor: '',
-      detections: [],
-    }
-  },
-  mounted () {
-    if(this.data.rfidDetection) {
-      for (let i=1; i<=Object.keys(this.data.about_rfid_detections).length; i++) {
-        const ctx = document.getElementById('mismatchProportion_' + i).getContext("2d")
-        const myChart = new Chart(ctx, {
-          type: "pie",
-          data: {
-            labels: ['Match', 'Mismatch'],
-            datasets: [
-              {
-                backgroundColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
-                data: this.data.about_rfid_detections[i].match_mismatch_proportion
-              }
-            ]
-          },
-          options: {
-            maintainAspectRatio: false,
-            responsive: true,
-            legend: {
-              position: 'right'
-            },
-          }
-        })
-      }
-    }
-
-
-    // temperature message
-    if(this.data.highTemp == 'veryHigh' || this.data.highTemp == 'veryLow'){
-     this.tempColor = 'error'
-    }
-    else if(this.data.highTemp == 'high' || this.data.highTemp == 'low'){
-      this.tempColor = 'warning'
-    }
-    else {
-      this.tempColor = 'success'
-    }
-
-    // frame message
-    if(this.data.percentageOfOmittedFrames < 0) {
-      this.frameColor = 'warning'
-    }
-    else if(this.data.percentageOfOmittedFrames < 0.08){
-      this.frameColor = 'success'
-    }
-    else if(this.data.percentageOfOmittedFrames < 1){
-      this.frameColor = 'warning'
-    }
-    else {
-      this.frameColor = 'error'
-    }
-
-    // animal detections
-    let loopNumber = 0
-    if(this.data.aboutDetections['null']){
-      loopNumber = Object.keys(this.data.aboutDetections).length -1
-      this.data.aboutDetections['null'].animalId = 'None'
-      if(this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor == "red") {
-        this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'error'
-      }
-      else {
-        this.data.aboutDetections['null'].detectionPercentTheoricalFramesColor = 'success'
-      }
-      if(this.data.aboutDetections['null'].detectionPercentRecordedFramesColor == 'red') {
-        this.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'error'
-      }
-      else {
-        this.data.aboutDetections['null'].detectionPercentRecordedFramesColor = 'success'
-      }
-      if (this.data.aboutDetections['null'].messageDetectionFrameColor == 'red') {
-        this.data.aboutDetections['null'].messageDetectionFrameColor = 'error'
-      }
-      else {
-        this.data.aboutDetections['null'].messageDetectionFrameColor = 'success'
-      }
-    }
-    else {
-      loopNumber = Object.keys(this.data.aboutDetections).length
-    }
-    for(let i = 1; i <= loopNumber; i++){
-
-      if(this.data.aboutDetections[i].detectionPercentTheoricalFramesColor == "red") {
-        this.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'error'
-      }
-      else {
-        this.data.aboutDetections[i].detectionPercentTheoricalFramesColor = 'success'
-      }
-      if(this.data.aboutDetections[i].detectionPercentRecordedFramesColor == 'red') {
-        this.data.aboutDetections[i].detectionPercentRecordedFramesColor = 'danger'
-      }
-      else {
-        this.data.aboutDetections[i].detectionPercentRecordedFramesColor = 'success'
-      }
-      if (this.data.aboutDetections[i].messageDetectionFrameColor == 'red') {
-        this.data.aboutDetections[i].messageDetectionFrameColor = 'danger'
-      }
-      else {
-        this.data.aboutDetections[i].messageDetectionFrameColor = 'success'
-      }
-    }
-
-
-
-  },
-  methods: {
-    showTemp() {
-      this.selection = 'temperature'
-      this.modalOpen = !this.modalOpen
-    },
-    showHumidity() {
-      this.selection = 'humidity'
-      this.modalOpen = !this.modalOpen
-    },
-    showSound() {
-      this.selection = 'sound'
-      this.modalOpen = !this.modalOpen
-    },
-    showLight() {
-      this.selection = 'light'
-      this.modalOpen = !this.modalOpen
-    }
-  }
-}
-</script>
 
 <style scoped>
 

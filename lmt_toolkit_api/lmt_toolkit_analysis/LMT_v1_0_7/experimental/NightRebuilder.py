@@ -1,5 +1,5 @@
 '''
-Created by Nicolas Torquet at 31/08/2023
+Created by Nicolas Torquet at 24/06/2025
 torquetn@igbmc.fr
 Copyright: CNRS - INSERM - UNISTRA - ICS - IGBMC
 CNRS - Mouse Clinical Institute
@@ -7,13 +7,24 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 '''
 
+'''
+This script manage the rebuild of night event.
+There is several ways to do this:
+1. from sensors: the data have to be verified by the user
+2. from start hour and end hour of the night: user has to provide those information
+3. from start hour and for a duration: user has to provide those information
+'''
+
+
+
+import sqlite3
+from ..experimental.Animal_LMTtoolkit import *
+from ..lmtanalysis.Event import *
+from ..lmtanalysis.TaskLogger import TaskLogger
+from ..lmtanalysis.Util import getStartInDatetime, getEndInDatetime, getNumberOfFrames
+from ..lmtanalysis.Measure import *
 import sys
 
-from ..lmtanalysis.Util import getStartInDatetime, getEndInDatetime, getNumberOfFrames
-from ..lmtanalysis.Event import *
-from ..lmtanalysis.FileUtil import getFilesToProcess
-import datetime
-from ..lmtanalysis.TaskLogger import TaskLogger
 
 
 timeUnit = {
@@ -24,6 +35,11 @@ timeUnit = {
     'day(s)': 30*60*60*24,
     'week(s)': 30*60*60*24*7,
 }
+
+
+class FileProcessException(Exception):
+    pass
+
 
 
 class FileProcessException(Exception):
@@ -133,29 +149,37 @@ def buildNightEvent(file, nightStartHour, nightEndHour, version=None):
 
     # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
     tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
-
-    while tempStartNightFrame < experimentTotalNumberOfFrame:
-        if tempEndNightFrame > experimentTotalNumberOfFrame:
-            tempEndNightFrame = experimentTotalNumberOfFrame
+    if tempEndNightFrame == 'outOfExperiment':
+        tempEndNightFrame = experimentTotalNumberOfFrame
         nightTimeLine.addEvent(Event(tempStartNightFrame, tempEndNightFrame))
-        # tempStartNightFrame = tempStartNightFrame + nightDurationInFrame + timeBetweenTwoNightInFrame
-        # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
-        tempTimeStartNight = tempTimeStartNight + + datetime.timedelta(days=1)
-        tempTimeEndNight = tempTimeEndNight + datetime.timedelta(days=1)
-        tempStartNightFrame = findFrameFromDatetime(file, tempTimeStartNight)
-        tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
-        if tempEndNightFrame == 'outOfExperiment':
-            tempEndNightFrame = experimentTotalNumberOfFrame
-        if tempStartNightFrame == 'outOfExperiment':
-            break
+    else:
+        while tempStartNightFrame < experimentTotalNumberOfFrame:
+            if tempEndNightFrame > experimentTotalNumberOfFrame:
+                print("here")
+                print(tempEndNightFrame)
+                tempEndNightFrame = experimentTotalNumberOfFrame
+                print(tempEndNightFrame)
+            nightTimeLine.addEvent(Event(tempStartNightFrame, tempEndNightFrame))
+            # tempStartNightFrame = tempStartNightFrame + nightDurationInFrame + timeBetweenTwoNightInFrame
+            # tempEndNightFrame = tempStartNightFrame + nightDurationInFrame
+            tempTimeStartNight = tempTimeStartNight + datetime.timedelta(days=1)
+            tempTimeEndNight = tempTimeEndNight + datetime.timedelta(days=1)
+            tempStartNightFrame = findFrameFromDatetime(file, tempTimeStartNight)
+            tempEndNightFrame = findFrameFromDatetime(file, tempTimeEndNight)
+            if tempEndNightFrame == 'outOfExperiment':
+                tempEndNightFrame = experimentTotalNumberOfFrame
+            if tempStartNightFrame == 'outOfExperiment':
+                break
 
 
     nightTimeLine.endRebuildEventTimeLine(connection)
     print(nightTimeLine.getNumberOfEvent())
     t = TaskLogger(connection)
     if version:
+        print("version: "+version)
         t.addLog("Build Event Night", version=version, tmin=0, tmax=experimentTotalNumberOfFrame)
     else:
+        print("no version")
         t.addLog("Build Event Night", tmin=0, tmax=experimentTotalNumberOfFrame)
 
     connection.close()
@@ -164,27 +188,66 @@ def buildNightEvent(file, nightStartHour, nightEndHour, version=None):
 
 
 
-if __name__ == '__main__':
-    print("Code launched.")
 
-    files = getFilesToProcess()
-    startHour = input("Please enter the hour of the start of the night in this format: hh:mm")
-    endHour = input("Please enter the hour of the end of the night in this format: hh:mm")
+### from sensors
+def getDateTime(animalPool, frame):
+    if frame > 0:
 
-    startTimeNight = datetime.time(hour=int(startHour.split(':')[0]), minute=int(startHour.split(':')[1]))
-    endTimeNight = datetime.time(hour=int(endHour.split(':')[0]), minute=int(endHour.split(':')[1]))
-
-    # nightDuration = datetime.datetime.strptime(startHour, '%H:%M') - datetime.datetime.strptime(endHour, '%H:%M')
-
-    chronoFullBatch = Chronometer("Full batch")
+        datetime = getDatetimeFromFrame(animalPool.conn, frame)
+        if datetime != None:
+            realTime = getDatetimeFromFrame(animalPool.conn, frame).strftime('%d-%m (%b)-%Y %H:%M:%S')
+            return realTime
+    return None
 
 
-    if (files != None):
-        for file in files:
-            try:
-                print("Processing file", file)
-                buildNightEvent(file, startTimeNight, endTimeNight)
-            except FileProcessException:
-                print("STOP PROCESSING FILE " + file, file=sys.stderr)
+def process(file):
+    connection = sqlite3.connect(file)
 
-    print("*** ALL JOBS DONE ***")
+    print("--------------")
+    print("Current file: ", file)
+
+    nightTimeLine = EventTimeLine(connection, "night", None, None, None, None)
+    nightTimeLine.eventList.clear()
+
+    connection = sqlite3.connect(file)
+    # build sensor data
+    animalPool = AnimalPoolToolkit()
+    animalPool.loadAnimals(connection)
+    autoNightList = animalPool.plotSensorData(
+        sensor="LIGHTVISIBLEANDIR", minValue=40, saveFile=file + "_log_light visible.pdf", show=True, autoNight=True)
+
+    # show nights
+
+    nightNumber = 1
+
+    if autoNightList == None:
+        print("No sensor data found.")
+        return
+
+    for autoNight in autoNightList:
+        print("Night #", str(nightNumber))
+        print("Starts at {} ({})".format( getDateTime(animalPool, autoNight[0]), autoNight[0]))
+        print("Ends at {} ({}) ".format( getDateTime(animalPool, autoNight[1]), autoNight[1]))
+
+        nightNumber += 1
+
+    # ask confirmation
+
+    answer = input("Set night(s) with autoNight data ? [y/n]:")
+    if answer.lower() == "y":
+        print("Setting events...")
+
+        nightTimeLine = EventTimeLine(connection, "night", None, None, None, None)
+        nightTimeLine.eventList.clear()
+
+        for autoNight in autoNightList:
+            nightTimeLine.addEvent(Event(autoNight[0], autoNight[1]))
+
+        nightTimeLine.endRebuildEventTimeLine(connection, deleteExistingEvent=True)
+        print("Setting events... Done")
+    else:
+        print("autoNight canceled.")
+
+
+
+

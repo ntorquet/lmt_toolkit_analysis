@@ -7,6 +7,32 @@ PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
 
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+
+////////////////////////////////
+// PROPS
+////////////////////////////////
+const props = defineProps({
+  duration: {
+    type: Number,
+    required: true,
+  }
+});
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const durationComponent = ref(Number);
+const dialog = ref(false);
+
+
+
+</script>
+
 <template>
   <v-card class="mt-4 mr-4" width="400">
       <v-card-title> Openfield preset</v-card-title>
@@ -16,12 +42,12 @@ Code under GPL v3.0 licence
             By default, the analysis will be done on the 15 first minutes of the experiment.<br />
             You can select a different duration but it will not exceed the experiment duration. The analysis starts at the beginning of the experiment.
           </v-alert>
-          <v-text-field label="Duration in minutes"  type="number" v-model="durationComponent"></v-text-field>
+          <v-text-field label="Duration in minutes"  type="number" v-model="props.duration"></v-text-field>
 
 
       </v-card-text>
     <v-card-actions>
-      <v-btn style="position: absolute; bottom: 0;" v-if="durationComponent!=''" @click="doAnalysis('openfieldPreset')" text="Analyze">
+      <v-btn style="position: absolute; bottom: 0;" v-if="props.duration!=''" @click="doAnalysis('openfieldPreset')" text="Analyze">
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information" @click="dialog=true"></v-btn>
@@ -49,27 +75,6 @@ Code under GPL v3.0 licence
   </v-dialog>
 
 </template>
-
-
-
-<script>
-export default {
-  name: "OpenfieldPreset",
-  props: {
-    duration: Number
-  },
-  data() {
-    return {
-      durationComponent: Number,
-      dialog: false,
-    }
-  },
-  mounted() {
-    this.durationComponent = this.duration
-  }
-}
-</script>
-
 
 <style scoped>
 

@@ -6,6 +6,623 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import {onMounted, ref, watch} from "vue";
+import axios from "axios";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const timelineItems = ref({
+  selectSqlite: {
+    title: 'File Selection',
+    icon: 'mdi-download',
+    color: 'pink',
+    text: 'The chosen SQLite file will be downloaded into the server to be process.'
+  },
+  reliability: {
+    title: 'Quality control',
+    icon: 'mdi-database-check',
+    color: 'grey',
+    text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
+  },
+  animalInfo: {
+    title: 'Animal info',
+    icon: 'mdi-database-edit',
+    color: 'grey',
+    text: 'Add sex, treatment columns. Modify the name of each animal.'
+  },
+  rebuild: {
+    title: 'Rebuild events',
+    icon: 'mdi-database-cog',
+    color: 'grey',
+    text: 'This will create behavioral events into the event table of the SQLite file. ' +
+        'If the file was rebuilt, it is possible to skip this step.'
+  },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'grey',
+    text: 'Create night events in the database to be able to extract results from these periods.'
+  },
+  configAnalysis: {
+    title: 'Analysis setup',
+    icon: 'mdi-cogs',
+    color: 'grey',
+    text: 'Choose a preset, delimit a period to analyse, and more.'
+  },
+  analysis: {
+    title: 'Compute',
+    icon: 'mdi-chart-line',
+    color: 'grey',
+    text: 'LMT-toolkit processes LMT experiments automatically for you!'
+  },
+  save: {
+    title: 'Results export',
+    icon: 'mdi-content-save',
+    color: 'grey',
+    text: 'Download your result into a CSV file.'
+  }
+});
+const step = ref(1);
+const file = ref('');
+const uploading = ref(false);
+const checked = ref(false);
+const dataReliability = ref({});
+const task = ref({});
+const filename = ref('');
+const error = ref(false);
+const uploadPercentage = ref(0);
+const errorMessage = ref('');
+const tasksProgression = ref(0);
+const unitStartEnd = ref([
+  {value: '', text: 'By default ...'},
+  {value: 'frame(s)', text: 'frame(s)'},
+  {value: 'second(s)', text: 'second(s)'},
+  {value: 'minute(s)', text: 'minute(s)'},
+  {value: 'hour(s)', text: 'hour(s)'},
+  {value: 'day(s)', text: 'day(s)'},
+]);
+const minT = ref(0);
+const unitMinT = ref('');
+const maxT = ref(-1);
+const unitMaxT = ref('');
+const durationAnalysisStart = ref('From the beginning');
+const durationAnalysisEnd = ref('to the end of the experiment');
+const timeUnit = ref({
+  'frame(s)': 1,
+  'second(s)': 30,
+  'minute(s)': 30*60,
+  'hour(s)': 30*60*60,
+  'day(s)': 30*60*60*24,
+  'week(s)': 30*60*60*24*7,
+});
+const durationChecker = ref('');
+const task_id = ref('');
+const file_id = ref('');
+const reliabilityModalOpen = ref(false);
+const animalsInfo = ref({});
+const messageStep6 = ref('');
+const resultsSimplePreset = ref({});
+const resultsActivityPerTimeBin = ref({});
+const preset = ref(null);
+const showSimplePreset = ref(false);
+const showActivityPerTimeBinPreset = ref(false);
+const timeBin = ref(10);
+const logInfo = ref({});
+const logChecked = ref(false);
+const logOnChecking = ref(false);
+const rebuildVersion = ref({});
+const presetInfoToSend = ref({
+  simplePreset: {
+    presetName: "Simple preset",
+    presetDescription: "Number of occurrences, total time and mean time per occurrence of every behaviors that are listed in the document section for each individual and for the whole experiment.",
+    show: false
+  },
+  activityPerTimeBinPreset: {
+    presetName: "Distance per timebin preset",
+    presetDescription: "Total distance and distance travelled per time bin selected for each individual.",
+    show: false
+  }
+});
+const presets = ref([]);
+const currentPresetInfo = ref("simplePreset");
+const nightAlreadyInLog = ref({});
+const startTimeNight = ref("");
+const endTimeNight = ref("");
+const errorNight = ref(false);
+const validationNightRebuild = ref(false);
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const onFilePicked = (event) => {
+  const files = event.target.files;
+  let tempFilename = files[0].name;
+
+  if(tempFilename.includes(".sqlite"))
+  {
+    file.value = files[0];
+    filename.value = files[0].name;
+    error.value = false;
+    errorMessage.value = '';
+  }
+  else
+  {
+    file.value = '';
+    filename.value = '';
+    error.value = true;
+    errorMessage.value = 'Wrong file: we must select a SQLite file';
+  }
+}
+const upload = async () => {
+  step.value = 2;
+  uploading.value = true;
+  console.log(file.value);
+  let formData = new FormData();
+  formData.append('file_name', filename.value)
+  formData.append('sqlite', file.value)
+
+  try {
+    const response = await axios.post(
+      `http://127.0.0.1:8000/api/files/`,
+      formData,
+      {
+        onUploadProgress: function (progressEvent) {
+          uploading.value = true;
+          uploadPercentage.value = parseInt(
+            Math.round((progressEvent.loaded / progressEvent.total) * 100)
+          );
+        }
+      }
+    );
+    console.log('success!!');
+    uploading.value = false;
+    file_id.value = response.data.file_id;
+    checkReliability(file_id.value);
+    step.value = 3;
+    console.log(response.data);
+    task_id.value = response.data.task_id;
+    getProgression();
+    filename.value = response.data.filename;
+  }
+  catch (errorResp) {
+    console.log('FAILURE!!');
+    console.log(JSON.stringify(errorResp));
+    error.value = true;
+    uploading.value = false;
+    processing.value = false;
+  }
+}
+
+
+const getProgression = async () => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/celery-progress/${task_id.value}/`);
+    task.value = response.data;
+    if(task.value.state == "FAILURE")
+    {
+      error.value = true;
+      errorMessage.value = task.value.result;
+      console.log(errorMessage.value);
+    }
+    else if(task.value.state == 'SUCCESS') {
+      console.log('ok!');
+      console.log( task.value.result);
+
+      switch (step.value){
+        case 3:
+          // processing reliability
+          stepUp();
+          break;
+        case 4:
+          // display reliability
+          console.log("step 4");
+
+          if(!logChecked.value && !logOnChecking.value){
+            console.log("step 4-1");
+            dataReliability.value = task.value.result;
+            animalsInfo.value = dataReliability.value.mouse;
+            for(let animal in animalsInfo.value) {
+              if(!animalsInfo.value[animal].hasOwnProperty("AGE")){
+                console.log(Object.keys(animalsInfo.value[animal]));
+                animalsInfo.value[animal]['AGE'] = "";
+              }
+              if(!animalsInfo.value[animal].hasOwnProperty("SEX")){
+                animalsInfo[animal]['SEX'] = "";
+              }
+              if(!animalsInfo.value[animal].hasOwnProperty("STRAIN")){
+                animalsInfo.value[animal]['STRAIN'] = "";
+              }
+              if(!animalsInfo.value[animal].hasOwnProperty("SETUP")){
+                animalsInfo.value[animal]['SETUP'] = "";
+              }
+              if(!animalsInfo.value[animal].hasOwnProperty("TREATMENT")){
+                animalsInfo.value[animal]['TREATMENT'] = "";
+              }
+            }
+            getLogInfo();
+            break;
+          }
+          else if(!logChecked.value && logOnChecking.value){
+            console.log("step 4-2");
+            logInfo.value = task.value.result;
+            logOnChecking.value = false;
+            logChecked.value = true;
+            checkNightEventInLog();
+            checkRebuildLMTToolkitVersion();
+            break;
+          }
+
+        case 6:
+          // processing rebuild
+          console.log("step 6");
+          // stepUp();
+          // tasksProgression.value = 0;
+          // rebuildSQLiteFile();
+          stepUp();
+          break;
+        case 7:
+          // rebuild night event
+          console.log("step 7");
+          if(!errorNight.value){
+            validationNightRebuild.value = true;
+            console.log("validated!")
+            stepUp();
+          }
+          break;
+        case 8:
+          // TODO: check if this step is still relevant
+          console.log("step 8");
+          messageStep6.value = task.value.result;
+          stepUp();
+          break;
+        case 9:
+          // display results
+          resultsSimplePreset.value = {};
+          resultsActivityPerTimeBin.value = {};
+          switch(preset.value){
+            case "simplePreset":
+              resultsSimplePreset.value = task.value.result;
+              // // animal info update
+              for(let animal in resultsSimplePreset.value){
+                  for(let infoAnimal in animalsInfo.value){
+                      console.log(infoAnimal);
+                      if(animalsInfo.value[infoAnimal]['RFID']==animal){
+                          resultsSimplePreset.value[animal]['setup'] = animalsInfo.value[infoAnimal]['SETUP'];
+                          resultsSimplePreset.value[animal]['treatment'] = animalsInfo.value[infoAnimal]['TREATMENT'];
+                      }
+                  }
+              }
+              stepUp();
+              showSimplePreset.value = true;
+              break;
+            // the following case is not an integer, should be why it is not possible to come back to analysis presets after activity analysis
+            case "activityPerTimeBinPreset":
+              resultsActivityPerTimeBin.value = task.value.result;
+              // // animal info update
+              for(let animal in resultsActivityPerTimeBin.value.results){
+                  for(let infoAnimal in animalsInfo.value){
+                      console.log(infoAnimal.value);
+                      if(animalsInfo.value[infoAnimal]['RFID']==resultsActivityPerTimeBin.value.results[animal]['animal']){
+                          resultsActivityPerTimeBin.value.results[animal]['genotype'] = animalsInfo.value[infoAnimal]['GENOTYPE'];
+                          resultsActivityPerTimeBin.value.results[animal]['name'] = animalsInfo.value[infoAnimal]['NAME'];
+                          resultsActivityPerTimeBin.value.results[animal]['age'] = animalsInfo.value[infoAnimal]['AGE'];
+                          resultsActivityPerTimeBin.value.results[animal]['sex'] = animalsInfo.value[infoAnimal]['SEX'];
+                          resultsActivityPerTimeBin.value.results[animal]['strain'] = animalsInfo.value[infoAnimal]['STRAIN'];
+                          resultsActivityPerTimeBin.value.results[animal]['setup'] = animalsInfo.value[infoAnimal]['SETUP'];
+                          resultsActivityPerTimeBin.value.results[animal]['treatment'] = animalsInfo.value[infoAnimal]['TREATMENT'];
+                      }
+                  }
+              }
+              stepUp();
+              showActivityPerTimeBinPreset.value = true;
+              break;
+          }
+      checked.value = true;
+      }
+    }
+    else {
+      tasksProgression.value = task.value.progress.percent;
+      if((task.value.complete == true) && (task.value.success == false)) {
+        console.log('error');
+        error.value = true;
+        errorMessage.value = task.value.result;
+      }
+      getProgression();
+    }
+    tasksProgression.value = response.data.progress.current;
+  }
+  catch (error) {
+    console.log(JSON.stringify(error));
+  }
+}
+
+const setDurationAnalysis = () => {
+  console.log("changed");
+  if(minT.value > 0 && unitMinT.value != ''){
+    durationAnalysisStart.value = "From "+minT.value+" "+unitMinT.value;
+    checkDurationForAnalysis();
+  }
+  else {
+    durationAnalysisStart.value = "From the beginning";
+    durationChecker.value = '';
+  }
+  if((maxT.value != "-" || maxT.value > 0) && unitMaxT.value != '') {
+    durationAnalysisEnd.value = "to "+maxT.value+" "+unitMaxT.value;
+    checkDurationForAnalysis();
+  }
+  else {
+    durationAnalysisEnd.value = "to the end of the experiment";
+    durationChecker.value = '';
+  }
+}
+
+const checkDurationForAnalysis = () => {
+  if(maxT.value*timeUnit.value[unitMaxT.value] - minT.value*timeUnit.value[unitMinT.value] < 0){
+    durationChecker.value = 'You select a start after the end! Please change your duration window';
+  }
+  else {
+    durationChecker.value = '';
+  }
+}
+
+const checkReliability = async () => {
+  let formData = new FormData();
+  formData.append('file_id', file_id.value);
+  try {
+    const response = await axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData);
+    task_id.value = response.data.task_id;
+    getProgression();
+  }
+  catch (error) {
+    console.log(JSON.stringify(error));
+  }
+}
+
+const getLogInfo = async () => {
+  logOnChecking.value = true;
+  let formData = new FormData();
+  formData.append('file_id', file_id.value);
+  try {
+    const response = await axios.post(`http://127.0.0.1:8000/api/logInfo/`, formData);
+    task_id.value = response.data.task_id;
+    getProgression();
+  }
+  catch (error) {
+    console.log(JSON.stringify(error))
+  }
+}
+const checkRebuildLMTToolkitVersion = () => {
+  if(logInfo.value) {
+    for(let i=0; i<logInfo.value.length; i++) {
+      if(logInfo.value[i]['version'].includes("LMT-toolkit")){
+        rebuildVersion.value['version'] = logInfo.value[i]['version'];
+        rebuildVersion.value['process'] = logInfo.value[i]['process'];
+      }
+    }
+  }
+}
+const stepToTimeLine = () => {
+  switch (step.value){
+    case 4:
+      timelineItems.value["reliability"]["color"] = "green";
+      break
+    case 5:
+      timelineItems.value["animalInfo"]["color"] = "purple";
+      break
+    case 6:
+      timelineItems.value["rebuild"]["color"] = "red-lighten-1";
+      break
+    case 7:
+      timelineItems.value["nightEvent"]["color"] = "amber-lighten-1";
+      break
+    case 8:
+      timelineItems.value["configAnalysis"]["color"] = "light-green";
+      break
+    case 9:
+      timelineItems.value["analysis"]["color"] = "cyan-lighten-1";
+      break
+    case 10:
+      timelineItems.value["save"]["color"] = "indigo-lighten-2";
+      break
+  }
+}
+const functionToShowReliability = () => {
+  reliabilityModalOpen.value = !reliabilityModalOpen.value;
+}
+const stepUp = () => {
+  step.value++;
+  stepToTimeLine();
+}
+const stepDown = () => {
+  if(step.value==10){
+    step.value=step.value-2;
+    // reinitialize some variables here to avoid nuxt/vue problems
+  }
+  else{
+    step.value--;
+  }
+  preset.value = null;
+  showSimplePreset.value = false;
+  showActivityPerTimeBinPreset.value = false;
+  console.log("stepDown");
+  stepToTimeLine();
+}
+
+const saveAnimalInfo = async (rebuild=true) => {
+  let formatedAnimalsInfo = {};
+  for(let line in animalsInfo.value) {
+      console.log(line);
+      formatedAnimalsInfo[animalsInfo.value[line]["RFID"]] = animalsInfo.value[line];
+  }
+  let formData = new FormData();
+  formData.append('file_id', file_id.value)
+  formData.append('animalsInfo', JSON.stringify( animalsInfo.value))
+  try {
+    const response = await axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData);
+    task_id.value = response.data.task_id;
+    if(rebuild){
+      tasksProgression.value = 0;
+      rebuildSQLiteFile();
+      stepUp();
+    }
+    else {
+      stepUp();
+      getProgression();
+    }
+  }
+  catch (error) {
+    console.log(JSON.stringify(error));
+  }
+}
+
+const rebuildSQLiteFile = async () => {
+  let formData = new FormData();
+  formData.append('file_id', file_id.value);
+  try {
+    const response = await axios.post(
+        `http://127.0.0.1:8000/api/rebuild/`,
+        formData
+    );
+    task_id.value = response.data.task_id;
+    console.log("rebuildSQLiteFile")
+    console.log("step: "+step.value);
+    getProgression();
+
+  }
+  catch (errorResp) {
+    console.log(JSON.stringify(errorResp));
+  }
+}
+
+const getNightEventInSqlite = () => {
+  console.log("getNightEventInSqlite");
+}
+
+const checkNightEventInLog = () => {
+  console.log("checkNightEventInLog");
+  nightAlreadyInLog.value = {};
+  let nightCounter = 0;
+  for(let log in logInfo.value){
+    if(logInfo.value[log]['process'] == "Build Event Night"){
+      nightCounter += 1;
+      nightAlreadyInLog.value = {'start': logInfo.value[log]['tmin'], 'end': logInfo.value[log]['tmax'], 'version': logInfo.value[log]['version'], 'date': logInfo.value[log]['date']};
+    }
+  }
+}
+
+const rebuildNightEventFromHour = async () => {
+  let formData = new FormData();
+  formData.append('file_id', file_id.value);
+  formData.append('startHour', startTimeNight.value);
+  formData.append('endHour', endTimeNight.value);
+    try {
+    const response = await axios.post(
+        `http://127.0.0.1:8000/api/rebuildNight/`,
+        formData
+    );
+    task_id.value = response.data.task_id;
+    getProgression();
+
+  }
+  catch (errorResp) {
+    console.log(JSON.stringify(errorResp));
+    errorNight.value = true;
+  }
+}
+
+
+const doAnalysis = async (presetTemp) => {
+  preset.value = presetTemp;
+  let formData = new FormData();
+  switch (preset.value){
+    case 'simplePreset':
+      formData.append('file_id', file_id.value);
+      if(minT.value) {
+        formData.append('tmin', parseInt(minT.value));
+      }
+      else {
+        formData.append('tmin', 0);
+      }
+      if(maxT.value){
+        formData.append('tmax', parseInt(maxT.value));
+      }
+      else {
+        formData.append('tmax', -1);
+      }
+      formData.append('unitMinT', unitMinT.value);
+      formData.append('unitMaxT', unitMaxT.value);
+      try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData);
+        console.log('Do analysis simplePreset');
+        task_id.value = response.data.task_id;
+        stepUp();
+        getProgression();
+      }
+      catch (error) {
+        console.log('FAILURE!!');
+        console.log(JSON.stringify(error));
+        error.value = true;
+      }
+      break;
+    case 'activityPerTimeBinPreset':
+      formData.append('file_id', file_id.value);
+      formData.append('timeBin', parseInt(timeBin.value));
+      try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/distancePerTimeBin/`, formData);
+        console.log('Do analysis activityPerTimeBinPreset');
+        task_id.value = response.data.task_id;
+        console.log(task_id.value);
+        stepUp();
+        console.log("step: "+step.value);
+        getProgression();
+      }
+      catch (error) {
+        console.log('FAILURE!!');
+        console.log(JSON.stringify(error));
+        error.value = true;
+      }
+      break;
+  }
+}
+
+const showPresetInfo = (preset) => {
+  console.log(preset);
+  currentPresetInfo.value = preset;
+  presetInfoToSend.value[preset]["show"] = true;
+}
+
+////////////////////////////////
+// ONMOUNTED
+////////////////////////////////
+onMounted(() => getPresets());
+
+
+////////////////////////////////
+// WATCHER
+////////////////////////////////
+watch(() => minT.value, () => {
+  setDurationAnalysis();
+});
+watch(() => maxT.value, () => {
+  setDurationAnalysis();
+});
+watch(() => unitMinT.value, () => {
+  setDurationAnalysis();
+});
+watch(() => unitMaxT.value, () => {
+  setDurationAnalysis();
+});
+
+
+</script>
+
+
 <template>
   <v-main>
     <v-container>
@@ -50,7 +667,7 @@ Code under GPL v3.0 licence
           <v-card-text>
             To check the experiment, you have to select a LMT SQLite file:
             <v-file-input
-                accept="sqlite"
+                accept=".sqlite"
                 label="Select a file"
                 @change="onFilePicked($event)"
             ></v-file-input>
@@ -90,9 +707,9 @@ Code under GPL v3.0 licence
 
         <v-window-item :value="4">
           <div class="pa-4 text-center">
-            <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> See reliability</v-btn>
+            <v-btn @click="functionToShowReliability" class="mr-4"><v-icon icon="mdi-database-eye-outline"></v-icon> Quality control</v-btn>
             <v-btn @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step: animal information</v-btn>
-            <v-dialog v-model="reliabilityModalOpen" scrollable width="800">
+            <v-dialog v-model="reliabilityModalOpen" scrollable width="850">
               <show-reliability v-bind:data="dataReliability" v-bind:filename="file.name"></show-reliability>
             </v-dialog>
           </div>
@@ -105,7 +722,7 @@ Code under GPL v3.0 licence
               <v-table>
                 <thead>
                   <tr>
-                    <th v-for="(value, name) in animalsInfo[0]" or>{{ name }}</th>
+                    <th v-for="(value, name) in animalsInfo[0]">{{ name }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,33 +752,110 @@ Code under GPL v3.0 licence
         </v-window-item>
 
         <v-window-item :value="6">
-          <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
-          <v-card-text>
-            <v-col
-              class="text-subtitle-1 text-center"
-              cols="12"
-            >
-            </v-col>
-            <v-progress-linear
-                v-model="tasksProgression"
-                color="blue-grey"
-                height="25"
+          <v-card>
+            <v-card-title><v-icon icon="mdi-database-cog"></v-icon> Rebuild of the database</v-card-title>
+            <v-card-text>
+              <v-col
+                class="text-subtitle-1 text-center"
+                cols="12"
               >
-                <template v-slot:default="{ value }">
-                  <strong>{{ Math.ceil(value) }}%</strong>
-                </template>
-              </v-progress-linear>
-          </v-card-text>
+              </v-col>
+              <v-progress-linear
+                  v-model="tasksProgression"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}%</strong>
+                  </template>
+                </v-progress-linear>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
         <v-window-item :value="7">
+          <h1><v-icon icon="mdi-weather-night"></v-icon> Rebuild night events</h1>
+          <v-card class="mt-2">
+            <v-card-title><v-icon icon="mdi-information"></v-icon> Information about the experiment</v-card-title>
+            <v-card-text>
+              <v-list>
+                <v-list-item><strong>Start time:</strong> {{ dataReliability.startXp }}</v-list-item>
+                <v-list-item><strong>End time:</strong> {{ dataReliability.endXp }}</v-list-item>
+                <v-list-item><strong>Duration:</strong> {{ dataReliability.realDurationInHours }} hours</v-list-item>
+              </v-list>
+              <v-alert class="mt-2" v-if="Object.keys(nightAlreadyInLog).length>0" type="info">
+                Night(s) already rebuilt<br />
+<!--                <v-list>-->
+<!--                  <v-list-item v-for="(night, index) in nightAlreadyInLog">-->
+                    {{ nightAlreadyInLog }}
+<!--                  </v-list-item>-->
+<!--                </v-list>-->
+<!--                {{ nightAlreadyInLog }}-->
+              </v-alert>
+              <v-alert class="mt-2" v-if="dataReliability.realDurationInHours<10" type="warning">
+                From the duration of this experiment, there should be no night-time period and you should skip this step.<br />
+                <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+              </v-alert>
+            </v-card-text>
+          </v-card>
+
+<!--          <v-card v-if="dataReliability.sensors" class="mt-2">-->
+<!--            <v-card-title><v-icon icon="mdi-chip"></v-icon> From sensors</v-card-title>-->
+<!--            <v-card-text>-->
+<!--&lt;!&ndash;              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"&ndash;&gt;-->
+<!--&lt;!&ndash;        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>&ndash;&gt;-->
+<!--            </v-card-text>-->
+<!--          </v-card>-->
+
+          <v-card>
+            <v-card-title><v-icon icon="mdi-clock-time-eight-outline"></v-icon> Manual definition of the night period</v-card-title>
+            <v-card-text class="mt-2 pb-2">
+              <v-row justify="space-around">
+                <v-col>
+                  <h2 class="text-center">Night start time</h2>
+                  <v-time-picker
+                    v-model="startTimeNight"
+                    format="24hr"
+                    class="text-center"
+                  ></v-time-picker>
+                  {{ startTimeNight }}
+                </v-col>
+                <v-col>
+                  <h2 class="text-center">Night end time</h2>
+                  <v-time-picker
+                    v-model="endTimeNight"
+                    format="24hr"
+                    class="text-center"
+                  ></v-time-picker>
+                  {{ endTimeNight }}
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+
+          <v-alert v-if="errorNight" type="error">
+            Something wrong happen during the night rebuild. You can try again.
+          </v-alert>
+
+          <v-alert v-if="validationNightRebuild" type="success">
+            Night(s) rebuilt!
+          </v-alert>
+
+
+
+          <v-btn class="mr-4 mt-2 mb-2" @click="rebuildNightEventFromHour"><v-icon icon="mdi-weather-night"></v-icon>Rebuild night events</v-btn>
+          <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+        </v-window-item>
+
+        <v-window-item :value="8">
+          <v-snackbar color="green" v-model="validationNightRebuild"><v-icon icon="mdi-check-circle" class="mr-2" /> Night(s) rebuilt!</v-snackbar>
           <v-card>
             <v-card-title><v-icon icon="mdi-cogs"></v-icon> Configure the analysis</v-card-title>
             <v-card-text class="align-center">
               <v-col>
               <v-row>
               <v-card class="mt-4 mr-4" width="400">
-                <v-card-title> Simple preset</v-card-title>
+                <v-card-title> General preset</v-card-title>
                 <v-card-text>
                   <v-alert class="mb-2">
                       By default, the analysis will be done on the total duration of the experiment.<br />
@@ -193,15 +887,15 @@ Code under GPL v3.0 licence
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information" @click="showPresetInfo('simplePreset')"></v-btn>
                 </v-card-actions>
               </v-card>
 
               <v-card class="mt-4 mr-4" width="400">
-                <v-card-title> Activity preset</v-card-title>
+                <v-card-title> Distance preset</v-card-title>
                 <v-card-text>
                   <v-alert class="mb-2">
-                      The activity preset will give you the activity (distance travelled in meters) by each animal. <br />
+                      The distance preset will give you the activity (distance travelled in meters) by each animal. <br />
                       By default, the analysis will be done on the total duration of the experiment.<br />
                       You have to select a time bin to proceed.
                     </v-alert>
@@ -213,9 +907,11 @@ Code under GPL v3.0 licence
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information"></v-btn>
+                  <v-btn class="right-0" style="position: absolute; bottom: 0;" icon="mdi-information" @click="showPresetInfo('activityPerTimeBinPreset')"></v-btn>
                 </v-card-actions>
               </v-card>
+
+              <preset-information v-if="presetInfoToSend[currentPresetInfo]['show']" :presetInfo="presetInfoToSend[currentPresetInfo]"></preset-information>
 
 <!--              <OpenFieldPreset :duration="openfieldDuration"></OpenFieldPreset>-->
 
@@ -243,34 +939,42 @@ Code under GPL v3.0 licence
               </v-col>
             </v-card-text>
           </v-card>
-        </v-window-item>
-
-        <v-window-item :value="8">
-          <v-card-title><v-icon icon="mdi-chart-line"></v-icon> Results extraction</v-card-title>
-          <v-card-text>
-            <v-progress-linear
-                v-model="tasksProgression"
-                color="blue-grey"
-                height="25"
-              >
-                <template v-slot:default="{ value }">
-                  <strong>{{ Math.ceil(value) }}%</strong>
-                </template>
-              </v-progress-linear>
-          </v-card-text>
+            <v-btn  class="mr-4 mt-2 mb-2" @click="stepDown">
+              <v-icon icon="mdi-arrow-left-bold"></v-icon>
+              Come back to the previous step (night rebuild)
+          </v-btn>
         </v-window-item>
 
         <v-window-item :value="9">
-          <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
-          <v-card-text>
-            <show-analysis v-if="showSimplePreset" :data="resultsSimplePreset" :filename="filename"></show-analysis>
+          <v-card>
+            <v-card-title><v-icon icon="mdi-chart-line"></v-icon> Results extraction</v-card-title>
+            <v-card-text>
+              <v-progress-linear
+                  v-model="tasksProgression"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}%</strong>
+                  </template>
+                </v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
 
-            <showActivityPerTimeBin v-if="showActivityPerTimeBinPreset" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
-          </v-card-text>
+        <v-window-item :value="10">
+          <v-card>
+            <v-card-title><v-icon icon="mdi-content-save"></v-icon> Results</v-card-title>
+            <v-card-text>
+              <show-analysis v-if="showSimplePreset" :data="resultsSimplePreset" :filename="filename"></show-analysis>
+
+              <showActivityPerTimeBin v-if="showActivityPerTimeBinPreset" :dataActivity="resultsActivityPerTimeBin" :filename="filename" :timeBin="timeBin"></showActivityPerTimeBin>
+            </v-card-text>
+          </v-card>
         </v-window-item>
 
       </v-window>
-      <v-btn v-if="step==9" class="mr-4" @click="stepDown">
+      <v-btn v-if="step==10" class="mr-4" @click="stepDown">
         <v-icon icon="mdi-arrow-left-bold"></v-icon>
         Come back to the previous step
       </v-btn>
@@ -278,583 +982,6 @@ Code under GPL v3.0 licence
     </v-container>
   </v-main>
 </template>
-
-<script>
-import axios from "axios";
-import {th} from "vuetify/locale";
-import OpenFieldPreset from "~/components/openFieldPreset.vue";
-export default {
-  name: "analysis",
-  data:function (){
-		return{
-      timelineItems: {
-        selectSqlite: {
-          title: 'Select a SQLite file',
-          icon: 'mdi-download',
-          color: 'pink',
-          text: 'This file will be downloaded into the server to be process.'
-        },
-        reliability: {
-          title: 'Check the reliability',
-          icon: 'mdi-database-check',
-          color: 'grey',
-          text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
-        },
-        animalInfo: {
-          title: 'Add animal information',
-          icon: 'mdi-database-edit',
-          color: 'grey',
-          text: 'Add sex, treatment columns. Modify the name of each animal.'
-        },
-        rebuild: {
-          title: 'Rebuild the database',
-          icon: 'mdi-database-cog',
-          color: 'grey',
-          text: 'This will create behavioral events into the event table of the SQLite file.'
-        },
-        configAnalysis: {
-          title: 'Configure the analysis',
-          icon: 'mdi-cogs',
-          color: 'grey',
-          text: 'Delimit a period to analyse, and more.'
-        },
-        analysis: {
-          title: 'Analyse your data',
-          icon: 'mdi-chart-line',
-          color: 'grey',
-          text: 'LMT-toolkit processes LMT experiments automatically for you!'
-        },
-        save: {
-          title: 'Save your results',
-          icon: 'mdi-content-save',
-          color: 'grey',
-          text: 'Download your result into a CSV file.'
-        }
-      },
-      step: 1,
-      file: '',
-      uploading: false,
-      checked: false,
-      // processing: false,
-      showReliability: false,
-      data: {},
-      dataReliability: {},
-      task: {},
-      filename: '',
-      error: false,
-      uploadPercentage: 0,
-      // rfidDetection: Object,
-      // about_rfid_detections: Object,
-      // match_mismatch_proportion: Object,
-      // convertChunks: Object,
-      // convertedArr: Object,
-      errorMessage: '',
-      tasksProgression: 0,
-      // reliabilitySelected: true,
-      // analysisSelected: false,
-      unitStartEnd: [
-        {value: '', text: 'By default ...'},
-        {value: 'frame(s)', text: 'frame(s)'},
-        {value: 'second(s)', text: 'second(s)'},
-        {value: 'minute(s)', text: 'minute(s)'},
-        {value: 'hour(s)', text: 'hour(s)'},
-        {value: 'day(s)', text: 'day(s)'},
-      ],
-      minT: 0,
-      unitMinT: '',
-      maxT: -1,
-      unitMaxT: '',
-      durationAnalysisStart: 'From the beginning',
-      durationAnalysisEnd: 'to the end of the experiment',
-      timeUnit: {
-        'frame(s)': 1,
-        'second(s)': 30,
-        'minute(s)': 30*60,
-        'hour(s)': 30*60*60,
-        'day(s)': 30*60*60*24,
-        'week(s)': 30*60*60*24*7,
-      },
-      durationChecker: '',
-      deleteFile: 'unselected',
-      fileURL: '',
-      task_id: '',
-      file_id: '',
-      reliabilityModalOpen: false,
-      animalsInfo: {},
-      messageStep6: '',
-      resultsSimplePreset: {},
-      resultsActivityPerTimeBin: {},
-      preset: null,
-      showSimplePreset: false,
-      showActivityPerTimeBinPreset: false,
-      timeBin: 10,
-      analysisToShow: null,
-      openfieldDuration: 15,
-      logInfo: {},
-      logChecked: false,
-      logOnChecking: false,
-      rebuildVersion: {},
-      // djangoRestURL: axios.defaults.baseURL,
-    }
-  },
-	methods:{
-    onFilePicked (event) {
-      const files = event.target.files
-      let filename = files[0].name
-
-      if(filename.includes(".sqlite"))
-      {
-        this.file = files[0]
-        this.filename = files[0].name
-        this.error = false
-        this.errorMessage = ''
-      }
-      else
-      {
-        this.file = ''
-        this.filename = ''
-        this.error = true
-        this.errorMessage = 'Wrong file: we must select a SQLite file'
-      }
-    },
-    async upload() {
-      this.step = 2
-      this.uploading = true
-      console.log(this.file)
-      let formData = new FormData();
-      formData.append('file_name', this.filename)
-      formData.append('sqlite', this.file)
-
-      axios.post(`http://127.0.0.1:8000/api/files/`, formData, {
-        onUploadProgress: function (progressEvent) {
-          this.selectFile = false
-          this.uploading = true
-          this.uploadPercentage = parseInt(Math.round((progressEvent.loaded / progressEvent.total) * 100))
-
-        }.bind(this)
-      })
-      .then(response => {
-        console.log('success!!')
-        this.uploading = false
-
-
-        // get the new id from http://127.0.0.1:8000/api/files/
-        this.file_id = response.data.file_id
-        this.checkReliability(this.file_id)
-        this.step = 3
-        // this.filename = response.data.filename
-        // this.processing = true
-        // this.data = response.data.reliabilityContext
-        console.log(response.data)
-        this.task_id = response.data.task_id
-        this.getProgression()
-        // console.log('success!!')
-        this.filename = response.data.filename
-      }).catch(error => {
-          console.log('FAILURE!!')
-          console.log(JSON.stringify(error))
-        this.error = true
-      })
-    },
-    getProgression() {
-       axios.get(`http://127.0.0.1:8000/celery-progress/${this.task_id}/`)
-        .then(response => {
-          this.task = response.data
-          if(this.task.state == "FAILURE")
-          {
-            // this.processing = false
-            this.error = true
-            this.errorMessage = this.task.result
-            console.log(this.errorMessage)
-          }
-          else if(this.task.state == 'SUCCESS') {
-            console.log('ok!')
-            console.log( this.task.result)
-            // this.stepUp()
-            // this.step = 4
-            // this.stepToTimeLine()
-
-            switch (this.step){
-              case 3:
-                // processing reliability
-                this.stepUp()
-                break
-              case 4:
-                // display reliability
-
-                console.log("step 4")
-
-                if(!this.logChecked && !this.logOnChecking){
-                  this.dataReliability = this.task.result
-                  this.animalsInfo = this.dataReliability.mouse
-                  for(let animal in this.animalsInfo) {
-                    if(!this.animalsInfo[animal].hasOwnProperty("AGE")){
-                      console.log(Object.keys(this.animalsInfo[animal]))
-                      this.animalsInfo[animal]['AGE'] = ""
-                    }
-                    if(!this.animalsInfo[animal].hasOwnProperty("SEX")){
-                      this.animalsInfo[animal]['SEX'] = ""
-                    }
-                    if(!this.animalsInfo[animal].hasOwnProperty("STRAIN")){
-                      this.animalsInfo[animal]['STRAIN'] = ""
-                    }
-                    if(!this.animalsInfo[animal].hasOwnProperty("SETUP")){
-                      this.animalsInfo[animal]['SETUP'] = ""
-                    }
-                    if(!this.animalsInfo[animal].hasOwnProperty("TREATMENT")){
-                      this.animalsInfo[animal]['TREATMENT'] = ""
-                    }
-                  }
-                  this.getLogInfo()
-                  break
-                }
-                else if(!this.logChecked && this.logOnChecking){
-                  this.logInfo = this.task.result
-                  this.logOnChecking = false
-                  this.logChecked = true
-                  this.checkRebuildLMTToolkitVersion()
-                  break
-                }
-
-                // this.fileURL = "http://127.0.0.1:8000/api/files/".concat(this.data.file_url)
-                // break
-
-              case 5:
-                // processing rebuild
-                this.stepUp()
-                this.tasksProgression = 0
-                this.rebuildSQLiteFile()
-                break
-              case 6:
-                console.log("step 6")
-                this.messageStep6 = this.task.result
-                this.stepUp()
-                break
-              case 8:
-                // console.log("step 8")
-                // console.log(this.preset)
-                // console.log("----")
-                this.resultsSimplePreset = {}
-                this.resultsActivityPerTimeBin = {}
-                switch(this.preset){
-                  case "simplePreset":
-                    this.resultsSimplePreset = this.task.result
-                    // console.log("**** simplePreset ****")
-                    // console.log(this.resultsSimplePreset)
-                    // // animal info update
-                    for(let animal in this.resultsSimplePreset){
-                        // console.log(this.resultsSimplePreset[animal]['rfid'])
-                        for(let infoAnimal in this.animalsInfo){
-                            console.log(infoAnimal)
-                            if(this.animalsInfo[infoAnimal]['RFID']==animal){
-                                this.resultsSimplePreset[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
-                                this.resultsSimplePreset[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
-                            }
-                        }
-                    }
-                    this.stepUp()
-                    this.showSimplePreset = true
-                    break
-                  // the following case is not an integer, should be why it is not possible to come back to analysis presets after activity analysis
-                  case "activityPerTimeBinPreset":
-                    this.resultsActivityPerTimeBin = this.task.result
-                    // console.log("**** activityPerTimeBinPreset ****")
-                    // console.log(this.resultsActivityPerTimeBin)
-                    // // animal info update
-                    for(let animal in this.resultsActivityPerTimeBin.results){
-                        // console.log(this.resultsActivityPerTimeBin.results[animal]['animal'])
-                        for(let infoAnimal in this.animalsInfo){
-                            console.log(infoAnimal)
-                            if(this.animalsInfo[infoAnimal]['RFID']==this.resultsActivityPerTimeBin.results[animal]['animal']){
-                                this.resultsActivityPerTimeBin.results[animal]['genotype'] = this.animalsInfo[infoAnimal]['GENOTYPE']
-                                this.resultsActivityPerTimeBin.results[animal]['name'] = this.animalsInfo[infoAnimal]['NAME']
-                                this.resultsActivityPerTimeBin.results[animal]['age'] = this.animalsInfo[infoAnimal]['AGE']
-                                this.resultsActivityPerTimeBin.results[animal]['sex'] = this.animalsInfo[infoAnimal]['SEX']
-                                this.resultsActivityPerTimeBin.results[animal]['strain'] = this.animalsInfo[infoAnimal]['STRAIN']
-                                this.resultsActivityPerTimeBin.results[animal]['setup'] = this.animalsInfo[infoAnimal]['SETUP']
-                                this.resultsActivityPerTimeBin.results[animal]['treatment'] = this.animalsInfo[infoAnimal]['TREATMENT']
-                            }
-                        }
-                    }
-                    this.stepUp()
-                      this.showActivityPerTimeBinPreset = true
-                    break
-                }
-
-                // this.results.forEach((animal, index) => {
-                //     console.log(animal)
-                //   // this.results[animal]['setup'] = this.animalsInfo[index]['SETUP']
-                //   // this.results[animal]['treatment'] = this.animalsInfo[index]['TREATMENT']
-                // })
-
-
-            // this.processing = false
-            this.checked = true
-
-            }
-
-            // this.data['name_experiment'] = this.filename.split('.sqlite')[0]
-            // this.downloadFile(this.data.file_id)
-          }
-          else {
-            this.tasksProgression = this.task.progress.percent
-            if((this.task.complete == true) && (this.task.success == false)) {
-              console.log('error')
-              // this.processing = false
-              this.error = true
-              this.errorMessage = this.task.result
-            }
-            this.getProgression()
-          }
-          // console.log(response.data.state)
-          this.tasksProgression = response.data.progress.current
-          // console.log("task progression: "+response.data.result.message)
-        })
-        .catch(error => {
-          console.log(JSON.stringify(error))
-        })
-    },
-    // selectReliability() {
-    //   this.reliabilitySelected = true
-    //   this.analysisSelected = false
-    // },
-    // selectAnalysis() {
-    //   this.reliabilitySelected = false
-    //   this.analysisSelected = true
-    // },
-    setDurationAnalysis() {
-      console.log("changed")
-      if(this.minT > 0 && this.unitMinT != ''){
-        this.durationAnalysisStart = "From "+this.minT+" "+this.unitMinT
-        this.sendMinT = this.minT+" "+this.unitMinT
-        this.checkDurationForAnalysis()
-      }
-      else {
-        this.durationAnalysisStart = "From the beginning"
-        this.durationChecker = ''
-      }
-      if((this.maxT != "-" || this.maxT > 0) && this.unitMaxT != '') {
-        this.durationAnalysisEnd = "to "+this.maxT+" "+this.unitMaxT
-        this.sendMaxT = this.maxT+" "+this.unitMaxT
-        this.checkDurationForAnalysis()
-      }
-      else {
-        this.durationAnalysisEnd = "to the end of the experiment"
-        this.durationChecker = ''
-      }
-    },
-    checkDurationForAnalysis() {
-      if(this.maxT*this.timeUnit[this.unitMaxT] - this.minT*this.timeUnit[this.unitMinT] < 0){
-        this.durationChecker = 'You select a start after the end! Please change your duration window'
-      }
-      else {
-        this.durationChecker = ''
-      }
-    },
-    downloadFile(fileId) {
-      axios.get(`http://127.0.0.1:8000/api/files/${fileId}/`)
-      .then(response => {
-        // this.fileURL = window.URL.createObjectURL(new Blob([response.data]))
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement('a');
-
-        fileLink.href = fileURL;
-        fileLink.setAttribute('download', `${response.data.file_name}`);
-
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-      })
-      .catch(error => {
-          console.log(JSON.stringify(error))
-        })
-    },
-    checkReliability() {
-      let formData = new FormData();
-      formData.append('file_id', this.file_id)
-      axios.post(`http://127.0.0.1:8000/api/checkReliability/`, formData)
-      .then(response => {
-        this.task_id = response.data.task_id
-        this.getProgression()
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error))
-      })
-    },
-    getLogInfo() {
-      this.logOnChecking = true
-      let formData = new FormData();
-      formData.append('file_id', this.file_id)
-      axios.post(`http://127.0.0.1:8000/api/logInfo/`, formData)
-      .then(response => {
-        this.task_id = response.data.task_id
-        this.getProgression()
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error))
-      })
-    },
-    checkRebuildLMTToolkitVersion() {
-      if(this.logInfo) {
-        for(let i=0; i<this.logInfo.length; i++) {
-          if(this.logInfo[i]['version'].includes("LMT-toolkit")){
-            this.rebuildVersion['version'] = this.logInfo[i]['version']
-            this.rebuildVersion['process'] = this.logInfo[i]['process']
-          }
-        }
-      }
-    },
-    stepToTimeLine() {
-      switch (this.step){
-        case 4:
-          this.timelineItems["reliability"]["color"] = "green"
-          break
-        case 5:
-          this.timelineItems["animalInfo"]["color"] = "purple"
-          break
-        case 6:
-          this.timelineItems["rebuild"]["color"] = "red-lighten-1"
-          break
-        case 7:
-          this.timelineItems["configAnalysis"]["color"] = "amber-lighten-1"
-          break
-        case 8:
-          this.timelineItems["analysis"]["color"] = "cyan-lighten-1"
-          break
-        case 9:
-          this.timelineItems["save"]["color"] = "indigo-lighten-2"
-          break
-      }
-    },
-    functionToShowReliability() {
-      this.reliabilityModalOpen = !this.reliabilityModalOpen
-    },
-    stepUp() {
-      this.step++
-      this.stepToTimeLine()
-    },
-    stepDown() {
-      if(this.step==9){
-        this.step=this.step-2
-        // reinitialize some variables here to avoid nuxt/vue problems
-      }
-      else{
-        this.step--
-      }
-      this.preset = null
-      this.showSimplePreset = false
-      this.showActivityPerTimeBinPreset = false
-      console.log("stepDown")
-      this.stepToTimeLine()
-    },
-    saveAnimalInfo(rebuild=true) {
-      let formatedAnimalsInfo = {}
-      for(let line in this.animalsInfo) {
-          console.log(line)
-          formatedAnimalsInfo[this.animalsInfo[line]["RFID"]] = this.animalsInfo[line]
-      }
-      let formData = new FormData();
-      formData.append('file_id', this.file_id)
-      formData.append('animalsInfo', JSON.stringify( this.animalsInfo))
-      axios.post(`http://127.0.0.1:8000/api/saveAnimalInfo/`, formData)
-      .then(response => {
-        this.task_id = response.data.task_id
-        if(!rebuild){
-          this.stepUp()
-        }
-        this.getProgression()
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error))
-      })
-    },
-    rebuildSQLiteFile() {
-      let formData = new FormData();
-      formData.append('file_id', this.file_id)
-      axios.post(`http://127.0.0.1:8000/api/rebuild/`, formData)
-      .then(response => {
-        this.task_id = response.data.task_id
-        this.getProgression()
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error))
-      })
-    },
-    doAnalysis(preset){
-      // console.log("Do analyis preset:", preset)
-      this.preset = preset
-      // this.resultsSimplePreset = {}
-      // this.resultsActivityPerTimeBin = {}
-      let formData = new FormData();
-      switch (this.preset){
-        case 'simplePreset':
-          // self.preset = 'simplePreset'
-          formData.append('file_id', this.file_id)
-          if(this.minT) {
-            formData.append('tmin', parseInt(this.minT))
-          }
-          else {
-            formData.append('tmin', 0)
-          }
-          if(this.maxT){
-            formData.append('tmax', parseInt(this.maxT))
-          }
-          else {
-            formData.append('tmax', -1)
-          }
-          formData.append('unitMinT', this.unitMinT)
-          formData.append('unitMaxT', this.unitMaxT)
-          axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData)
-          .then(response => {
-            console.log('Do analysis simplePreset')
-            // this.data = response.data.reliabilityContext
-            this.task_id = response.data.task_id
-            this.stepUp()
-            this.getProgression()
-            // console.log('success!!')
-
-          }).catch(error => {
-            console.log('FAILURE!!')
-            console.log(JSON.stringify(error))
-            this.error = true
-          })
-          break
-        case 'activityPerTimeBinPreset':
-          formData.append('file_id', this.file_id)
-          formData.append('timeBin', parseInt(this.timeBin))
-          axios.post(`http://127.0.0.1:8000/api/activityPerTimeBin/`, formData)
-          .then(response => {
-            console.log('Do analysis activityPerTimeBinPreset')
-            // this.data = response.data.reliabilityContext
-            this.task_id = response.data.task_id
-            this.stepUp()
-            this.getProgression()
-
-          }).catch(error => {
-            console.log('FAILURE!!')
-            console.log(JSON.stringify(error))
-            this.error = true
-          })
-          break
-      }
-    }
-  },
-  watch: {
-    minT() {
-      this.setDurationAnalysis()
-    },
-    maxT() {
-      this.setDurationAnalysis()
-    },
-    unitMinT() {
-      this.setDurationAnalysis()
-    },
-    unitMaxT() {
-      this.setDurationAnalysis()
-    },
-  }
-}
-</script>
 
 <style scoped>
 </style>

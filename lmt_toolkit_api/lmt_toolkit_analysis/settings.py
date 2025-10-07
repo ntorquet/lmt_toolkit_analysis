@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'djoser',
     'django_celery_results',
     'celery_progress',
     'drf_spectacular',
@@ -179,13 +178,15 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-broker_url = 'amqp://guest:guest@localhost:5672//'
+broker_url = 'amqp://guest:guest@localhost:5672//?heartbeat=120'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Europe/Paris"
 CELERY_IMPORTS = 'lmt_toolkit_analysis.tasks'
 CELERY_RESULT_BACKEND = 'django-db'
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+CELERY_TASK_TIME_LIMIT = 3600
+CELERY_RESULT_EXTENDED = True
 # CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@rabbit:5672//')
 
 # To upload
@@ -195,3 +196,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/uploaded/')
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.server": {
+            "handlers": ["console"],
+            "level": "WARNING",  # INFO -> WARNING pour cacher les GET/POST
+            "propagate": False,
+        },
+    }
+}

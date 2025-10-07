@@ -21,6 +21,7 @@ from .LMT_v1_0_7.lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from .LMT_v1_0_7.lmtanalysis.FileUtil import behaviouralEventOneMouse
 from .LMT_v1_0_7.scripts.ComputeMeasuresIdentityProfileOneMouseAutomatic import computeProfile
 from .LMT_v1_0_7.scripts.Rebuild_info_mice import addColumns, updateFieldFromDico
+from . import tasks
 
 oneFrame = 1
 oneSecond = 30
@@ -826,5 +827,14 @@ def saveAnimalInfo(file, animalsInfo, version):
     print(str(formatedJson))
     updateFieldFromDico(file, formatedJson, version)
     return "Done"
+
+
+def rebuildNightEvent(file, version):
+    '''
+    Rebuild night event
+    '''
+    print("in rebuildNightEvent method")
+
+
 
 

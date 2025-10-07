@@ -6,6 +6,85 @@ CNRS - Mouse Clinical Institute
 PHENOMIN, CNRS UMR7104, INSERM U964, Université de Strasbourg
 Code under GPL v3.0 licence
 -->
+
+<script setup>
+////////////////////////////////
+// IMPORT
+////////////////////////////////
+import {ref} from "vue";
+
+
+////////////////////////////////
+// DATA
+////////////////////////////////
+const timelineItems = ref({
+  selectSqlite: {
+    title: 'File Selection',
+    icon: 'mdi-download',
+    color: 'pink',
+    text: 'The chosen SQLite file will be downloaded into the server to be process.'
+  },
+  reliability: {
+    title: 'Quality control',
+    icon: 'mdi-database-check',
+    color: 'green',
+    text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
+  },
+  animalInfo: {
+    title: 'Animal info',
+    icon: 'mdi-database-edit',
+    color: 'purple',
+    text: 'Add sex, treatment columns. Modify the name of each animal.'
+  },
+  rebuild: {
+    title: 'Rebuild events',
+    icon: 'mdi-database-cog',
+    color: 'red-lighten-1',
+    text: 'This will create behavioral events into the event table of the SQLite file. ' +
+        'If the file was rebuilt, it is possible to skip this step.'
+  },
+  nightEvent: {
+    title: 'Rebuild nights',
+    icon: 'mdi-weather-night',
+    color: 'amber-lighten-1',
+    text: 'Create night events in the database to be able to extract results from these periods.'
+  },
+  configAnalysis: {
+    title: 'Analysis setup',
+    icon: 'mdi-cogs',
+    color: 'light-green',
+    text: 'Choose a preset, delimit a period to analyse, and more.'
+  },
+  analysis: {
+    title: 'Compute',
+    icon: 'mdi-chart-line',
+    color: 'cyan-lighten-1',
+    text: 'LMT-toolkit processes LMT experiments automatically for you!'
+  },
+  save: {
+    title: 'Results export',
+    icon: 'mdi-content-save',
+    color: 'indigo-lighten-2',
+    text: 'Download your result into a CSV file.'
+  }
+});
+const showDetailsInModal = ref(false);
+const dataforDetails = ref({});
+
+
+////////////////////////////////
+// METHODS
+////////////////////////////////
+const showDetailsfunction = (toShow) => {
+  dataforDetails.value = {}
+  dataforDetails.value = timelineItems.value[toShow];
+  showDetailsInModal.value = !showDetailsInModal.value
+}
+
+
+</script>
+
+
 <template>
   <v-main>
     <v-container>
@@ -30,10 +109,11 @@ Code under GPL v3.0 licence
 
       <v-row>
         <v-col>
-          <v-timeline direction="horizontal"  class="mt-10 mb-10">
+          <v-timeline direction="horizontal"  class="mt-10 mb-10 justify-center">
             <v-timeline-item v-for="(item, key) in timelineItems"
               :dot-color="item.color"
               :icon="item.icon"
+              max-width="200"
             >
               <v-card>
                 <v-card-title>{{ item.title }}</v-card-title>
@@ -43,7 +123,7 @@ Code under GPL v3.0 licence
                   <v-btn
                     :color="item.color"
                     variant="outlined"
-                    @click="showDetails(key)"
+                    @click="showDetailsfunction(key)"
                   >
                     See details
                   </v-btn>
@@ -60,73 +140,6 @@ Code under GPL v3.0 licence
   <show-details :data="dataforDetails" v-model="showDetailsInModal"></show-details>
 </template>
 
-
-
-<script>
-import showDetails from "~/components/showDetails.vue";
-export default {
-  name: "index",
-  components: {
-    showDetails
-  },
-  data () {
-    return {
-      timelineItems: {
-        selectSqlite: {
-          title: 'Select a SQLite file',
-          icon: 'mdi-download',
-          color: 'pink',
-          text: 'This file will be downloaded into the server to be process.'
-        },
-        reliability: {
-          title: 'Check the reliability',
-          icon: 'mdi-database-check',
-          color: 'green',
-          text: 'Check detection, identity corrections and whenever available through the sensor temperature, humidity, light and ambient noise.'
-        },
-        animalInfo: {
-          title: 'Add animal information',
-          icon: 'mdi-database-edit',
-          color: 'purple',
-          text: 'Add sex, treatment columns. Modify the name of each animal.'
-        },
-        rebuild: {
-          title: 'Rebuild the database',
-          icon: 'mdi-database-cog',
-          color: 'red-lighten-1',
-          text: 'This will create behavioral events into the event table of the SQLite file.'
-        },
-        configAnalysis: {
-          title: 'Configure the analysis',
-          icon: 'mdi-cogs',
-          color: 'amber-lighten-1',
-          text: 'Delimit a period to analyse, and more.'
-        },
-        analysis: {
-          title: 'Analyse your data',
-          icon: 'mdi-chart-line',
-          color: 'cyan-lighten-1',
-          text: 'LMT-toolkit processes LMT experiments automatically for you!'
-        },
-        save: {
-          title: 'Save your results',
-          icon: 'mdi-content-save',
-          color: 'indigo-lighten-2',
-          text: 'Download your result into a CSV file.'
-        }
-      },
-      showDetailsInModal: false,
-      dataforDetails: {}
-    }
-  },
-  methods: {
-    showDetails(toShow) {
-      this.dataforDetails = this.timelineItems[toShow]
-      this.showDetailsInModal = !this.showDetailsInModal
-    }
-  },
-}
-</script>
 
 <style scoped>
 
