@@ -272,9 +272,9 @@ class ExtractAnalysisAPIView(APIView):
         tmax = int(request.data['tmax'])
         unitMaxT = request.data['unitMaxT']
         try:
-            analysisContext = tasks.analyseProfileFromStartTimeToEndTime.delay(path_file,  tmin =tmin , tmax = tmax, unitMinT = unitMinT, unitMaxT = unitMaxT)
+            analysis_context = tasks.analyseProfileFromStartTimeToEndTime.delay(path_file, tmin=tmin, tmax=tmax, unitMinT=unitMinT, unitMaxT=unitMaxT)
             sleep(1)
-            task_id = str(analysisContext.task_id)
+            task_id = str(analysis_context.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
             sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
@@ -336,16 +336,16 @@ class DistancePerTimeBinAPIView(APIView):
         file_id = int(request.data['file_id'])
         sqliteFile = File.objects.get(id=file_id)
         path_file = sqliteFile.sqlite.path
-        timeBin = int(request.data['timeBin'])
+        time_bin = int(request.data['timeBin'])
         try:
-            activityPerTimeBin = tasks.activityPerTimeBin.delay(path_file, timeBin=timeBin)
+            activityPerTimeBin = tasks.distancePerTimeBin.delay(path_file, time_bin=time_bin)
             sleep(1)
             task_id = str(activityPerTimeBin.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
             sqliteFile.tasks.add(myTask)
             return JsonResponse({'filename': sqliteFile.file_name, 'task_id': task_id, 'path_file': path_file})
-        except:
-            return JsonResponse({'Error': 'An error occurs during the activity analysis'})
+        except Exception as e:
+            return JsonResponse({'Error': f'An error {e} occurs during the activity analysis'})
 
 
 class StopCeleryTask(APIView):

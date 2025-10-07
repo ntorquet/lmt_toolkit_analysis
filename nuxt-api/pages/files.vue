@@ -31,7 +31,7 @@ const dictTasks = ref({
   'lmt_toolkit_analysis.tasks.rebuildSQLite': ['mdi-database-cog', "Rebuild database"],
   'lmt_toolkit_analysis.tasks.buildNightEventTask': ['mdi-weather-night', 'Night rebuild'],
   'lmt_toolkit_analysis.tasks.analyseProfileFromStartTimeToEndTime': ['mdi-database-export', "General preset"],
-  'lmt_toolkit_analysis.tasks.activityPerTimeBin': ['mdi-database-export', 'Activity preset']
+  'lmt_toolkit_analysis.tasks.distancePerTimeBin': ['mdi-database-export', 'Activity preset']
 });
 const presets = getPresets();
 console.log("ici");
@@ -218,10 +218,6 @@ onMounted(() => getFiles());
                     {{ file['quality_control']['quality control'] }}
                   </span>
                 </span>
-
-<!--                <v-list>-->
-<!--                  <v-list-item v-for="qc in file['quality_control']">{{ qc['file_id'] }}</v-list-item>-->
-<!--                </v-list>-->
               </td>
               <td>{{ file.rebuild }}</td>
               <td>{{ file.created_at.split("T")[0] }}</td>
@@ -257,11 +253,11 @@ onMounted(() => getFiles());
                 </v-list>
               </td>
               <td>
-                <v-chip-group v-if="presets.length>0">
-                  <div v-for="preset in presets">
-                    <v-chip>{{ preset.preset_name }}</v-chip>
-                  </div>
-                </v-chip-group>
+<!--                <v-chip-group v-if="presets.length>0">-->
+<!--                  <div v-for="preset in presets">-->
+<!--                    <v-chip>{{ preset.preset_name }}</v-chip>-->
+<!--                  </div>-->
+<!--                </v-chip-group>-->
               </td>
               <td>
 
@@ -296,8 +292,7 @@ onMounted(() => getFiles());
     </v-container>
   </v-main>
 
-<!--  <simple-preset v-show="false"></simple-preset>-->
-<!--  <v-dialog v-model="reliabilityModalOpen" scrollable width="850">-->
+
   <template v-for="file in files">
     <v-dialog v-if="file['quality_control']" v-model="file['quality_control']['show_reliability']" scrollable width="850">
       <show-reliability v-bind:data="JSON.parse(file['quality_control']['quality control'])" v-bind:filename="file.file_name"></show-reliability>

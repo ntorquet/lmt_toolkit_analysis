@@ -559,7 +559,7 @@ const doAnalysis = async (presetTemp) => {
       formData.append('unitMaxT', unitMaxT.value);
       try {
         const response = await axios.post(`http://127.0.0.1:8000/api/extractAnalysis/`, formData);
-         console.log('Do analysis simplePreset');
+        console.log('Do analysis simplePreset');
         task_id.value = response.data.task_id;
         stepUp();
         getProgression();
@@ -577,7 +577,9 @@ const doAnalysis = async (presetTemp) => {
         const response = await axios.post(`http://127.0.0.1:8000/api/distancePerTimeBin/`, formData);
         console.log('Do analysis activityPerTimeBinPreset');
         task_id.value = response.data.task_id;
+        console.log(task_id.value);
         stepUp();
+        console.log("step: "+step.value);
         getProgression();
       }
       catch (error) {
@@ -792,18 +794,18 @@ watch(() => unitMaxT.value, () => {
               </v-alert>
               <v-alert class="mt-2" v-if="dataReliability.realDurationInHours<10" type="warning">
                 From the duration of this experiment, there should be no night-time period and you should skip this step.<br />
-                <v-btn class="mr-4 mt-2 mb-2" @click="rebuildNightEventFromHour"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
+                <v-btn class="mr-4 mt-2 mb-2" @click="stepUp"><v-icon icon="mdi-arrow-right-bold"></v-icon> Next step without night rebuild</v-btn>
               </v-alert>
             </v-card-text>
           </v-card>
 
-          <v-card v-if="dataReliability.sensors" class="mt-2">
-            <v-card-title><v-icon icon="mdi-chip"></v-icon> From sensors</v-card-title>
-            <v-card-text>
-<!--              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"-->
-<!--        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>-->
-            </v-card-text>
-          </v-card>
+<!--          <v-card v-if="dataReliability.sensors" class="mt-2">-->
+<!--            <v-card-title><v-icon icon="mdi-chip"></v-icon> From sensors</v-card-title>-->
+<!--            <v-card-text>-->
+<!--&lt;!&ndash;              <linePlot selection="light" :timeline="dataReliability.timeline" :temperature="dataReliability.temperature"&ndash;&gt;-->
+<!--&lt;!&ndash;        :humidity="dataReliability.humidity" :sound="dataReliability.sound" :lightvisible="dataReliability.lightvisible" :lightvisibleandir="dataReliability.lightvisibleandir"></linePlot>&ndash;&gt;-->
+<!--            </v-card-text>-->
+<!--          </v-card>-->
 
           <v-card>
             <v-card-title><v-icon icon="mdi-clock-time-eight-outline"></v-icon> Manual definition of the night period</v-card-title>

@@ -1037,12 +1037,14 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
 
 
 @shared_task(bind=True)
-def activityPerTimeBin(self, file, time_bin=10):
+def distancePerTimeBin(self, file, time_bin=10):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :param time_bin: the time bin in minutes
     :return: activity per time_bin during the whole experiment
     '''
+    print("in activity per time bin")
+
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(0, 2, f'[Activity per timebin] Starting')
 
@@ -1050,6 +1052,7 @@ def activityPerTimeBin(self, file, time_bin=10):
     progress_recorder.set_progress(1, 2, f'[Activity per timebin] Extracting activity for each animal')
     activity_per_time_bin = extractActivityPerAnimalWholeExperiment(file, time_bin)
 
+    print("job done")
     # save results in the LMT-toolkit database
 
 

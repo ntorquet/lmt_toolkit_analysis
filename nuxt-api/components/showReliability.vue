@@ -196,7 +196,7 @@ onMounted(async () => {
 
 <template>
   <v-sheet width="850">
-    <h2 class="pt-2 pl-2">Reliability information</h2>
+    <h2 class="pt-2 pl-2">Quality control</h2>
     <v-card class="mt-8">
       <v-card-title><v-icon icon="mdi-information"></v-icon> Global information</v-card-title>
       <v-card-text>
