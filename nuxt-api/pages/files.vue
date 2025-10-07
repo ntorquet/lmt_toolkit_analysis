@@ -142,12 +142,18 @@ const getQualityControl = () => {
     axios.get(`http://127.0.0.1:8000/api/qualityControl/?file_id=`+files.value[file]['id'])
      .then(response => {
        files.value[file]['quality_control'] = response.data;
-       console.log(files.value[file]['quality_control']);
+       if(files.value[file]['quality_control']['quality control'] !== 'No data'){
+         files.value[file]['quality_control']['show_reliability'] = false;
+       }
     })
     .catch(error => {
       console.log(JSON.stringify(error));
     })
   }
+}
+
+const showQualityControl = (file) => {
+  files.value[file]['quality_control']['show_reliability'] = !files.value[file]['quality_control']['show_reliability'];
 }
 
 const checkReliability = (fileId) => {
@@ -201,10 +207,17 @@ onMounted(() => getFiles());
             </tr>
           </thead>
           <tbody>
-            <tr v-for="file, index in files">
+            <tr v-for="(file, index) in files">
               <td>{{ file.file_name }}</td>
               <td>
-                <span v-if="file['quality_control']">{{ file['quality_control']['quality control'] }}</span>
+                <span v-if="file['quality_control']">
+                  <span v-if="file['quality_control']['quality control']!=='No data'">
+                    <v-chip @click="showQualityControl(index)">Show QC</v-chip>
+                  </span>
+                  <span v-else>
+                    {{ file['quality_control']['quality control'] }}
+                  </span>
+                </span>
 
 <!--                <v-list>-->
 <!--                  <v-list-item v-for="qc in file['quality_control']">{{ qc['file_id'] }}</v-list-item>-->
@@ -284,6 +297,12 @@ onMounted(() => getFiles());
   </v-main>
 
 <!--  <simple-preset v-show="false"></simple-preset>-->
+<!--  <v-dialog v-model="reliabilityModalOpen" scrollable width="850">-->
+  <template v-for="file in files">
+    <v-dialog v-if="file['quality_control']" v-model="file['quality_control']['show_reliability']" scrollable width="850">
+      <show-reliability v-bind:data="JSON.parse(file['quality_control']['quality control'])" v-bind:filename="file.file_name"></show-reliability>
+    </v-dialog>
+  </template>
 
 </template>
 
