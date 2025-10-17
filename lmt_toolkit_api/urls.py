@@ -35,8 +35,8 @@ Including another URLconf
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include('djoser.urls')),
-    path('api/', include('djoser.urls.authtoken')),
+    # path('api/', include('djoser.urls')),
+    # path('api/', include('djoser.urls.authtoken')),
     path('api/', include('lmt_toolkit_analysis.urls')),
     url(r'^media/temp/uploaded/(?*.sqlite)$', serve, {'document root': settings.MEDIA_ROOT})
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

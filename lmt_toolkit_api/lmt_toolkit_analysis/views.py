@@ -12,12 +12,14 @@ import os
 from pathlib import Path
 from time import sleep
 
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from drf_spectacular.utils import (
     OpenApiParameter,
     extend_schema,
     extend_schema_serializer,
 )
+
 from rest_framework.views import APIView
 from rest_framework import viewsets, status, generics, parsers, permissions
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
@@ -335,7 +337,7 @@ class DistancePerTimeBinAPIView(APIView):
         path_file = sqliteFile.sqlite.path
         time_bin = int(request.data['timeBin'])
         try:
-            activityPerTimeBin = tasks.distancePerTimeBin.delay(path_file, time_bin=time_bin)
+            activityPerTimeBin = tasks.distancePerTimeBin.delay(path_file, file_id=file_id, time_bin=time_bin)
             sleep(1)
             task_id = str(activityPerTimeBin.task_id)
             myTask = celery_models.TaskResult.objects.get(task_id=task_id)
@@ -364,28 +366,54 @@ class PresetViewSet(viewsets.ModelViewSet):
     serializer_class = PresetSerializer
 
 
-class AnalysisPresetAPIView(APIView):
+class ResultsAPIView(APIView):
     """
     To save and gate the analysis preset for analysis results
     """
-
     def post(self, request):
-        print("post AnalysisPresetAPIView")
+        print("post ResultsAPIView")
         try:
+            print("i am trying")
             serializer_file_id = FileIdSerializer(data={'file_id': request.data['file_id']})
             serializer_file_id.is_valid(raise_exception=True)
             file_id = serializer_file_id.validated_data['file_id']
+            print(f'File id: {file_id}')
             version = Version.objects.latest('id').id
-            serializer_preset = PresetSerializer(data={'preset_name': request.data['preset_name']})
-            serializer_preset.is_valid(raise_exception=True)
-            preset = serializer_preset.validated_data['preset_name']
-            serializer = AnalysisPresetAPIView(data={'file': file_id, 'version': version,
-                                                     'preset': preset})
-            serializer.is_valid(raise_exception=True)
+            print(f'Version: {version}')
+            print(f"Preset name: {request.data['preset_name']}")
+            # serializer_preset = PresetIdSerializer(data={'preset_name': request.data['preset_name']})
+            # serializer_preset.is_valid(raise_exception=True)
+            # preset = serializer_preset.validated_data['preset_id']
+            preset = Preset.objects.get(preset_name=request.data['preset_name']).id
+            print(f'Preset id: {preset}')
+            # print(f"Metadata: {request.data['metadata']}")
+            list_metadata = json.loads(request.data['metadata'])
+            list_metadata_for_results = []
+            for metadata in list_metadata:
+                print(f"Metadata: {metadata}")
+                metadata_field = MetadataField.objects.get(name=metadata['metadata_field']).id
+                print(f"Metadata field: {metadata_field}")
+                serializer_metadata = MetadataSerializer(data={'metadata_field': metadata_field, 'value': str(metadata['value'])})
+                print("gna")
+                serializer_metadata.is_valid(raise_exception=True)
+                print("bof")
+                serializer_metadata.save()
+                print("gna gna")
+                list_metadata_for_results.append(serializer_metadata.validated_data.id)
+
+            print(f"results id: {request.data['results']}")
+            serializer = ResultSerializer(data={'preset': preset, 'file': file_id, 'version': version,
+                                                'metadata': list_metadata_for_results,
+                                                'results': request.data['results']})
+            print("check")
+            # serializer.is_valid(raise_exception=True)
+            if not serializer.is_valid():
+                raise ValidationError(serializer.errors)
+            print("glou")
             serializer.save()
-            return JsonResponse({'response': '[View] Quality control saved'})
+            return JsonResponse({'response': '[View] Results saved'})
         except Exception as e:
-            return JsonResponse({f'{e} Error': 'Cannot post the analysis preset', 'analysis_preset': 'No data'})
+            return JsonResponse({f'{e} Error': 'Cannot post the results', 'results': 'No data'})
 
 
 class QualityControlAPIView(APIView):

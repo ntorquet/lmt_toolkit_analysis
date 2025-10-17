@@ -58,7 +58,7 @@ class MetadataFieldSerializer(serializers.ModelSerializer):
 
 
 class MetadataSerializer(serializers.ModelSerializer):
-    metadata_fields = MetadataFieldSerializer(many=True)
+    metadata_field = MetadataFieldSerializer(read_only=True)
 
     class Meta:
         model = Metadata
@@ -66,17 +66,20 @@ class MetadataSerializer(serializers.ModelSerializer):
 
 
 class PresetSerializer(serializers.ModelSerializer):
-    metadata_fields = MetadataFieldSerializer(many=True)
+    metadata_field = MetadataFieldSerializer(many=True)
 
     class Meta:
         model = Preset
         fields = '__all__'
 
 
-class AnalysisPresetSerializer(serializers.ModelSerializer):
+class ResultSerializer(serializers.ModelSerializer):
+    preset = PresetSerializer(read_only=True)
+    file = FileSerializer(read_only=True)
+    version = VersionSerializer(read_only=True)
     metadata = MetadataSerializer(many=True)
 
     class Meta:
-        model = AnalysisPreset
+        model = Results
         fields = '__all__'
 

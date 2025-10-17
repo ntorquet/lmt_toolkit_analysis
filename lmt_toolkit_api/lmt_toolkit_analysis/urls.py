@@ -36,7 +36,7 @@ urlpatterns = [
     path(r'api/saveAnimalInfo/', SaveAnimalInfoAPIView.as_view(), name="saveAnimalInfo"),
     path(r'api/extractAnalysis/', ExtractAnalysisAPIView.as_view(), name="extractAnalysis"),
     path(r'api/distancePerTimeBin/', DistancePerTimeBinAPIView.as_view(), name="distancePerTimeBin"),
-    path(r'api/analysisPresets/', AnalysisPresetAPIView.as_view(), name='analysisPresets'),
+    path(r'api/results/', ResultsAPIView.as_view(), name='results'),
     path(r'api/revokeTask/', StopCeleryTask.as_view(), name="revokeTask"),
     path(r'api/logInfo/', LogInfoAPIView.as_view(), name="logInfo"),
     path('admin/', admin.site.urls),
@@ -44,7 +44,6 @@ urlpatterns = [
     path('api/', include('djoser.urls')),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # path('api/', include('djoser.urls.authtoken')),
     re_path(r'^celery-progress/', include('celery_progress.urls')),
     # to download files:
     re_path(r'^media/uploaded/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

@@ -16,7 +16,7 @@ admin.site.register(QualityControl)
 admin.site.register(Metadata)
 admin.site.register(MetadataField)
 admin.site.register(Preset)
-admin.site.register(AnalysisPreset)
+admin.site.register(Results)
 admin.site.register(Version)
 admin.site.register(EventDocumentation)
 

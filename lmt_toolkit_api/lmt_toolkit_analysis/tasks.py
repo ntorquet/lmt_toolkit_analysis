@@ -1037,7 +1037,7 @@ def getReliability(self, file, deleteFile = True, file_id = ""):
 
 
 @shared_task(bind=True)
-def distancePerTimeBin(self, file, time_bin=10):
+def distancePerTimeBin(self, file, file_id, time_bin=10):
     '''
     :param file: the SQLite LMT_v1_0_3 file
     :param time_bin: the time bin in minutes
@@ -1054,8 +1054,21 @@ def distancePerTimeBin(self, file, time_bin=10):
 
     print("job done")
     # save results in the LMT-toolkit database
-    # Create Analysis preset from Distance per time bin preset
 
+    metadata = [{"metadata_field": 'timebin', "value": time_bin}]
+
+    relative_url = reverse('results')
+    url_save_quality_control = f"{settings.API_BASE_URL}{relative_url}"
+    # url_deleteFile = f"{settings.API_BASE_URL}{relative_url}"
+    # # url_deleteFile = 'http://127.0.0.1:8000/api/files/' + str(file_id['file_id'])
+    # print(url_deleteFile)
+    response = requests.post(url_save_quality_control, {'file_id': file_id,
+                                                        'preset_name': "Distance per timebin preset",
+                                                        'metadata': json.dumps(metadata),
+                                                        'results': json.dumps(activity_per_time_bin)})
+    print("before response")
+    print(response)
+    print("after response")
 
 
     progress_recorder.set_progress(2, 2, f'[Activity per timebin] Job done: activity extracted')
