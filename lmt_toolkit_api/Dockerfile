@@ -4,16 +4,20 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN apk update && apk add --no-cache \
+    build-base \
     gcc \
     musl-dev \
+    gfortran \
     python3-dev \
     linux-headers \
     sqlite \
     tk \
     netcat-openbsd \
-    #    libffi-dev \
-    #    build-base \
-    #    pkgconfig \
+    libffi-dev \
+    pkgconfig \
+    cmake \
+    openblas-dev \
+    lapack-dev \
     bash
 
 WORKDIR /app
