@@ -290,7 +290,7 @@ Docker Desktop has to be launched with administrator rights.
    git clone https://github.com/ntorquet/lmt_toolkit_analysis.git
    ```
 
-2.  Navigate to the lmt_toolkit_analysis folder and run the following command to build the Docker image and start all required services:
+2.  Navigate to the lmt_toolkit_analysis/lmt_toolkit_api folder and run the following command to build the Docker image and start all required services:
    
    ```bash
     docker compose up --build
