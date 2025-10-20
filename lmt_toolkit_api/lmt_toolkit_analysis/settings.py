@@ -197,19 +197,19 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "loggers": {
-        "django.server": {
-            "handlers": ["console"],
-            "level": "WARNING",  # INFO -> WARNING pour cacher les GET/POST
-            "propagate": False,
-        },
-    }
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "loggers": {
+#         "django.server": {
+#             "handlers": ["console"],
+#             "level": "WARNING",  # INFO -> WARNING pour cacher les GET/POST
+#             "propagate": False,
+#         },
+#     }
+# }

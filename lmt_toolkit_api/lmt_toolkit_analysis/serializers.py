@@ -59,6 +59,7 @@ class MetadataFieldSerializer(serializers.ModelSerializer):
 
 class MetadataSerializer(serializers.ModelSerializer):
     metadata_field = MetadataFieldSerializer(read_only=True)
+    metadata_field_id = serializers.PrimaryKeyRelatedField(source='metadata_field', write_only=True, queryset=MetadataField.objects.all(), required=True)
 
     class Meta:
         model = Metadata
@@ -77,7 +78,21 @@ class ResultSerializer(serializers.ModelSerializer):
     preset = PresetSerializer(read_only=True)
     file = FileSerializer(read_only=True)
     version = VersionSerializer(read_only=True)
-    metadata = MetadataSerializer(many=True)
+    metadata = MetadataSerializer(many=True, read_only=True)
+
+    preset_id = serializers.PrimaryKeyRelatedField(source='preset', write_only=True,
+                                                   queryset=Preset.objects.all(), required=True)
+    file_id = serializers.PrimaryKeyRelatedField(source='file', write_only=True, queryset=File.objects.all(),
+                                                 required=True)
+    version_id = serializers.PrimaryKeyRelatedField(source='version', write_only=True, queryset=Version.objects.all(),
+                                                    required=True)
+    metadata_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Metadata.objects.all(),
+        source="metadata",
+        many=True,
+        write_only=True,
+        required=False,
+    )
 
     class Meta:
         model = Results
