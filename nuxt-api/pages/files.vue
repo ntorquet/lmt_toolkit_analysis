@@ -50,6 +50,7 @@ const getFiles = () => {
     files.value = response.data;
     // console.log(files.value);
     getQualityControl();
+    getResults();
     organizeFiles();
     getTasks();
   })
@@ -152,8 +153,28 @@ const getQualityControl = () => {
   }
 }
 
+const getResults = () => {
+  for(let file in files.value){
+    axios.get(`http://127.0.0.1:8000/api/results/?file_id=`+files.value[file]['id'])
+     .then(response => {
+       files.value[file]['list_results'] = response.data.results;
+       if(files.value[file]['list_results']['results'] !== 'No data'){
+         files.value[file]['list_results']['show_results'] = false;
+       }
+       console.log(files.value[file]['list_results'])
+    })
+    .catch(error => {
+      console.log(JSON.stringify(error));
+    })
+  }
+}
+
 const showQualityControl = (file) => {
   files.value[file]['quality_control']['show_reliability'] = !files.value[file]['quality_control']['show_reliability'];
+}
+
+const showResults = (file, result) => {
+  files.value[file]['list_results']['show_results'] = !files.value[file]['list_results']['show_results'];
 }
 
 const checkReliability = (fileId) => {
@@ -260,7 +281,13 @@ onMounted(() => getFiles());
 <!--                </v-chip-group>-->
               </td>
               <td>
-
+                <span v-if="file['list_results']">
+                <v-list v-if="file['list_results'].length>0">
+                  <v-list-item v-for="results in file['list_results']">
+                    <span @click="showResults(index, 0)">{{ results['preset'] }}</span>
+                  </v-list-item>
+                </v-list>
+                </span>
               </td>
               <td>
                 <v-btn size="sm" @click="deleteFile(files[index]['id'])">
@@ -297,7 +324,12 @@ onMounted(() => getFiles());
     <v-dialog v-if="file['quality_control']" v-model="file['quality_control']['show_reliability']" scrollable width="850">
       <show-reliability v-bind:data="JSON.parse(file['quality_control']['quality control'])" v-bind:filename="file.file_name"></show-reliability>
     </v-dialog>
+
+    <v-dialog v-for="results in file['list_results']">
+      <showActivityPerTimeBin v-if="results['show_results']" :dataActivity="JSON.parse(results.results)" v-bind:filename="file.filename" timeBin="10"></showActivityPerTimeBin>
+    </v-dialog>
   </template>
+
 
 </template>
 

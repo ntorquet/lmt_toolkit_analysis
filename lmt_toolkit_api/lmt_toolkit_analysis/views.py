@@ -368,8 +368,49 @@ class PresetViewSet(viewsets.ModelViewSet):
 
 class ResultsAPIView(APIView):
     """
-    To save and gate the analysis preset for analysis results
+    To save and get the results for analysis presets
     """
+    serializer_class = FileIdSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="file_id", description="file id", required=True, type=int
+            ),
+        ]
+    )
+    def get(self, request):
+        print("get Results")
+        try:
+            serializer = FileIdSerializer(data={'file_id': request.GET.get('file_id')})
+            serializer.is_valid(raise_exception=True)
+            file_id = serializer.validated_data['file_id']
+            file = File.objects.get(id=file_id)
+            print(f"file id: {file.id}")
+            results = Results.objects.filter(file=file)
+            results_list = []
+            for result in results:
+                print("result loop")
+                list_metadata = []
+                print(result.metadata)
+                # for metadata in result.metadata:
+                #     print("metadata:")
+                #     print(metadata)
+                #     list_metadata.append({'metadata_field': metadata.metadata_field.name, 'metadata_unit': metadata.metadata_field.unit, 'value': metadata.value})
+                result_dict = {
+                    "preset": result.preset.preset_name,
+                    "file": result.file.file_name,
+                    "version": result.version.lmt_toolkit_version,
+                    # "metadata": list_metadata,
+                    "result": result.results
+                }
+
+                print(result_dict)
+                results_list.append(result_dict)
+            return JsonResponse({'file_id': file_id, 'results': results_list})
+        except Exception as e:
+            return JsonResponse({f'{e} Error': 'Cannot get the results', 'results': 'No data'})
+
     def post(self, request):
         print("post ResultsAPIView")
         try:
@@ -377,48 +418,22 @@ class ResultsAPIView(APIView):
             serializer_file_id = FileIdSerializer(data={'file_id': request.data['file_id']})
             serializer_file_id.is_valid(raise_exception=True)
             file_id = serializer_file_id.validated_data['file_id']
-            # print(f'File id: {file_id}')
             version_id = Version.objects.latest('id').id
-            # print(f'Version: {version_id}')
-            # print(f"Preset name: {request.data['preset_name']}")
-            # serializer_preset = PresetIdSerializer(data={'preset_name': request.data['preset_name']})
-            # serializer_preset.is_valid(raise_exception=True)
-            # preset = serializer_preset.validated_data['preset_id']
             preset_id = Preset.objects.get(preset_name=request.data['preset_name']).id
-            # print(f'Preset id: {preset_id}')
-            # print(f"Metadata: {request.data['metadata']}")
             list_metadata = json.loads(request.data['metadata'])
             list_metadata_ids_for_results = []
             for metadata in list_metadata:
-                # print(f"Metadata: {metadata}")
                 metadata_field_id = MetadataField.objects.get(name=metadata['metadata_field']).id
-                # print(f"Metadata field: {metadata_field_id}")
-                serializer_metadata = MetadataSerializer(data={'metadata_field_id': metadata_field_id, 'value': metadata['value']})
-                # print("gna")
+                serializer_metadata = MetadataSerializer(
+                    data={'metadata_field_id': metadata_field_id, 'value': metadata['value']})
                 serializer_metadata.is_valid(raise_exception=True)
-                # print("bof")
-                print(serializer_metadata.validated_data)
-                print(serializer_metadata.is_valid())
                 instance = serializer_metadata.save()
-                # print("gna gna")
                 list_metadata_ids_for_results.append(instance.id)
-                print(list_metadata_ids_for_results)
 
-            # print(f"results id: {request.data['results']}")
-            toSend = {'preset_id': preset_id, 'file_id': file_id, 'version_id': version_id,
-                                                'metadata_ids': list_metadata_ids_for_results,
-                                                'results': json.loads(request.data['results'])}
-            print(toSend['metadata_ids'])
             serializer = ResultSerializer(data={'preset_id': preset_id, 'file_id': file_id, 'version_id': version_id,
                                                 'metadata_ids': list_metadata_ids_for_results,
                                                 'results': json.loads(request.data['results'])})
-            print("check")
-            # serializer.is_valid(raise_exception=True)
-            if not serializer.is_valid():
-                print(f"error: {serializer.errors}")
-                raise ValidationError(serializer.errors)
-                print("error")
-            print("glou")
+            serializer.is_valid(raise_exception=True)
             serializer.save()
             return JsonResponse({'response': '[View] Results saved'})
         except Exception as e:
