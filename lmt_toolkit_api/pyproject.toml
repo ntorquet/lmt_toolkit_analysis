@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lmt_toolkit_analysis"
-version = "1.2"
+version = "1.2.1"
 description = "LMT-toolkit is an open source web application created to analyse Live Mouse Tracker (LMT) data easily and intuitively."
 authors = [
     { name = "Nicolas Torquet", email = "nicolas.torquet@igbmc.com" },
@@ -22,7 +22,7 @@ dependencies = [
     "celery==5.5.2",
     "celery-progress==0.5",
     "certifi==2025.4.26",
-    "cffi==1.17.1",
+    "cffi==2.0.0",
     "charset-normalizer==3.4.2",
     "click==8.2.1",
     "click-didyoumean==0.3.1",
@@ -30,10 +30,10 @@ dependencies = [
     "click-repl==0.3.0",
     "colorama==0.4.6",
     "contourpy==1.3.2",
-    "cryptography==45.0.2",
+    "cryptography==46.0.5",
     "cycler==0.12.1",
     "defusedxml==0.7.1",
-    "Django==5.2.7",
+    "Django==5.2.12",
     "django_celery_results==2.6.0",
     "django-cors-headers==4.7.0",
     "django-environ==0.12.0",
@@ -41,7 +41,7 @@ dependencies = [
     "djangorestframework==3.16.0",
     "djoser==2.3.3",
     "drf-spectacular==0.28.0",
-    "fonttools==4.58.0",
+    "fonttools==4.60.2",
     "idna==3.10",
     "inflection==0.5.1",
     "jsonschema==4.23.0",
@@ -56,7 +56,7 @@ dependencies = [
     "packaging==25.0",
     "pandas==2.3.3",
     "patsy==1.0.1",
-    "pillow==11.3",
+    "pillow==12.1.1",
     "prompt_toolkit==3.0.51",
     "psutil==7.0.0",
     "psycopg2-binary==2.9.11",
@@ -73,9 +73,9 @@ dependencies = [
     "scipy==1.15.3",
     "seaborn==0.13.2",
     "six==1.17.0",
-    "social-auth-app-django==5.4.3",
+    "social-auth-app-django==5.6.0",
     "social-auth-core==4.6.1",
-    "sqlparse==0.5.3",
+    "sqlparse==0.5.4",
     "statsmodels==0.14.4",
     "tabulate==0.9.0",
     "tzdata==2025.2",
