@@ -149,7 +149,7 @@ pip install -e .
 ### Database migration
 
 ```
-python manage.py makemigrations
+python manage.py makemigrations lmt_toolkit_analysis
 python manage.py migrate
 ```
 
