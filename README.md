@@ -281,6 +281,12 @@ Use [http://localhost:3000/](http://localhost:3000/) in your internet browser to
 
 ## Docker alternative fullstack installation
 
+### :warning: Warning
+
+Virtualisation must be enabled on your computer for Docker to work.
+Docker has certain limitations that make it impossible to analyse large databases. We recommend carrying out the standard installation described above.
+
+
 To install and launch LMT-toolkit via Docker, you have to install the [Docker environment or the Docker Desktop application](https://www.docker.com/) first.
 Docker Desktop has to be launched with administrator rights.
 
