@@ -281,6 +281,12 @@ Use [http://localhost:3000/](http://localhost:3000/) in your internet browser to
 
 ## Docker alternative fullstack installation
 
+### :warning: Warning
+
+Virtualisation must be enabled on your computer for Docker to work.
+Docker has certain limitations that make it impossible to analyse large databases. We recommend carrying out the standard installation described above.
+
+
 To install and launch LMT-toolkit via Docker, you have to install the [Docker environment or the Docker Desktop application](https://www.docker.com/) first.
 Docker Desktop has to be launched with administrator rights.
 
@@ -324,7 +330,7 @@ docker image prune -a
 
 
 
-### Licence
+## Licence
 
 LMT-toolkit analysis is released under the GPL v3.0 licence. See the [LICENSE](LICENSE) file.
 
@@ -332,7 +338,7 @@ Copyright (C) 2022 CNRS - INSERM - UNISTRA - ICS - IGBMC
 
 LMT-toolkit uses the LMT-analysis code provided on [GitHub](https://github.com/fdechaumont/lmt-analysis). This code is also under the GPL v3.0 licence.
 
-### Features attributions:
+## Features attributions:
 
 Code for LMT analysis on [GitHub](https://github.com/fdechaumont/lmt-analysis)
 
