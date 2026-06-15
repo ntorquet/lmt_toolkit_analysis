@@ -25,7 +25,7 @@ from ..lmtanalysis.Util import getMinTMaxTAndFileNameInput, getColorGeno
 from ..lmtanalysis.EventTimeLineCache import EventTimeLineCached
 from ..lmtanalysis.FileUtil import *
 from ..lmtanalysis.Util import getFileNameInput, getStarsFromPvalues
-import statsmodels.api as sm
+# import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import pandas
 from scipy.stats import mannwhitneyu, kruskal, ttest_1samp, wilcoxon

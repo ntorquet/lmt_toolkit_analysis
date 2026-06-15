@@ -12,13 +12,13 @@
     "@types/node": "^22.15.18"
   },
   "dependencies": {
-    "nuxt": "3.21.6",
+    "nuxt": "3.21.8",
     "@mdi/font": "7.2.96",
     "@pinia/nuxt": "0.4.11",
-    "axios": "1.16.0",
+    "axios": "1.18.0",
     "chart.js": "4.4.9",
     "json-csv": "4.0.18",
-    "lodash": "4.17.21",
+    "lodash": "4.18.0",
     "pinia": "2.1.4",
     "sass": "1.92.1",
     "vue-chartjs": "5.2.0",

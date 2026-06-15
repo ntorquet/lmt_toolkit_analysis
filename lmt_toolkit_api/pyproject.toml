@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lmt_toolkit_analysis"
-version = "1.2.1"
+version = "1.2.2"
 description = "LMT-toolkit is an open source web application created to analyse Live Mouse Tracker (LMT) data easily and intuitively."
 authors = [
     { name = "Nicolas Torquet", email = "nicolas.torquet@igbmc.com" },
@@ -33,7 +33,7 @@ dependencies = [
     "cryptography==46.0.7",
     "cycler==0.12.1",
     "defusedxml==0.7.1",
-    "Django==5.2.13",
+    "Django==5.2.15",
     "django_celery_results==2.6.0",
     "django-cors-headers==4.7.0",
     "django-environ==0.12.0",
@@ -48,13 +48,13 @@ dependencies = [
     "jsonschema-specifications==2025.4.1",
     "kiwisolver==1.4.8",
     "kombu==5.5.3",
-    "lxml==6.1.0",
+    "lxml==6.1.1",
     "matplotlib==3.10.3",
     "networkx==3.4.2",
     "numpy==2.2.6",
     "oauthlib==3.2.2",
     "packaging==25.0",
-    "pandas==2.3.3",
+    "pandas==3.0.3",
     "patsy==1.0.1",
     "pillow==12.2.0",
     "prompt_toolkit==3.0.51",
