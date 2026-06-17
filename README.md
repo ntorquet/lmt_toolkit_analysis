@@ -103,8 +103,6 @@ This table will be completed with each new behavior extraction possibility. This
 ## Installation
 [Installation via Docker](#docker-alternative-fullstack-installation)
 
-LMT-toolkit needs Python 3.13.
-
 LMT-toolkit works thanks to 3 different servers:
 
 - a Django server with a REST API (Python)
@@ -112,6 +110,20 @@ LMT-toolkit works thanks to 3 different servers:
 - a Celery server to manage asynchronous tasks between the frontend and the Django server (Python)
 
 ![alt LMT-toolkit schema](https://github.com/ntorquet/lmt_toolkit_analysis/blob/main/lmt_toolkit_api/media/uploaded/img/lmt-toolkit_schema.png?raw=true)
+
+LMT-toolkit needs several components to work:
+- Python 3.13.13:
+  - [installer for Windows 64-bit](https://www.python.org/ftp/python/3.13.13/python-3.13.13-amd64.exe)
+  - [installer for Windows 32-bit](https://www.python.org/ftp/python/3.13.13/python-3.13.13.exe)
+- Node.js 20.3.1:
+   - [installer for Windows 64-bit](https://nodejs.org/dist/v20.3.1/node-v20.3.1-x64.msi)
+   - [installer for Windows 32-bit](https://nodejs.org/dist/v20.3.1/node-v20.3.1-x86.msi)
+- Erlang 23.3.4.20:
+  - [installer for Windows 64-bit](https://github.com/erlang/otp/releases/download/OTP-23.3.4.20/otp_win64_23.3.4.20.exe)
+  - [installer for Windows 32-bit](https://github.com/erlang/otp/releases/download/OTP-23.3.4.20/otp_win32_23.3.4.20.exe)
+- RabbitMQ server 3.8.14:
+  - [installer for Windows](https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.8.14/rabbitmq-server-3.8.14.exe)
+
 
 It is recommended to create a [python virtual environment](https://docs.python.org/3/library/venv.html) into the root folder of the application to 
 install the python required packages.
